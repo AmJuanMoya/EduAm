@@ -20,7 +20,7 @@ class Database {
         host: 'localhost',
         user: 'root',
         database: 'eduam',
-        port: 3310,
+        port: 3306,
         password: ''
       });
       this.connection = connection;
