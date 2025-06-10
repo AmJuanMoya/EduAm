@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plantilla Eduams</title>
+  <!-- Estilos de Bulma y Custom -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css"> </head>
+  
+  <body>
+  <!--------------------------------- Navbar -->
+   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#">
+        <img src="img/Am.png" alt="Logo" style="max-height: 2rem; margin-right: 0.5rem;">
+        <strong>Edu Ams</strong>
+      </a>
+    </div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <span class="tag is-info is-light">
+          <span class="icon is-small mr-2"><i class="fas fa-user-circle"></i></span>
+          <span id="userIdDisplay">Usuario Demo</span>
+        </span>
+      </div>
+    </div>
+  </nav>
+<!-- --------------------- ------------------->
+
+ <!------ Asidebar de opciones para el usuario -->
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-one-quarter">
+          <aside class="menu">
+            <p class="menu-label">
+              Opciones de administrador
+            </p>
+            <ul class="menu-list">
+              <li><a class="is-active">Gestión 1</a></li>
+              <li><a>Gestión 2</a></li>
+              <li><a>Gestión 3</a></li>
+            </ul>
+          </aside>
+        </div>
+
+<!-- -------------------------------------- -->
+
+        <div class="column">
+          <div class="is-flex is-justify-content-space-between is-align-items-center mb-3 control-panel is-grey">
+
+            <h2 class="title is-4 mb-0">Tabla de Usuarios</h2>
+
+            <div class="field has-addons is-grouped">
+                <div class="control">
+                    <div class="select">
+
+                        <select id="filterParam">
+                            <option value="all">Todos</option>
+                            <option value="ID">ID</option>
+                            <option value="nombre">Nombre</option>
+                            <option value="apellido">Apellido</option>
+                            <option value="telefono">Telefono</option>
+                            <option value="email">Email</option>
+                            <option value="rol">Rol</option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="control has-icons-left is-expanded">
+                    <input id="buscarFiltros" class="input" type="text" placeholder="Buscar...">
+                    <span class="icon is-left">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <div class="control">
+                    <button class="button is-primary btn-agregar">
+                        <span class="icon is-small"><i class="fas fa-plus"></i></span>
+                        <span>Agregar Usuario</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="table is-striped is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Telefono</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+                <tr>
+                  <td>1</td>
+                  <td>Juan</td>
+                  <td>Perez</td>
+                  <td>123456789</td>
+                  <td>juan.perez@example.com</td>
+                  <td>Administrador</td>
+                  <td>
+                    <div class="dropdown is-right is-up">
+                      <div class="dropdown-trigger">
+                        <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span>Seleccionar</span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu-1" role="menu">
+                        <div class="dropdown-content">
+                          <a href="#" class="dropdown-item custom-edit-btn">
+                            <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                            <span>Editar</span>
+                          </a>
+                          <a href="#" class="dropdown-item custom-delete-btn">
+                            <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                            <span>Eliminar</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Maria</td>
+                    <td>Gomez</td>
+                    <td>987654321</td>
+                    <td>maria.gomez@example.com</td>
+                    <td>Editor</td>
+                    <td>
+                      <div class="dropdown is-right is-up">
+                        <div class="dropdown-trigger">
+                          <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span>Seleccionar</span>
+                            <span class="icon is-small">
+                              <i class="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="dropdown-menu" role="menu">
+                          <div class="dropdown-content">
+                            <a href="#" class="dropdown-item custom-edit-btn">
+                              <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                              <span>Editar</span>
+                            </a>
+                            <a href="#" class="dropdown-item custom-delete-btn">
+                              <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                              <span>Eliminar</span>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal" id="modalAgregar">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Agregar Usuario</p>
+        <button class="delete" aria-label="close" id="cerrarModal"></button>
+      </header>
+      <section class="modal-card-body">
+        <form id="userForm">
+          <input type="hidden" id="userId" value="">
+          <div class="field">
+            <label class="label">Nombre</label>
+            <div class="control">
+              <input class="input" type="text" id="nombre" placeholder="Nombre del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Apellido</label>
+            <div class="control">
+              <input class="input" type="text" id="apellido" placeholder="Apellido del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Teléfono</label>
+            <div class="control">
+              <input class="input" type="tel" id="telefono" placeholder="Teléfono de contacto" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input class="input" type="email" id="email" placeholder="Email del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Rol</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="rol" required>
+                  <option value="">Selecciona un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Editor">Estudiante</option>
+                  <option value="Lector">Docente</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" id="guardarUsuario">Guardar</button>
+        <button class="button" id="cancelarModal">Cancelar</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/funciones.js"></script>
+</body>
+</html>

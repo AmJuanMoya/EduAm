@@ -1,5 +1,10 @@
+import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
+// import { fileURLToPath } from 'url';
+// import { dirname, join } from 'path';
+dotenv.config({path: '.env'});
 
+// Cargar variables de entorno
 
 class Database {
     constructor() {
@@ -10,18 +15,26 @@ class Database {
       this.afectedRows;
       this.data;
       this.metadata;
+      // data from .env of database
+      this.db_host = process.env.DB_HOST || 'localhost';
+      this.db_user = process.env.DB_USER || 'root';
+      this.db_name = process.env.DB_NAME || 'eduam';
+      this.db_port = process.env.DB_PORT || 3306;
+      this.db_password = process.env.DB_PASSWORD || 'tecno159';
+      
     }
 
 
   async connect() {
 
     try {
+      
       const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'eduam',
-        port: 3306,
-        password: ''
+        host: this.db_host,
+        user: this.db_user,
+        database: this.db_name,
+        port: this.db_port,
+        password: this.db_password
       });
       this.connection = connection;
       console.log('✅ Connected to the database✅');

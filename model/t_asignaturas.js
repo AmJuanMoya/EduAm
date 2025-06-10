@@ -1,4 +1,7 @@
 import Database from "../model/database/conectionDB.js";
+// import dotenv from 'dotenv';
+// dotenv.config({path: '../.env'});
+
 
 class t_asignaturas{
 
@@ -6,6 +9,7 @@ class t_asignaturas{
         this.id_asignatura;
         this.nombre_asignatura = "";
         this.db = new Database()
+        
     }
 
     async getall_asignatura(){
@@ -61,6 +65,12 @@ class t_asignaturas{
 }
 
 // PRUEBA DE DATOS....
+
+// console.log(process.env.DB_HOST)
+// console.log(process.env.DB_USER)
+// console.log(process.env.DB_NAME)
+// console.log(process.env.DB_PORT)
+// console.log(process.env.DB_PASSWORD)
 const tabla = new t_asignaturas();
 
 tabla.getall_asignatura().then(datos =>{
@@ -71,8 +81,8 @@ console.log(dato.id_asignatura, dato.nombre_asignatura)
 })
 })
 
-tabla.set_id_estado_usuario(7);
-tabla.set_nombre_estado_usuario("Taller4")
+// tabla.set_id_estado_usuario(7);
+// tabla.set_nombre_estado_usuario("Taller4")
 
 // tabla.update_categoria_actividad(tabla.get_id_categoria_actividad(), tabla.get_nombre_categoria_actividad());
 

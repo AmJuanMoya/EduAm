@@ -1,0 +1,27 @@
+
+
+
+CONSULTA PARA TRAER  UNA LISTA DE DE TABLAS DE LA BASE DE DATOS "eduam":
+
+````
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'eduam'
+AND table_type = 'BASE TABLE';
+
+
+````
+
+CONSTULTA PARA TRAER NOMBRES Y NUMERO DE FILAS DE LAS BASE DE DATOS "eduam":
+
+````
+
+SELECT table_name, table_rows
+FROM information_schema.tables
+WHERE table_schema = 'eduam'
+AND table_type = 'BASE TABLE';
+
+````
+
+
