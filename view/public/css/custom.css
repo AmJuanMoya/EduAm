@@ -1,0 +1,42 @@
+:root {
+    /* Paleta principal Eduams */
+    --color-primario: #003366; /* Azul Oscuro principal */
+    --color-secundario: #00b4d8; /* Azul claro para elementos secundarios/énfasis */
+    --color-acento: #1d9ce5; /* Naranja/Amarillo de "Paleta del cliente" */
+    --color-danger: #972525; /* Rojo estándar de Bulma para eliminar */
+  
+    /* Colores de la "Paleta de Eduams" en la imagen */
+    --eduams-blue-dark: #0057BD; /* Azul más vibrante */
+    --eduams-blue-light: #00A4F9; /* Azul cielo para fondos claros/degradados */
+    --eduams-black: #040404; /* Negro para texto general */
+    --eduams-light-bg-default: #EDFAFF; /* Color de fondo claro (Default) */
+    --eduams-light-gray: #a8bcda; /* Gris claro para bordes sutiles o texto secundario */
+  
+    --shadowbox_1:  1px 1px 10px 10px rgba(35, 60, 77, 0.192);
+  
+    --bulma-primary-h: 216deg;
+    --bulma-primary-l: 57%;
+    --bulma-primary-h: 216deg;
+    --bulma-primary-l: 57%;
+    --bulma-danger-l: 68%;
+    --bulma-scheme-h: 216;
+    --bulma-scheme-s: 35%;
+    /* .control-panel{
+      background-color: var(--eduams-light-gray);
+      } */
+  
+      /* .input,.select select,.textarea, .table-container .table{
+          background-color: var(--eduams-light-gray);
+      } */
+  
+
+
+  }
+  
+  
+  
+  /* @media (prefers-color-scheme: light) {
+    :root { */
+      /* Variables para tema claro */
+    /* }
+  } */

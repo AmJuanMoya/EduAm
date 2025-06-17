@@ -1,0 +1,39 @@
+---
+
+let {direccion="../", name=".", clase ="fas fa-arrow-left"} = Astro.props 
+
+---
+
+<div class="container is-small">
+
+
+
+
+
+
+    <a href={direccion} >    
+        <span class="icon-text">
+        <span class="icon">
+          <i class={clase}></i>
+        </span>
+        </span> 
+        {name} 
+    </a>
+
+
+</div>  
+
+
+
+<style>
+.container{
+    /* border: 1px solid red; */
+    /* border-radius: 1rem; */
+    margin: 0.5%;
+    border-bottom: 2px solid rgb(47, 96, 231);
+    border-left: 2px solid rgb(47, 96, 231);
+    padding-left: 1rem;
+    
+}
+
+</style>

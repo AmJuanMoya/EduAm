@@ -2,60 +2,82 @@ import conectionDB from './conectionDB.js';
 
 
 class Crud{
-    constructor(){
+    constructor(table, keys, values){
         this.db = new conectionDB();
+
+        this.table = table
+        this.keys = keys
+        this.values = values
+
     }
 
     async insertOne(table, data){
-        await this.db.connect();
-        // se extraen llaves y valores
-        const keys = Object.keys(data);
-        const values = Object.values(data).map(value => {
-            if (value === undefined || value === null) {
-                return 'NULL';
-            } else if (typeof value === 'string') {
-                return `'${value}'`;
-            }
-            return value;
-        });
-        const query = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${values.join(', ')})`;
-        await this.db.consultar(query);
-        await this.db.cerrar();
-        return this.db.getData();
+        try {
+            await this.db.connect();
+            
+            const keys = Object.keys(data);
+            const placeholders = keys.map(() => ' ?')
+            const values = Object.values(data);
+
+            const query = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders})`;
+
+            // console.log("-------------")
+            // console.log(query)
+            // console.log("-------------")
+
+            await this.db.consultar(query, values);     
+            await this.db.cerrar();
+            return this.db.getData();
+        } catch (error) {
+            await this.db.cerrar();
+            throw new Error(`Error en insertOne: ${error.message}`);
+        }
     }
 
     async getAll(table){
-        await this.db.connect();
-        const query = `SELECT * FROM ${table}`;
-        await this.db.consultar(query);
-        await this.db.cerrar();
-        return this.db.getData();
+        try {
+            await this.db.connect();
+            const query = `SELECT * FROM ${table}`;
+            await this.db.consultar(query);
+            await this.db.cerrar();
+            return this.db.getData();
+        } catch (error) {
+            await this.db.cerrar();
+            throw new Error(`Error en getAll: ${error.message}`);
+        }
     }
 
     async getByCondition(table, condition){
-        await this.db.connect();
-        const query = `SELECT * FROM ${table} WHERE ${condition}`;
-        await this.db.consultar(query);
-        await this.db.cerrar();
-        return this.db.getData();
+        try {
+            await this.db.connect();
+            const query = `SELECT * FROM ${table} WHERE ${condition}`;
+            await this.db.consultar(query);
+            await this.db.cerrar();
+            return this.db.getData();
+        } catch (error) {
+            await this.db.cerrar();
+            throw new Error(`Error en getByCondition: ${error.message}`);
+        }
     }
 
     async updateOne(table, data, condition){
-        await this.db.connect();
-        const keys = Object.keys(data);
-        const values = Object.values(data).map(value => { 
-            if (value === undefined || value === null) { 
-                return 'NULL';
-                } else if (typeof value === 'string') {
-                    return `'${value}'`;
-                    }
-                    return value;
-                    });
-                    const query = `UPDATE ${table} SET ${keys.map((key, index) => `${key} = ${values[index]}`).join(', ')} WHERE ${condition}`;
-                    await this.db.consultar(query);
-                    await this.db.cerrar();
-                    return this.db.getData();
-                    
+        try {
+            await this.db.connect();
+            
+            const keys = Object.keys(data);
+            const values = Object.values(data);
+            const setClause = `${keys.map((k)=> `${k} = ? ` )}`
+
+            const query = `UPDATE ${table} SET ${setClause} WHERE ${condition}`;
+            await this.db.consultar(query, values);
+
+            await this.db.cerrar();
+            return this.db.getData();
+
+        } catch (error) {
+            await this.db.cerrar();
+            throw new Error(`Error en updateOne: ${error.message}`);
+        }
     }
 
     async deleteOne(table, condition){
@@ -83,19 +105,24 @@ class Crud{
 let crud = new Crud();
 
 //------EJEMPLO DE TRAER
-// crud.getall('t_curso').then(data => {
-//     console.log(data);
-// })
+crud.getAll('t_actividad').then(data => {
+    console.log(data);
+})
 
 //-------EJEMPLO DE INSERCCION
 
-//
-// crud.insertOne("t_roles",
+
+// crud.insertOne("t_actividad",
 
 //     {
-//     descripcion_rol: "Rol de ejemplo b", 
+//     titulo_actividad: "Actividad de Ejemplo",
+//     descripcion_actividad: "xd_Esta es una descripcionde la actividad por ejemploxd",
+//     calificacion_nota: 3.4 ,
+//     id_categoria_actividad: 2        
+     
 //     // nombre_rol: "" 
-// }
+    
+//     })
     
 
 // ).then(data =>{
@@ -104,12 +131,13 @@ let crud = new Crud();
 
 //------EJEMPLO DE ACTUALIZAR
 
-// crud.updateOne("t_roles", 
+// crud.updateOne("t_actividad", 
 //     //Datos a cambiar... se puede poner uno o varios
 //     { 
-//         descripcion_rol: "Rol_actualizado_a",
-//         nombre_rol: "Rol_ejemplo123"
-//     },"id_rol = 8"
+//       titulo_actividad: "Debate de Geografía",
+//     //   otra_cosa_x: "otra cosa x",
+//     //   otra_cosa_y: "otra cosa yz"
+//     },"id_actividad = 6"
 
 // ).then(data=>{
 //     console.log(data);
@@ -118,6 +146,6 @@ let crud = new Crud();
     
         
         
-// crud.deleteOne("t_roles", "id_rol = 8").then(data =>{
+// crud.deleteOne("t_actividad", "id_actividad = 7").then(data =>{
 //     console.log(data);
 // });

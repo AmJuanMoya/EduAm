@@ -1,0 +1,117 @@
+---
+
+let filterParams = ["all", "ID", "Nombre" ] 
+
+---
+
+
+
+<div class="controlbar is-flex is-justify-content-space-between is-align-items-center mb-3 control-panel  ">
+    <h2 class="title is-4 mb-0">Tabla de Usuarios</h2>
+   
+    <div class="field has-addons is-grouped">
+        <div class="control">
+            <div class="select">
+
+                <select id="filterParam">
+                    <option value="all">Todos</option>
+                    <option value="ID">ID</option>
+                    <option value="nombre">Nombre</option>
+                    <option value="apellido">Apellido</option>
+                    <option value="telefono">Telefono</option>
+                    <option value="email">Email</option>
+                    <option value="rol">Rol</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="control has-icons-left is-expanded">
+            <input id="buscarFiltros" class="input" type="text" placeholder="Buscar...">
+            <span class="icon is-left">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+        <div class="control">
+            <button class="button is-primary btn-agregar">
+                <span class="icon is-small"><i class="fas fa-plus"></i></span>
+                <span>Agregar Usuario</span>
+            </button>
+        </div>
+    </div>
+  </div>
+
+
+
+
+  <style> 
+.controlbar{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: var(--shadowbox_1);
+    border-radius: .5em;
+    padding: 5px;
+}
+
+  </style>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    const filterSelect = document.getElementById('filterParam') as HTMLSelectElement;
+    const searchInput = document.getElementById('buscarFiltros') as HTMLInputElement;
+    const tableBody = document.getElementById('userTableBody');
+
+    if (!filterSelect || !searchInput || !tableBody) {
+      console.error('No se encontraron los elementos necesarios');
+      return;
+    }
+
+    function filtrarTabla() {
+      const filtro = filterSelect.value;
+      const busqueda = searchInput.value.toLowerCase();
+      const filas = tableBody?.getElementsByTagName('tr');
+    
+    if(filas){
+
+        for (let fila of filas) {
+            const celdas = fila.getElementsByTagName('td');
+            let mostrarFila = false;
+
+            if (filtro === 'all') {
+            // Buscar en todas las columnas
+            for (let celda of celdas) {
+                if (celda.textContent?.toLowerCase().includes(busqueda)) {
+                mostrarFila = true;
+                break;
+                }
+            }
+            } else {
+            // Buscar en la columna específica
+            const indiceColumna = Array.from(filterSelect.options).findIndex(option => 
+                (option as HTMLOptionElement).value === filtro
+            );
+            if (indiceColumna >= 0 && indiceColumna < celdas.length) {
+                mostrarFila = celdas[indiceColumna].textContent?.toLowerCase().includes(busqueda) ?? false;
+            }
+            }
+            fila.style.display = mostrarFila ? '' : 'none';
+        }
+    }
+    }
+
+    // Eventos para activar el filtrado
+    filterSelect.addEventListener('change', filtrarTabla);
+    searchInput.addEventListener('input', filtrarTabla);
+  });
+</script>
+
+<!-- NOTA: 
+ 
+--lOS FILTROS NO FUNCIONAN Bien, hay que revisar y modificar la funcionalidad de filtro en la tabla
+
+
+-->

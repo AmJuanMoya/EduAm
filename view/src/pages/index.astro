@@ -1,16 +1,39 @@
 ---
-
+import General from "../layouts/general.astro"
+import Panelnav from "../components/navigation/panelnav.astro"
+import ButtonA from "../components/general/button_a.astro"
+import { fade } from 'astro:transitions';
+import { slide } from "astro:transitions";
 ---
+<!-- ESte Es el Home -->
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<General>
+<!-- <Panelnav name="consultas" direccion="/consultas"/> -->
+
+    <div class="panel is-primary">
+        <p class="panel-heading  has-text-centered">  Bienvenido   </p>
+        <h2 class=" subtitle is-6 has-text-centered is-italic">Dele un vistaso a las paginas disponibles por el momento</h2>
+        <div class="panel-block">
+            <div class="box">
+                <ButtonA transition:animate={slide({duration: "5s"})} name="Tablas" dir="/consultas"/>
+                <!-- <ButtonA/>
+                <ButtonA/>
+                <ButtonA/> -->
+
+            </div>
+        </div>
+    </div>
+
+    
+</General> 
+
+
+
+<style>
+.panel{
+    /* background-color: #962c2c; */
+    width: 50%;
+    margin: 10% auto;
+}
+
+</style>

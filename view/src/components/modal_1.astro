@@ -1,0 +1,55 @@
+<div class="modal" id="modalAgregar">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Agregar Usuario</p>
+        <button class="delete" aria-label="close" id="cerrarModal"></button>
+      </header>
+      <section class="modal-card-body">
+        <form id="userForm">
+          <input type="hidden" id="userId" value="">
+          <div class="field">
+            <label class="label">Nombre</label>
+            <div class="control">
+              <input class="input" type="text" id="nombre" placeholder="Nombre del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Apellido</label>
+            <div class="control">
+              <input class="input" type="text" id="apellido" placeholder="Apellido del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Teléfono</label>
+            <div class="control">
+              <input class="input" type="tel" id="telefono" placeholder="Teléfono de contacto" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input class="input" type="email" id="email" placeholder="Email del usuario" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Rol</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select id="rol" required>
+                  <option value="">Selecciona un rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Editor">Estudiante</option>
+                  <option value="Lector">Docente</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" id="guardarUsuario">Guardar</button>
+        <button class="button" id="cancelarModal">Cancelar</button>
+      </footer>
+    </div>
+  </div>
