@@ -3,7 +3,7 @@ import General from "../layouts/general.astro"
 import Panelnav from "../components/navigation/panelnav.astro"
 import ButtonA from "../components/general/button_a.astro"
 import { fade } from 'astro:transitions';
-import { slide } from "astro:transitions";
+// import { slide } from "astro:transitions";
 ---
 <!-- ESte Es el Home -->
 
@@ -15,7 +15,9 @@ import { slide } from "astro:transitions";
         <h2 class=" subtitle is-6 has-text-centered is-italic">Dele un vistaso a las paginas disponibles por el momento</h2>
         <div class="panel-block">
             <div class="box">
-                <ButtonA transition:animate={slide({duration: "5s"})} name="Tablas" dir="/consultas"/>
+                <ButtonA transition:animate="fade" name="Tablas" dir="/consultas"/>
+                <ButtonA transition:animate="fade" name="Login" dir="/login"/>
+                
                 <!-- <ButtonA/>
                 <ButtonA/>
                 <ButtonA/> -->

@@ -1,6 +1,21 @@
 ---
+// let datos = [];
 
-let filterParams = ["all", "ID", "Nombre" ] 
+// try {
+//   const res = await fetch('http://localhost:3000/api/datos/tablas');
+//   if (res.ok) {
+//     datos = await res.json();
+//   }
+// } catch (e) {
+//   datos = [];
+// }
+ 
+let { tablas = [], parametros = ["a", "b", "c"] } = Astro.props;
+
+
+//  data = await fetch("http://localhost:3000/api/datos/tablas")
+// data = await data.json();
+
 
 ---
 
@@ -13,18 +28,40 @@ let filterParams = ["all", "ID", "Nombre" ]
         <div class="control">
             <div class="select">
 
-                <select id="filterParam">
-                    <option value="all">Todos</option>
-                    <option value="ID">ID</option>
-                    <option value="nombre">Nombre</option>
-                    <option value="apellido">Apellido</option>
-                    <option value="telefono">Telefono</option>
-                    <option value="email">Email</option>
-                    <option value="rol">Rol</option>
+                <select id="filtertable">
+                    <option value="all" selected>Todos</option>
+                    {tablas.length > 0
+                        ? tablas.map((item) => (
+                            <option value={item.table_name}>{item.table_name}</option>
+                        ))
+                        : parametros.map((item) => (
+                            <option value={item}>{item}</option>
+                        ))
+                    }
                 </select>
 
             </div>
         </div>
+
+            <div class="field has-addons is-grouped">
+        <div class="control">
+            <div class="select">
+
+                <select id="filterParam">
+                    <option value="all" selected>Todos</option>
+                    {parametros.length > 0
+                        ? parametros.map((item) => (
+                            <option value={item.table_name}>{item.table_name}</option>
+                        ))
+                        : parametros.map((item) => (
+                            <option value={item}>{item}</option>
+                        ))
+                    }
+                </select>
+
+            </div>
+        </div>
+
 
         <div class="control has-icons-left is-expanded">
             <input id="buscarFiltros" class="input" type="text" placeholder="Buscar...">
@@ -41,9 +78,6 @@ let filterParams = ["all", "ID", "Nombre" ]
     </div>
   </div>
 
-
-
-
   <style> 
 .controlbar{
     /* border: 1px solid red; */
@@ -53,34 +87,28 @@ let filterParams = ["all", "ID", "Nombre" ]
     border-radius: .5em;
     padding: 5px;
 }
-
   </style>
 
-
-
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', () => {
-    
-    const filterSelect = document.getElementById('filterParam') as HTMLSelectElement;
-    const searchInput = document.getElementById('buscarFiltros') as HTMLInputElement;
+    const filterSelect = document.getElementById('filterParam');
+    const searchInput = document.getElementById('buscarFiltros');
     const tableBody = document.getElementById('userTableBody');
-
     if (!filterSelect || !searchInput || !tableBody) {
       console.error('No se encontraron los elementos necesarios');
       return;
     }
-
+    // Cast elements to correct types
+    const selectEl = filterSelect as HTMLSelectElement;
+    const inputEl = searchInput as HTMLInputElement;
     function filtrarTabla() {
-      const filtro = filterSelect.value;
-      const busqueda = searchInput.value.toLowerCase();
+      const filtro = selectEl.value;
+      const busqueda = inputEl.value.toLowerCase();
       const filas = tableBody?.getElementsByTagName('tr');
-    
     if(filas){
-
         for (let fila of filas) {
             const celdas = fila.getElementsByTagName('td');
             let mostrarFila = false;
-
             if (filtro === 'all') {
             // Buscar en todas las columnas
             for (let celda of celdas) {
@@ -91,8 +119,8 @@ let filterParams = ["all", "ID", "Nombre" ]
             }
             } else {
             // Buscar en la columna específica
-            const indiceColumna = Array.from(filterSelect.options).findIndex(option => 
-                (option as HTMLOptionElement).value === filtro
+            const indiceColumna = Array.from(selectEl.options).findIndex(option => 
+                option.value === filtro
             );
             if (indiceColumna >= 0 && indiceColumna < celdas.length) {
                 mostrarFila = celdas[indiceColumna].textContent?.toLowerCase().includes(busqueda) ?? false;
@@ -102,12 +130,10 @@ let filterParams = ["all", "ID", "Nombre" ]
         }
     }
     }
-
-    // Eventos para activar el filtrado
-    filterSelect.addEventListener('change', filtrarTabla);
-    searchInput.addEventListener('input', filtrarTabla);
+    selectEl.addEventListener('change', filtrarTabla);
+    inputEl.addEventListener('input', filtrarTabla);
   });
-</script>
+</script> -->
 
 <!-- NOTA: 
  

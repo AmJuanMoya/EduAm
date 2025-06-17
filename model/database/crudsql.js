@@ -99,15 +99,17 @@ class Crud{
 
 } 
 
+export default Crud;
+
 
 //--- PRUEBAS DE LOS METODOS ----
 
-let crud = new Crud();
+// let crud = new Crud();
 
 //------EJEMPLO DE TRAER
-crud.getAll('t_actividad').then(data => {
-    console.log(data);
-})
+// crud.getAll('t_actividad').then(data => {
+//     console.log(data);
+// })
 
 //-------EJEMPLO DE INSERCCION
 

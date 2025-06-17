@@ -3,24 +3,38 @@ import General from "../layouts/general.astro"
 import Asidebar from "../components/asidebar.astro"
 import GestionTable from "../layouts/gestionTable.astro"
 import Panelnav from "../components/navigation/panelnav.astro"
+import { object } from "astro:schema";
+
+let datos = [];
+let filas = [];
+let columnas = []
+
+try {
+  const res = await fetch('http://localhost:3000/api/datos/tablas');
+  if (res.ok) {
+    datos = await res.json();
+
+  }
+} catch (e) {
+  datos = [];
+}
+
 ---
 
 
 <General>
-  <Panelnav  direccion="/Pruebas1" />
 
 
-      
+  <Panelnav />
+
       <section class="section is-fluid is-medium  ">
        <div class="columns">
         <Asidebar />
         <div class=" columns column ">
           
-          <GestionTable client:load/>
+          <GestionTable tablas={datos} />
         </div>
        </div> 
-
-
 
 
 
