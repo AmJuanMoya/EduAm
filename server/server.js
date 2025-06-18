@@ -17,15 +17,17 @@ function saludar(req, res, next) {
 app.use(express.json()); // Middleware para parsear JSON en el cuerpo de las solicitudes
 
 
-// Middleware de manejo de errores
-// app.use((err, req, res, next) => {
-//     console.error('Error inesperado:', err);
-//     res.status(500).json({ error: 'Error inesperado en el servidor-- desde el middleware de error' });
-// });
+//Middleware de manejo de errores
+app.use((err, req, res, next) => {
+    console.error('Error inesperado:', err);
+    // res.status(500).json({ error: 'Error inesperado en el servidor-- desde el middleware de error' });
+});
 
 
-
-
+app.get("/", (req, res) => {
+    // res.send("Servidor Express en funcionamiento, Ruta /");
+    res.redirect("http://localhost:4321/");
+})
 
 app.get("/api/datos/cursos", (req, res) => {
     try {
@@ -69,6 +71,46 @@ app.get("/api/datos/tablas", async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los datos' });
     }
 });
+
+
+app.get("/api/datos/registros/:tabla", async (req, res) => {
+    try {
+        const tabla = req.params.tabla;
+        console.log(`Se recibe tabla...  ${tabla}`);
+        let crud = new Crud();
+        const datos = await crud.getAll(tabla);
+        res.json(datos);
+        console.log("Se envia " + datos);
+    } catch (err) {
+        console.error('Error al obtener los datos:', err);
+        res.status(500).json({ error: 'Error al obtener los datos' });
+    }
+
+});
+
+
+
+
+
+// app.post("api/datos/tabla", async (req, res) => {
+//     try {
+//         console.log(`Se recibe tabla...  ${req.body.tabla} `);
+//         let crud = new crud();
+//         const datos = await crud.getAll(req.body.tabla);
+//         res.json(datos);
+//         console.log("Se envia " + datos);
+
+//     } catch (err) {
+//         console.error('Error al obtener los datos:', err);
+//         res.status(500).json({ error: 'Error al obtener los datos' });
+//     }
+// });
+
+
+
+
+
+
 
 
 

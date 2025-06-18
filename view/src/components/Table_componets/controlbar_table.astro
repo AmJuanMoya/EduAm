@@ -1,20 +1,17 @@
 ---
-// let datos = [];
 
-// try {
-//   const res = await fetch('http://localhost:3000/api/datos/tablas');
-//   if (res.ok) {
-//     datos = await res.json();
-//   }
-// } catch (e) {
-//   datos = [];
-// }
+
+
  
-let { tablas = [], parametros = ["a", "b", "c"] } = Astro.props;
-
-
+let { 
+  tablas = [{ table_name: "Sin definir" }], 
+  parametros = ["Sin definir"] 
+} = Astro.props;
 //  data = await fetch("http://localhost:3000/api/datos/tablas")
 // data = await data.json();
+
+
+
 
 
 ---
@@ -29,13 +26,9 @@ let { tablas = [], parametros = ["a", "b", "c"] } = Astro.props;
             <div class="select">
 
                 <select id="filtertable">
-                    <option value="all" selected>Todos</option>
-                    {tablas.length > 0
-                        ? tablas.map((item) => (
+                    <option value="all" selected >Todos</option>
+                    {tablas.map((item) => (
                             <option value={item.table_name}>{item.table_name}</option>
-                        ))
-                        : parametros.map((item) => (
-                            <option value={item}>{item}</option>
                         ))
                     }
                 </select>
@@ -48,15 +41,14 @@ let { tablas = [], parametros = ["a", "b", "c"] } = Astro.props;
             <div class="select">
 
                 <select id="filterParam">
-                    <option value="all" selected>Todos</option>
-                    {parametros.length > 0
-                        ? parametros.map((item) => (
-                            <option value={item.table_name}>{item.table_name}</option>
-                        ))
-                        : parametros.map((item) => (
+                    <option id="optiondefauld" value="all" selected>Parametros</option>
+
+                    {
+                     parametros.map((item) => (
                             <option value={item}>{item}</option>
                         ))
                     }
+
                 </select>
 
             </div>
@@ -89,55 +81,66 @@ let { tablas = [], parametros = ["a", "b", "c"] } = Astro.props;
 }
   </style>
 
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const filterSelect = document.getElementById('filterParam');
-    const searchInput = document.getElementById('buscarFiltros');
-    const tableBody = document.getElementById('userTableBody');
-    if (!filterSelect || !searchInput || !tableBody) {
-      console.error('No se encontraron los elementos necesarios');
-      return;
-    }
-    // Cast elements to correct types
-    const selectEl = filterSelect as HTMLSelectElement;
-    const inputEl = searchInput as HTMLInputElement;
-    function filtrarTabla() {
-      const filtro = selectEl.value;
-      const busqueda = inputEl.value.toLowerCase();
-      const filas = tableBody?.getElementsByTagName('tr');
-    if(filas){
-        for (let fila of filas) {
-            const celdas = fila.getElementsByTagName('td');
-            let mostrarFila = false;
-            if (filtro === 'all') {
-            // Buscar en todas las columnas
-            for (let celda of celdas) {
-                if (celda.textContent?.toLowerCase().includes(busqueda)) {
-                mostrarFila = true;
-                break;
-                }
+<script  type="module">
+
+document.addEventListener('DOMContentLoaded', () => {
+    const filterTable = document.getElementById('filtertable');
+    const filterParam = document.getElementById('filterParam');
+    const option = document.getElementById('optiondefauld'); // Si cambias el id, cámbialo aquí también
+
+    let tablaSeleccionada = filterTable.value;
+
+    async function fetchRegistrosPorTabla(tabla) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/datos/registros/${tabla}`);
+            if (!response.ok) {
+                throw new Error('Error en la petición');
             }
-            } else {
-            // Buscar en la columna específica
-            const indiceColumna = Array.from(selectEl.options).findIndex(option => 
-                option.value === filtro
-            );
-            if (indiceColumna >= 0 && indiceColumna < celdas.length) {
-                mostrarFila = celdas[indiceColumna].textContent?.toLowerCase().includes(busqueda) ?? false;
-            }
-            }
-            fila.style.display = mostrarFila ? '' : 'none';
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error al obtener los registros:', error);
         }
     }
+
+    // Llama la función cuando cambie la tabla seleccionada
+    filterTable.addEventListener('change', (e) => {
+        updateFilterParamState();
+        fetchRegistrosPorTabla(filterTable.value);
+    });
+
+
+
+
+    function updateFilterParamState() {
+        console.log("Actualizando estado de los parámetros de filtro");
+        // Si la tabla seleccionada es "all", deshabilita el filtro de parámetros
+        if (filterTable.value === 'all') {
+            filterParam.disabled = true;
+            filterParam.selectedIndex = 0;
+            option.textContent = "Seleccione una tabla para ver los parámetros";
+        } else {
+            filterParam.disabled = false;
+            option.textContent = "Parametros";
+        }
+        tablaSeleccionada = filterTable.value;
+        console.log("Tabla seleccionada:", tablaSeleccionada);
+        fetchRegistrosPorTabla(tablaSeleccionada);
+
     }
-    selectEl.addEventListener('change', filtrarTabla);
-    inputEl.addEventListener('input', filtrarTabla);
-  });
-</script> -->
+
+
+    // Llama la función al cargar la página por primera vez
+    // fetchRegistrosPorTabla(filterTable.value);
+
+    filterTable.addEventListener('change', updateFilterParamState);
+});
+
+
+</script>
+
+
 
 <!-- NOTA: 
  
---lOS FILTROS NO FUNCIONAN Bien, hay que revisar y modificar la funcionalidad de filtro en la tabla
-
-
--->
+--lOS FILTROS NO FUNCIONAN Bien, hay que revisar y modificar la funcionalidad de filtro en la tabla -->
