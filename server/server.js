@@ -2,10 +2,14 @@ import express from 'express';
 import Crud from '../model/database/crudsql.js'; // Asegúrate de que la ruta sea correcta
 import t_curso from '../model/t_curso.js'; // Asegúrate de que la ruta sea correcta
 import tablas from '../model/tablas.js';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 let crud = new Crud();
+
+//---- IMPORTANTE..: Puede que se necesite configuar CORRS posteriormente, en este momento solo se encuentra local
+app.use(cors());
 
 
 function saludar(req, res, next) {

@@ -12,7 +12,7 @@ class tablas{
    async getTablas(){
         await this.db.connect()
         const query = `
-                    SELECT table_name
+                    SELECT table_name as TABLE_NAME
                     FROM information_schema.tables
                     WHERE table_schema = 'eduam'
                     AND table_type = 'BASE TABLE';`;

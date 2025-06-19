@@ -2,12 +2,12 @@
 import ControlbarTable from "../components/Table_componets/controlbar_table.astro";
 import Table from "../components/Table_componets/table.astro";
 
-let {tablas,campos} = Astro.props;
+let {tablas} = Astro.props;
 ---
 
 
 <div class="column  ">
-    <ControlbarTable client:load tablas={tablas}/>
+    <ControlbarTable  tablas={tablas}/>
     <Table/>
 </div>
 

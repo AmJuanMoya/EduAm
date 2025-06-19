@@ -11,6 +11,7 @@
     --eduams-black: #040404; /* Negro para texto general */
     --eduams-light-bg-default: #EDFAFF; /* Color de fondo claro (Default) */
     --eduams-light-gray: #a8bcda; /* Gris claro para bordes sutiles o texto secundario */
+    --eduams-light-gray2: #a8bcda73;
   
     --shadowbox_1:  1px 1px 10px 10px rgba(35, 60, 77, 0.192);
   

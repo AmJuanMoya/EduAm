@@ -12,14 +12,12 @@ let {
 
 
 
-
-
 ---
 
 
 
 <div class="controlbar is-flex is-justify-content-space-between is-align-items-center mb-3 control-panel  ">
-    <h2 class="title is-4 mb-0">Tabla de Usuarios</h2>
+    <h2  class="title is-4 mb-2 ml-6 is-block">Gestion de registros</h2>
    
     <div class="field has-addons is-grouped">
         <div class="control">
@@ -28,7 +26,11 @@ let {
                 <select id="filtertable">
                     <option value="all" selected >Todos</option>
                     {tablas.map((item) => (
-                            <option value={item.table_name}>{item.table_name}</option>
+                            item.TABLE_NAME? 
+                            <hr class="dropdown-divider is-primary" />
+                            <option class="customoption" value={item.TABLE_NAME}>{item.TABLE_NAME}</option>
+                            
+                            : console.log(item)
                         ))
                     }
                 </select>
@@ -36,7 +38,7 @@ let {
             </div>
         </div>
 
-            <div class="field has-addons is-grouped">
+            <div class="field has-addons is-grouped ">
         <div class="control">
             <div class="select">
 
@@ -77,8 +79,23 @@ let {
     flex-wrap: wrap;
     box-shadow: var(--shadowbox_1);
     border-radius: .5em;
-    padding: 5px;
+    /* padding: 5px; */
+    align-items: center;
+    padding: 1% 1%;
 }
+
+/* .customoption::after{
+    content: "";
+    display: inline-block;
+    background-color: aqua;
+    height: 2px;
+    width: 100%;
+    position: relative;
+    
+} */
+
+
+
   </style>
 
 <script  type="module">
@@ -98,34 +115,71 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             console.log(data);
+            updateFilterParamOptions(data)
         } catch (error) {
             console.error('Error al obtener los registros:', error);
         }
     }
 
+    function updateFilterParamOptions(data) {
+        // Limpiar las opciones existentes excepto la primera
+        while (filterParam.children.length > 1) {
+            filterParam.removeChild(filterParam.lastChild);
+        }
+
+        if (data && data.length > 0) {
+            // Obtener las claves (nombres de columnas) del primer objeto
+            const columnas = Object.keys(data[0]);
+            
+            // Agregar las nuevas opciones
+            columnas.forEach(columna => {
+                const option = document.createElement('option');
+                option.value = columna;
+                option.textContent = columna;
+                option.classList.add("customoption")
+                filterParam.appendChild(option);
+            });
+        }
+        
+        // Resetear la selección al primer elemento
+        filterParam.selectedIndex = 0;
+    }
+
+
     // Llama la función cuando cambie la tabla seleccionada
     filterTable.addEventListener('change', (e) => {
         updateFilterParamState();
-        fetchRegistrosPorTabla(filterTable.value);
+        // fetchRegistrosPorTabla(filterTable.value);
     });
 
 
 
 
     function updateFilterParamState() {
-        console.log("Actualizando estado de los parámetros de filtro");
+        // console.log("Actualizando estado de los parámetros de filtro");
         // Si la tabla seleccionada es "all", deshabilita el filtro de parámetros
         if (filterTable.value === 'all') {
             filterParam.disabled = true;
             filterParam.selectedIndex = 0;
             option.textContent = "Seleccione una tabla para ver los parámetros";
+            // Limpiar las opciones cuando se selecciona "all"
+            while (filterParam.children.length > 1) {
+                filterParam.removeChild(filterParam.lastChild);
+            }
         } else {
             filterParam.disabled = false;
             option.textContent = "Parametros";
         }
+
+
+
         tablaSeleccionada = filterTable.value;
         console.log("Tabla seleccionada:", tablaSeleccionada);
-        fetchRegistrosPorTabla(tablaSeleccionada);
+
+        if(filterTable.value !== "all"){
+            fetchRegistrosPorTabla(tablaSeleccionada);
+        }
+      
 
     }
 
@@ -134,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // fetchRegistrosPorTabla(filterTable.value);
 
     filterTable.addEventListener('change', updateFilterParamState);
+    updateFilterParamState() 
 });
 
 
