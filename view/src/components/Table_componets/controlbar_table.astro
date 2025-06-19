@@ -99,6 +99,7 @@ let {
   </style>
 
 <script  type="module">
+import { DataActions } from "/src/services/stores/generalStores.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const filterTable = document.getElementById('filtertable');
@@ -115,7 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             console.log(data);
+             // Actualiza el store con los datos obtenidos
             updateFilterParamOptions(data)
+            DataActions.loadData(data);
         } catch (error) {
             console.error('Error al obtener los registros:', error);
         }
@@ -147,10 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Llama la función cuando cambie la tabla seleccionada
-    filterTable.addEventListener('change', (e) => {
-        updateFilterParamState();
-        // fetchRegistrosPorTabla(filterTable.value);
-    });
+    // filterTable.addEventListener('change', (e) => {
+    //     updateFilterParamState();
+    //     // fetchRegistrosPorTabla(filterTable.value);
+    // });
 
 
 
@@ -174,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         tablaSeleccionada = filterTable.value;
-        console.log("Tabla seleccionada:", tablaSeleccionada);
+        // console.log("Tabla seleccionada:", tablaSeleccionada);
 
         if(filterTable.value !== "all"){
             fetchRegistrosPorTabla(tablaSeleccionada);

@@ -1,23 +1,17 @@
 ---
-// Componente de tabla
+import { DataActions, tableData } from "../../services/stores/GeneralStores";
+let {data="Sin Datos", data2} = Astro.props;
+
+data = tableData.get()
 
 
-// let {registros} = Astro.props;
 
-// let cabeceras = Object.keys(registros[0] || {});
 ---
-<!-- <div>{cabeceras.map((item)=>{
-  if(item){
-  return <span class="tag is-primary is-light mr-2">{item}</span>
-  }else{
-
-  }
 
 
-}) } -->
+<div class="datosCargados"></div>
 
-</div>
-
+<div class="box">class, {data} adasd</div>
 
 <div class="table-container">
 <table class="table is-striped is-hoverable is-fullwidth">
@@ -100,6 +94,13 @@
       </tbody>
     </table>
   </div>
+
+
+  <script  define:vars={ { data}}>
+// import { tableData } from "../../services/stores/GeneralStores";
+
+    console.log("Datos del LStore:", data);
+  </script>
 
 <style>
   .table-container {
