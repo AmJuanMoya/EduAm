@@ -1,17 +1,19 @@
 ---
 import { DataActions, tableData } from "../../services/stores/GeneralStores";
-let {data="Sin Datos", data2} = Astro.props;
-
+let {data, data2} = Astro.props;
+export const prerender = false;
 data = tableData.get()
-
-
+let nameSession = Astro.session?.set("nameUser", "Juan") || "No session name available";
+let sessiondata = data.sessiondata || "No session data available"; 
 
 ---
 
 
 <div class="datosCargados"></div>
 
-<div class="box">class, {data} adasd</div>
+<!-- <div class="box">class, {data} adasd</div> -->
+ <div>asdasd {sessiondata}</div>
+
 
 <div class="table-container">
 <table class="table is-striped is-hoverable is-fullwidth">
@@ -96,10 +98,22 @@ data = tableData.get()
   </div>
 
 
-  <script  define:vars={ { data}}>
+  <script  >
+    import { tableData, DataActions } from "../../services/stores/GeneralStores.js";
+    // import { DataActions } from "../../services/stores/GeneralStores.js";
+
+    // Aquí puedes usar la función get() para obtener los datos
+    const data = tableData.get();
+    console.log("Datos del LStore:", data);
+
+    // Si necesitas actualizar los datos, puedes usar set()
+    // tableData.set(newData);
+
+    // Si necesitas realizar alguna acción, puedes usar DataActions
+    // DataActions.someAction();>
 // import { tableData } from "../../services/stores/GeneralStores";
 
-    console.log("Datos del LStore:", data);
+  
   </script>
 
 <style>
