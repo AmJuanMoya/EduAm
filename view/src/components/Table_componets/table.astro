@@ -2,9 +2,10 @@
 import { DataActions, tableData } from "../../services/stores/GeneralStores";
 let {data, data2} = Astro.props;
 export const prerender = false;
-data = tableData.get()
-let nameSession = Astro.session?.set("nameUser", "Juan") || "No session name available";
-let sessiondata = data.sessiondata || "No session data available"; 
+// data = JSON.stringify(tableData.get()) 
+// data2 = data.data
+// let keys = Object.keys(data2)
+
 
 ---
 
@@ -12,109 +13,171 @@ let sessiondata = data.sessiondata || "No session data available";
 <div class="datosCargados"></div>
 
 <!-- <div class="box">class, {data} adasd</div> -->
- <div>asdasd {sessiondata}</div>
+ <div>los datos de la sesion son: {data}</div>
 
 
 <div class="table-container">
-<table class="table is-striped is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Telefono</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="userTableBody">
-        <tr>
-          <td>1</td>
-          <td>Juan</td>
-          <td>Perez</td>
-          <td>123456789</td>
-          <td>juan.perez@example.com</td>
-          <td>Administrador</td>
-          <td>
-            <div class="dropdown is-right is-up">
-              <div class="dropdown-trigger">
-                <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-1">
-                  <span>Seleccionar</span>
-                  <span class="icon is-small">
-                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="dropdown-menu" id="dropdown-menu-1" role="menu">
-                <div class="dropdown-content">
-                  <a href="#" class="dropdown-item custom-edit-btn" role="menuitem">
-                    <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                    <span>Editar</span>
-                  </a>
-                  <a href="#" class="dropdown-item custom-delete-btn" role="menuitem">
-                    <span class="icon is-small"><i class="fas fa-trash"></i></span>
-                    <span>Eliminar</span>
-                  </a>
-                </div>
-              </div>
+  <table class="table is-striped is-hoverable is-fullwidth" id="dynamicTable">
+    <thead id="tableHeader">
+      <!-- Las cabeceras se generarán dinámicamente -->
+    </thead>
+    <tbody id="tableBody">
+      <!-- Los datos se generarán dinámicamente -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  import { tableData, DataActions } from "../../services/stores/GeneralStores.js";
+
+  // Función para generar las cabeceras de la tabla
+  function generateHeaders(data: any[]) {
+    if (!data || data.length === 0) return [];
+    
+    // Obtener las claves del primer objeto como cabeceras
+    const headers = Object.keys(data[0]);
+    return headers;
+  }
+
+  // Función para renderizar la tabla completa
+  function renderTable(data: any[]) {
+    const tableHeader = document.getElementById('tableHeader');
+    const tableBody = document.getElementById('tableBody');
+    
+    if (!tableHeader || !tableBody) {
+      console.error('No se encontraron los elementos de la tabla');
+      return;
+    }
+    
+    if (!data || data.length === 0) {
+      tableHeader.innerHTML = '<tr><th colspan="1">No hay datos disponibles</th></tr>';
+      tableBody.innerHTML = '';
+      return;
+    }
+
+    // Generar cabeceras
+    const headers = generateHeaders(data);
+    const headerRow = document.createElement('tr');
+    
+    headers.forEach(header => {
+      const th = document.createElement('th');
+      th.textContent = header.charAt(0).toUpperCase() + header.slice(1); // Capitalizar primera letra
+      headerRow.appendChild(th);
+    });
+    
+    // Agregar columna de acciones
+    const actionsTh = document.createElement('th');
+    actionsTh.textContent = 'Acciones';
+    headerRow.appendChild(actionsTh);
+    
+    tableHeader.innerHTML = '';
+    tableHeader.appendChild(headerRow);
+
+    // Generar filas de datos
+    tableBody.innerHTML = '';
+    data.forEach((row: any, index: number) => {
+      const tr = document.createElement('tr');
+      
+      headers.forEach(header => {
+        const td = document.createElement('td');
+        td.textContent = row[header] || '';
+        tr.appendChild(td);
+      });
+      
+      // Agregar columna de acciones
+      const actionsTd = document.createElement('td');
+      actionsTd.innerHTML = `
+        <div class="dropdown is-right is-up">
+          <div class="dropdown-trigger">
+            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-${index}">
+              <span>Seleccionar</span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu-${index}" role="menu">
+            <div class="dropdown-content">
+              <a href="#" class="dropdown-item custom-edit-btn" data-id="${row.id || index}" role="menuitem">
+                <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                <span>Editar</span>
+              </a>
+              <a href="#" class="dropdown-item custom-delete-btn" data-id="${row.id || index}" role="menuitem">
+                <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                <span>Eliminar</span>
+              </a>
             </div>
-          </td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Maria</td>
-            <td>Gomez</td>
-            <td>987654321</td>
-            <td>maria.gomez@example.com</td>
-            <td>Editor</td>
-            <td>
-              <div class="dropdown is-right is-up">
-                <div class="dropdown-trigger">
-                  <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-2">
-                    <span>Seleccionar</span>
-                    <span class="icon is-small">
-                      <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                  </button>
-                </div>
-                <div class="dropdown-menu" id="dropdown-menu-2" role="menu">
-                  <div class="dropdown-content">
-                    <a href="#" class="dropdown-item custom-edit-btn" role="menuitem">
-                      <span class="icon is-small"><i class="fas fa-edit"></i></span>
-                      <span>Editar</span>
-                    </a>
-                    <a href="#" class="dropdown-item custom-delete-btn" role="menuitem">
-                      <span class="icon is-small"><i class="fas fa-trash"></i></span>
-                      <span>Eliminar</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-  </div>
+          </div>
+        </div>
+      `;
+      tr.appendChild(actionsTd);
+      
+      tableBody.appendChild(tr);
+    });
 
+    // Agregar event listeners para los botones de acción
+    addActionListeners();
+  }
 
-  <script  >
-    import { tableData, DataActions } from "../../services/stores/GeneralStores.js";
-    // import { DataActions } from "../../services/stores/GeneralStores.js";
+  // Función para agregar event listeners a los botones de acción
+  function addActionListeners() {
+    // Event listeners para botones de editar
+    document.querySelectorAll('.custom-edit-btn').forEach(btn => {
+      btn.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        const editBtn = target.closest('.custom-edit-btn') as HTMLElement;
+        if (editBtn) {
+          const id = editBtn.dataset.id;
+          console.log('Editar registro con ID:', id);
+          // Aquí puedes implementar la lógica de edición
+        }
+      });
+    });
 
-    // Aquí puedes usar la función get() para obtener los datos
+    // Event listeners para botones de eliminar
+    document.querySelectorAll('.custom-delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        const deleteBtn = target.closest('.custom-delete-btn') as HTMLElement;
+        if (deleteBtn) {
+          const id = deleteBtn.dataset.id;
+          console.log('Eliminar registro con ID:', id);
+          // Aquí puedes implementar la lógica de eliminación
+          if (confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+            DataActions.deleteRecord(parseInt(id || '0'));
+          }
+        }
+      });
+    });
+  }
+
+  // Función para inicializar la tabla
+  function initializeTable() {
     const data = tableData.get();
     console.log("Datos del LStore:", data);
+    
+    if (data && data.data) {
+      renderTable(data.data);
+    } else {
+      renderTable([]);
+    }
+  }
 
-    // Si necesitas actualizar los datos, puedes usar set()
-    // tableData.set(newData);
+  // Suscribirse a cambios en el store
+  tableData.subscribe((newData) => {
+    console.log("Datos actualizados:", newData);
+    if (newData && newData.data) {
+      renderTable(newData.data);
+    } else {
+      renderTable([]);
+    }
+  });
 
-    // Si necesitas realizar alguna acción, puedes usar DataActions
-    // DataActions.someAction();>
-// import { tableData } from "../../services/stores/GeneralStores";
-
-  
-  </script>
+  // Inicializar la tabla cuando se carga la página
+  document.addEventListener('DOMContentLoaded', initializeTable);
+</script>
 
 <style>
   .table-container {
@@ -125,7 +188,7 @@ let sessiondata = data.sessiondata || "No session data available";
     border-radius: 1em;
   }
 
-  /* .dropdown-item {
+  .dropdown-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -137,50 +200,6 @@ let sessiondata = data.sessiondata || "No session data available";
 
   .custom-delete-btn:hover {
     background-color: #ffebee;
-  } */
+  }
 </style>
 
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar dropdowns
-    const dropdowns = document.querySelectorAll('.dropdown');
-    
-    dropdowns.forEach(dropdown => {
-      const trigger = dropdown.querySelector('.dropdown-trigger');
-      const menu = dropdown.querySelector('.dropdown-menu');
-      
-      trigger?.addEventListener('click', () => {
-        menu?.classList.toggle('is-active');
-      });
-
-      // Cerrar dropdown al hacer clic fuera
-      document.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target)) {
-          menu?.classList.remove('is-active');
-        }
-      });
-    });
-
-    // Manejar acciones de editar y eliminar
-    const editButtons = document.querySelectorAll('.custom-edit-btn');
-    const deleteButtons = document.querySelectorAll('.custom-delete-btn');
-
-    editButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const row = btn.closest('tr');
-        // Implementar lógica de edición
-        console.log('Editar usuario:', row);
-      });
-    });
-
-    deleteButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const row = btn.closest('tr');
-        // Implementar lógica de eliminación
-        console.log('Eliminar usuario:', row);
-      });
-    });
-  });
-</script> -->
