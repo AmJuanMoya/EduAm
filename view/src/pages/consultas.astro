@@ -2,6 +2,7 @@
 import General from "../layouts/general.astro"
 import Asidebar from "../components/asidebar.astro"
 import GestionTable from "../layouts/gestionTable.astro"
+import Newtable from "../components/Table_componets/newtable.astro"
 import Panelnav from "../components/navigation/panelnav.astro"
 import { object } from "astro:schema";
 
@@ -28,13 +29,12 @@ try {
 
   <Panelnav />
 
-      <section class="section is-fluid is-medium  ">
-       <div class="columns">
+      <section class="flex  ">
+       
         <Asidebar />
-        <div class=" columns column ">
-          
-          <GestionTable  tablas={datos} />
-        </div>
+        <div class="flex justify-center  w-full">
+          <!-- <GestionTable  tablas={datos} /> -->
+           <Newtable/>
        </div> 
 
 
@@ -48,7 +48,7 @@ try {
 
 
 
-<style>
+<!-- <style>
   .container{
     /* border: 1px solid yellow; */
     /* display: flex !important;
@@ -67,4 +67,4 @@ try {
     /* justify-content: space-between; */
     flex-wrap: wrap;
   }
-</style>
+</style> -->

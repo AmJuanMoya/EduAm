@@ -13,10 +13,10 @@ export const prerender = false;
 <div class="datosCargados"></div>
 
 <!-- <div class="box">class, {data} adasd</div> -->
- <div>los datos de la sesion son: {data}</div>
+ <!-- <div>los datos de la sesion son: {data}</div> -->
 
 
-<div class="table-container">
+<div class="border m-1">
   <table class="table is-striped is-hoverable is-fullwidth" id="dynamicTable">
     <thead id="tableHeader">
       <!-- Las cabeceras se generarán dinámicamente -->
@@ -26,6 +26,8 @@ export const prerender = false;
     </tbody>
   </table>
 </div>
+
+
 
 <script>
   import { tableData, DataActions } from "../../services/stores/GeneralStores.js";
@@ -179,7 +181,7 @@ export const prerender = false;
   document.addEventListener('DOMContentLoaded', initializeTable);
 </script>
 
-<style>
+<!-- <style>
   .table-container {
     /* margin: 1rem 0;
     overflow-x: auto; */
@@ -201,5 +203,5 @@ export const prerender = false;
   .custom-delete-btn:hover {
     background-color: #ffebee;
   }
-</style>
+</style> -->
 

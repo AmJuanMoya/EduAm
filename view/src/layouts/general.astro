@@ -1,5 +1,5 @@
 ---
-import '../css/custom.css';
+import '../styles/global.css';
 import Footer from "../components/general/Footer.astro"
 import Navbar from "../components/general/navbar.astro"
 import { ClientRouter } from "astro:transitions";
@@ -24,7 +24,7 @@ import { ClientRouter } from "astro:transitions";
   
 
 
-<body>
+<body class="bg-sky-50 h-screen flex-col justify-between">
 <Navbar/>
   
  <slot/>

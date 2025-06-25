@@ -16,10 +16,10 @@ let {
 
 
 
-<div class="controlbar is-flex is-justify-content-space-between is-align-items-center mb-3 control-panel  ">
+<div class=" m-2 flex items-center   bg-blue-100 rounded-xl  " >
     <h2  class="title is-4 mb-2 ml-6 is-block">Gestion de registros</h2>
    
-    <div class="field has-addons is-grouped">
+    <div class="flex w-full">
         <div class="control">
             <div class="select">
 
@@ -38,11 +38,11 @@ let {
             </div>
         </div>
 
-            <div class="field has-addons is-grouped ">
+     <div class="flex   gap-1.5">
         <div class="control">
             <div class="select">
 
-                <select id="filterParam">
+                <select id="filterParam" class="">
                     <option id="optiondefauld" value="all" selected>Parametros</option>
 
                     {
@@ -57,14 +57,15 @@ let {
         </div>
 
 
-        <div class="control has-icons-left is-expanded">
+        <div class="control has-icons-left is-expanded border  bg-white ">
             <input id="buscarFiltros" class="input" type="text" placeholder="Buscar...">
             <span class="icon is-left">
                 <i class="fas fa-search"></i>
             </span>
         </div>
-        <div class="control">
-            <button class="button is-primary btn-agregar">
+        
+        <div class="control border bg-white rounded-r-2xl flex items-center px-5 cursor-pointer">
+            <button class="text-blue-600 flex items-center" id="addUserButton">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
                 <span>Agregar Usuario</span>
             </button>
@@ -72,31 +73,7 @@ let {
     </div>
   </div>
 
-  <style> 
-.controlbar{
-    /* border: 1px solid red; */
-    display: flex;
-    flex-wrap: wrap;
-    box-shadow: var(--shadowbox_1);
-    border-radius: .5em;
-    /* padding: 5px; */
-    align-items: center;
-    padding: 1% 1%;
-}
 
-/* .customoption::after{
-    content: "";
-    display: inline-block;
-    background-color: aqua;
-    height: 2px;
-    width: 100%;
-    position: relative;
-    
-} */
-
-
-
-  </style>
 
 <script  type="module">
 import { DataActions } from "/src/services/stores/generalStores.js";

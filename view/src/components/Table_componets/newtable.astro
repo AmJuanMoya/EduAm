@@ -1,0 +1,34 @@
+---
+let {data} = Astro.props;
+export const prerender = false;
+---
+
+
+
+<div>contenedor tabla
+    <div id="table">
+
+
+</div>
+
+<script is:inline>
+
+
+
+
+
+import {DataTable} from "simple-datatables";
+
+let dataTable = new DataTable("table", {
+    searchable: true,
+    perPage: 5,
+    perPageSelect: [5, 10, 15, 20],
+    labels: {
+        placeholder: "Buscar...",
+        perPage: "{select} registros por pagina",
+        noRows: "No hay registros que mostrar",
+        info: "Mostrando {start} a {end} de {rows} registros"
+    }
+});
+
+</script>
