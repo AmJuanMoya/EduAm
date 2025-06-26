@@ -22,16 +22,16 @@ app.use(express.json()); // Middleware para parsear JSON en el cuerpo de las sol
 
 
 //Middleware de manejo de errores
-app.use((err, req, res, next) => {
-    console.error('Error inesperado:', err);
-    // res.status(500).json({ error: 'Error inesperado en el servidor-- desde el middleware de error' });
-});
+// app.use((err, req, res, next) => {
+//     console.error('Error inesperado:', err);
+//     // res.status(500).json({ error: 'Error inesperado en el servidor-- desde el middleware de error' });
+// });
 
 
-app.get("/", (req, res) => {
-    // res.send("Servidor Express en funcionamiento, Ruta /");
-    res.redirect("http://localhost:4321/");
-})
+// app.get("/", (req, res) => {
+//     // res.send("Servidor Express en funcionamiento, Ruta /");
+//     res.redirect("http://localhost:4321/");
+// })
 
 app.get("/api/datos/cursos", (req, res) => {
     try {
@@ -64,33 +64,33 @@ app.get("/api/datos/cursos", (req, res) => {
 
 
 
-app.get("/api/datos/tablas", async (req, res) => {
-    try {
-        let tablasInstance = new tablas();
-        const datos = await tablasInstance.getTablas();
-        res.json(datos);
-        console.log("Trayendo Tablas");
-    } catch (err) {
-        console.error('Error al obtener los datos:', err);
-        res.status(500).json({ error: 'Error al obtener los datos' });
-    }
-});
+// app.get("/api/datos/tablas", async (req, res) => {
+//     try {
+//         let tablasInstance = new tablas();
+//         const datos = await tablasInstance.getTablas();
+//         res.json(datos);
+//         console.log("Trayendo Tablas");
+//     } catch (err) {
+//         console.error('Error al obtener los datos:', err);
+//         res.status(500).json({ error: 'Error al obtener los datos' });
+//     }
+// });
 
 
-app.get("/api/datos/registros/:tabla", async (req, res) => {
-    try {
-        const tabla = req.params.tabla;
-        console.log(`Se recibe tabla...  ${tabla}`);
-        let crud = new Crud();
-        const datos = await crud.getAll(tabla);
-        res.json(datos);
-        console.log("Se envia " + datos);
-    } catch (err) {
-        console.error('Error al obtener los datos:', err);
-        res.status(500).json({ error: 'Error al obtener los datos' });
-    }
+// app.get("/api/datos/registros/:tabla", async (req, res) => {
+//     try {
+//         const tabla = req.params.tabla;
+//         console.log(`Se recibe tabla...  ${tabla}`);
+//         let crud = new Crud();
+//         const datos = await crud.getAll(tabla);
+//         res.json(datos);
+//         console.log("Se envia " + datos);
+//     } catch (err) {
+//         console.error('Error al obtener los datos:', err);
+//         res.status(500).json({ error: 'Error al obtener los datos' });
+//     }
 
-});
+// });
 
 
 
