@@ -9,20 +9,32 @@ import { fade } from 'astro:transitions';
 
 <General>
 <!-- <Panelnav name="consultas" direccion="/consultas"/> -->
-
+<img class="absolute size-300  -ml-50 -mt-50 -z-20 rotate-45 opacity-5 object-cover" src="/logoam.png" alt="Logo Eduam">
     <div class="h-[95%] px-5 pt-5 ">
-        <p class="panel-heading  has-text-centered">  Bienvenido   </p>
-        <h2 class=" subtitle is-6 has-text-centered is-italic">Dele un vistaso a las paginas disponibles por el momento</h2>
-        <div class="panel-block">
-            <div class="box ">
-                <ButtonA transition:animate="fade" name="Tablas" dir="/consultas"/>
-                <ButtonA transition:animate="fade" name="Login" dir="/login"/>
-                <ButtonA transition:animate="fade" name="Cursos" dir="/Cursos/cursos"/>
-                
-                <!-- <ButtonA/>
-                <ButtonA/>
-                <ButtonA/> -->
+    <section class=" h-80 p-3 mb-5 flex justify-center">
+    <div class="text-center ">
 
+        <div class="flex justify-center">
+            <svg class="size-20 text-gray-800 dark:text-blue-600 fill-blue-600 text-shadow-md drop-shadow-blue-600 drop-shadow-md" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.6" d="M12 10.0419c-1.3902 0-1.3935-1.1249-4.20643-1.037-1.73056.05408-3.15551 2.2303-2.71168 5.3081C5.35949 16.2381 6.98619 21 8.99172 21c2.00548 0 2.07358-.8508 3.00828-.8508.9347 0 .8551.8508 3.0083.8508s3.6322-4.7619 3.9098-6.687c.4438-3.0778-.9811-5.25402-2.7117-5.3081-2.8129-.0879-2.8162 1.037-4.2064 1.037Zm2.3598-4.2126c-.8779.74829-1.8612.71957-2.7221.71957 0-.62576.0792-1.94012.8609-2.76911.7817-.82898 2.1271-.7664 2.6434-.7664 0 .59448.0956 2.06766-.7822 2.81594Z"/>
+            </svg>
+               </div>
+        <h1 class="text-5xl font-semibold"> Edu<span class="text-blue-600">Am</span>  </h1cl>
+
+        
+    </div>
+    </section>
+        <div class="panel-block text-center">
+                <div>
+                 <code class="dark:bg-blue-950/70 bg-blue-300/70 p-0.5 px-2 rounded-md w-fit  text-blue-500"> Paginas disponibles por el momento. </code>
+                </div>
+                <div>
+                 <code class="dark:bg-yellow-300/20 bg-yellow-300/20 p-0.1 px-2 rounded-sm italic  text-yellow-300 w-fit"> -- Trabajo en progreso -- </code>
+                </div>
+            <div class=" p-5 flex justify-center">
+                <ButtonA name="Registros" dir="/consultas" idbutton="btn1" tool={true} toolContent="Tooltip 1" />
+                <ButtonA name="Login" dir="/login" idbutton="btn2" tool={true} toolContent="Tooltip 2" />
+                <ButtonA name="Cursos" dir="/Cursos/cursos" idbutton="btn3" tool={true} toolContent="Tooltip 3" />
             </div>
         </div>
     </div>

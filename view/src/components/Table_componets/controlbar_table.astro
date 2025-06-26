@@ -3,10 +3,7 @@
 
 
  
-let { 
-  tablas = [{ table_name: "Sin definir" }], 
-  parametros = ["Sin definir"] 
-} = Astro.props;
+let {  tablas = [{ table_name: "Sin definir" }]} = Astro.props;
 //  data = await fetch("http://localhost:3000/api/datos/tablas")
 // data = await data.json();
 
@@ -16,19 +13,19 @@ let {
 
 
 
-<div class=" m-2 flex items-center   bg-blue-100 rounded-xl  " >
+<div class=" m-2 flex items-center   bg-blue-100 rounded-xl dark:bg-inherit  " >
     <h2  class="title is-4 mb-2 ml-6 is-block">Gestion de registros</h2>
    
     <div class="flex w-full">
         <div class="control">
             <div class="select">
 
-                <select id="filtertable">
-                    <option value="all" selected >Todos</option>
+                <select class="utilscrollbar" id="filtertable">
+                    <option class="bg-slate-700" value="all" selected >Todos</option>
                     {tablas.map((item) => (
                             item.TABLE_NAME? 
-                            <hr class="dropdown-divider is-primary" />
-                            <option class="customoption" value={item.TABLE_NAME}>{item.TABLE_NAME}</option>
+                            // <hr class="dropdown-divider is-primary" />
+                            <option class="dark:bg-slate-900" value={item.TABLE_NAME}>{item.TABLE_NAME}</option>
                             
                             : console.log(item)
                         ))
@@ -42,34 +39,12 @@ let {
         <div class="control">
             <div class="select">
 
-                <select id="filterParam" class="">
-                    <option id="optiondefauld" value="all" selected>Parametros</option>
-
-                    {
-                     parametros.map((item) => (
-                            <option value={item}>{item}</option>
-                        ))
-                    }
-
-                </select>
-
             </div>
         </div>
 
 
-        <div class="control has-icons-left is-expanded border  bg-white ">
-            <input id="buscarFiltros" class="input" type="text" placeholder="Buscar...">
-            <span class="icon is-left">
-                <i class="fas fa-search"></i>
-            </span>
-        </div>
         
-        <div class="control border bg-white rounded-r-2xl flex items-center px-5 cursor-pointer">
-            <button class="text-blue-600 flex items-center" id="addUserButton">
-                <span class="icon is-small"><i class="fas fa-plus"></i></span>
-                <span>Agregar Usuario</span>
-            </button>
-        </div>
+
     </div>
   </div>
 
@@ -80,8 +55,8 @@ import { DataActions } from "/src/services/stores/generalStores.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const filterTable = document.getElementById('filtertable');
-    const filterParam = document.getElementById('filterParam');
-    const option = document.getElementById('optiondefauld'); // Si cambias el id, cámbialo aquí también
+
+    
 
     let tablaSeleccionada = filterTable.value;
 
@@ -92,37 +67,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Error en la petición');
             }
             const data = await response.json();
-            console.log(data);
+            console.log("datos recibidos: ", data);
              // Actualiza el store con los datos obtenidos
-            updateFilterParamOptions(data)
+            // updateFilterParamOptions(data)
             DataActions.loadData(data);
         } catch (error) {
             console.error('Error al obtener los registros:', error);
         }
     }
 
-    function updateFilterParamOptions(data) {
-        // Limpiar las opciones existentes excepto la primera
-        while (filterParam.children.length > 1) {
-            filterParam.removeChild(filterParam.lastChild);
-        }
+    filterTable.addEventListener('change', (e) => {
+        const tablaSeleccionada = filterTable.value;
+        console.log("Tabla seleccionada:", tablaSeleccionada);
 
-        if (data && data.length > 0) {
-            // Obtener las claves (nombres de columnas) del primer objeto
-            const columnas = Object.keys(data[0]);
-            
-            // Agregar las nuevas opciones
-            columnas.forEach(columna => {
-                const option = document.createElement('option');
-                option.value = columna;
-                option.textContent = columna;
-                option.classList.add("customoption")
-                filterParam.appendChild(option);
-            });
+        if (tablaSeleccionada !== "all") {
+            fetchRegistrosPorTabla(tablaSeleccionada);
+        } else {
+            // Si selecciona "Todos", puedes limpiar el localStorage o cargar todos los datos
+            // localStorage.removeItem('tablaSeleccionadaData');
+            console.log("Se seleccionó 'Todos', localStorage limpiado.");
         }
-        
+    });
         // Resetear la selección al primer elemento
-        filterParam.selectedIndex = 0;
+        // filterParam.selectedIndex = 0;
+
+
     }
 
 
@@ -132,44 +101,26 @@ document.addEventListener('DOMContentLoaded', () => {
     //     // fetchRegistrosPorTabla(filterTable.value);
     // });
 
+    // filterTable.addEventListener('change', ()=>{
+    //     console.log("la data es:"+ data)
+    // })
 
 
 
-    function updateFilterParamState() {
-        // console.log("Actualizando estado de los parámetros de filtro");
-        // Si la tabla seleccionada es "all", deshabilita el filtro de parámetros
-        if (filterTable.value === 'all') {
-            filterParam.disabled = true;
-            filterParam.selectedIndex = 0;
-            option.textContent = "Seleccione una tabla para ver los parámetros";
-            // Limpiar las opciones cuando se selecciona "all"
-            while (filterParam.children.length > 1) {
-                filterParam.removeChild(filterParam.lastChild);
-            }
-        } else {
-            filterParam.disabled = false;
-            option.textContent = "Parametros";
-        }
 
 
 
-        tablaSeleccionada = filterTable.value;
+       
         // console.log("Tabla seleccionada:", tablaSeleccionada);
 
-        if(filterTable.value !== "all"){
-            fetchRegistrosPorTabla(tablaSeleccionada);
-        }
-      
-
-    }
 
 
     // Llama la función al cargar la página por primera vez
     // fetchRegistrosPorTabla(filterTable.value);
 
-    filterTable.addEventListener('change', updateFilterParamState);
-    updateFilterParamState() 
-});
+  
+    
+);
 
 
 </script>

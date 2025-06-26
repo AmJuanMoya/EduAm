@@ -1,6 +1,27 @@
 ---
-const {name="Sin Nombre", dir="/"} =Astro.props
+import Tooltip from "./tooltip.astro"
+const {name="Sin Nombre", dir="/", customclass="", 
+toolContent = "Hola Am",
+idbutton = "btn"
+
+} =Astro.props
+
+const tooltipId = `tooltip-${idbutton}`
+
 ---
 
 
-<a class="bg-primary px-3 m-1 text-white p-1 rounded-sm hover:bg-blue-400 hover:scale-110 transition-all" href={dir}>{name}</a>
+<a id={idbutton}  type="button" data-tooltip-target={tooltipId} class=`bg-primary/60 px-3 m-1  text-white p-1 rounded-sm hover:bg-blue-400 hover:scale-110 transition-all ${customclass}` href={dir}>{name}</a>
+
+
+<script is:inline>
+  import { Tooltip } from 'flowbite';
+  if (typeof window !== 'undefined') {
+    const button = document.getElementById(idbutton);
+    const tooltip = document.getElementById(tooltipId);
+  
+    let tool = new Tooltip(button, tooltip)
+  }
+</script>
+
+

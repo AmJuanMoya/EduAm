@@ -1,34 +1,90 @@
 ---
 let {data} = Astro.props;
-export const prerender = false;
+export const prerender = false
+import {DataTable} from "simple-datatables";
+
+// try {
+//     const response = await fetch("http://localhost:3000/api/datos/cursos");
+//     const apiData = await response.json();
+    
+//     // Si no hay datos de props, usar los datos de la API
+//     if (!data) {
+//         data = apiData;
+//     }
+    
+//     // console.log("Datos obtenidos de la API:", data);
+// } catch (error) {
+//     console.error("Error al obtener datos:", error);
+//     data = [];
+// }
 ---
 
 
 
-<div>contenedor tabla
-    <div id="table">
+<div class=" bg-slate-200 dark:bg-inherit text-black dark:text-white  p-3 rounded-2xl">
+    <div id="table" data-table-info={JSON.stringify(data)}>
 
 
 </div>
 
-<script is:inline>
+<script>
+    import {convertJSON, DataTable} from "simple-datatables";
+import { tableData  } from "../../services/stores/GeneralStores";
+    
+    // Usar requestAnimationFrame para asegurar que el DOM esté listo
+    requestAnimationFrame(() => {
+        // Obtener los datos del elemento
+        const tableElement = document.getElementById('table');
+
+        let data = tableData.get().data
+        console.log("Data recibida:", data);
+        
+        const convertedData = convertJSON({
+            data: JSON.stringify(data)
+        });
+        // if (tableElement) {
+
+            let dataTable = new DataTable("#table", {
+                data:convertedData, 
+                searchable: true,
+                perPage: 30,
+                perPageSelect: [1, 5, 10, 15, 20],
+                labels: {
+                    placeholder: "Buscar...",
+                    perPage: "registros por pagina",
+                    noRows: "No hay registros que mostrar",
+                    info: "Mostrando {start} a {end} de {rows} registros"
+                }
+                
+            });
+
+            
+
+            tableData.subscribe(() => {
+        // Obtener los nuevos datos del store
+        let newData = tableData.get().data;
+        // Convertir los datos al formato que espera simple-datatables
+        const newConvertedData = convertJSON({ data: JSON.stringify(newData) });
+        // Reemplazar los datos de la tabla sin cambiar la estructura
+        dataTable.insert(newConvertedData.data);
+    });
+            
+            
+
+        // } 
+        // else {
+        //     console.error("Elemento #table no encontrado");
+        // }
 
 
 
 
 
-import {DataTable} from "simple-datatables";
 
-let dataTable = new DataTable("table", {
-    searchable: true,
-    perPage: 5,
-    perPageSelect: [5, 10, 15, 20],
-    labels: {
-        placeholder: "Buscar...",
-        perPage: "{select} registros por pagina",
-        noRows: "No hay registros que mostrar",
-        info: "Mostrando {start} a {end} de {rows} registros"
-    }
-});
+    });
 
-</script>
+
+
+
+    </script>
+

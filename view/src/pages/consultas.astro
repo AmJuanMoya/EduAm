@@ -4,7 +4,8 @@ import Asidebar from "../components/asidebar.astro"
 import GestionTable from "../layouts/gestionTable.astro"
 import Newtable from "../components/Table_componets/newtable.astro"
 import Panelnav from "../components/navigation/panelnav.astro"
-import { object } from "astro:schema";
+import ControlbarTable from "../components/Table_componets/controlbar_table.astro"
+
 
 let datos = [];
 let filas = [];
@@ -29,12 +30,15 @@ try {
 
   <Panelnav />
 
-      <section class="flex  ">
+      <section class="flex  min-h-[70%] ">
        
         <Asidebar />
-        <div class="flex justify-center  w-full">
+        <div class="flex justify-center   w-full dark:bg-slate-950/40  rounded-xl mx-5 p-2">
           <!-- <GestionTable  tablas={datos} /> -->
-           <Newtable/>
+          <div class="  flex-col w-[90%] justify-center"> 
+           <ControlbarTable tablas={datos} />
+           <Newtable client:load/>
+          </div>
        </div> 
 
 

@@ -1,0 +1,22 @@
+---
+const { toolContent, tooltipId } = Astro.props;
+---
+
+<div
+  id={tooltipId}
+  role="tooltip"
+  class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700"
+>
+  {toolContent}
+  <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+
+<script define:vars={{tooltipId}}>
+
+    import { Tooltip } from 'flowbite';
+    let toolip = document.getElementById(idbutton)
+    let trigger = document.getElementById("button")
+    const tool = new Tooltip(toolip,trigger )
+
+
+</script>

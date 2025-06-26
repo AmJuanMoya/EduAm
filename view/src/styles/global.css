@@ -12,4 +12,23 @@
 :root{
     --primary: #0057fa;
     --color-secondary: oklch(54.6% 0.245 262.881);
+
+
+}
+
+
+input, select{
+    @apply bg-inherit dark:text-blue-50 
+}
+
+
+.utilscrollbar{
+    @apply
+    [&::-webkit-scrollbar]:w-2
+    [&::-webkit-scrollbar-track]:rounded-full
+    [&::-webkit-scrollbar-track]:bg-gray-100
+    [&::-webkit-scrollbar-thumb]:rounded-full
+    [&::-webkit-scrollbar-thumb]:bg-gray-300
+    dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
 }
