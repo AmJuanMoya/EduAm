@@ -1,0 +1,33 @@
+---
+import General from "../../layouts/general.astro"
+import Asidebar from "../../components/asidebar.astro"
+import Panelnav from "../../components/navigation/panelnav.astro"
+
+let datos = await fetch ("http://localhost:3000/api/datos/matricula/")
+
+
+---
+
+
+<General>
+
+<Panelnav/>
+
+
+<div class=" bg-blue-200 flex">
+    <Asidebar/>
+    <div class="border w-[80%] mx-auto p justify-center h-screen">
+        <h1 class="border border-purple-500 text-5xl h-20 w-full text-center block mt-5">Matricula</h1>
+        <div class=" bg-sky-200/60 border w-[90%] mx-auto h-100 rounded-2xl p-3 mt-5">
+            <h2>Datos del estudiante:</h2>
+            <div>  
+               <h3>Nombre del estudiante:</h3>
+               
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</General>
