@@ -1,26 +1,21 @@
 ---
 
-
-
- 
 let {  tablas = [{ table_name: "Sin definir" }]} = Astro.props;
 //  data = await fetch("http://localhost:3000/api/datos/tablas")
 // data = await data.json();
-
-
 
 ---
 
 
 
-<div class=" m-2 flex items-center   bg-blue-100 rounded-xl dark:bg-inherit  " >
-    <h2  class="title is-4 mb-2 ml-6 is-block">Gestion de registros</h2>
+<div class=" m-2 p-2 flex items-center  shadow-md dark:shadow-blue-900/60   bg-blue-100 rounded-xl dark:bg-inherit  " >
+    <h2  class="m-1 w-50 dark:text-blue-50/50 ">Gestion de registros</h2>
    
     <div class="flex w-full">
         <div class="control">
             <div class="select">
 
-                <select class="utilscrollbar" id="filtertable">
+                <select class=" rounded-md border-sm dark:border-white/70" id="filtertable">
                     <option class="bg-slate-700" value="all" selected >Todos</option>
                     {tablas.map((item) => (
                             item.TABLE_NAME? 
@@ -52,12 +47,11 @@ let {  tablas = [{ table_name: "Sin definir" }]} = Astro.props;
 
 <script  type="module">
 import { DataActions } from "/src/services/stores/generalStores.js";
+import { tableManager } from "/src/services/tables/Tables.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const filterTable = document.getElementById('filtertable');
-
-    
-
+    // let tableM = tableManager
     let tablaSeleccionada = filterTable.value;
 
     async function fetchRegistrosPorTabla(tabla) {
@@ -68,8 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             console.log("datos recibidos: ", data);
-             // Actualiza el store con los datos obtenidos
-            // updateFilterParamOptions(data)
+
             DataActions.loadData(data);
         } catch (error) {
             console.error('Error al obtener los registros:', error);
@@ -77,46 +70,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     filterTable.addEventListener('change', (e) => {
+        
         const tablaSeleccionada = filterTable.value;
-        console.log("Tabla seleccionada:", tablaSeleccionada);
+        
 
+        // console.log("Tabla seleccionada:", tablaSeleccionada);
         if (tablaSeleccionada !== "all") {
             fetchRegistrosPorTabla(tablaSeleccionada);
         } else {
-            // Si selecciona "Todos", puedes limpiar el localStorage o cargar todos los datos
-            // localStorage.removeItem('tablaSeleccionadaData');
-            console.log("Se seleccionó 'Todos', localStorage limpiado.");
+            // Limpiar datos cuando se selecciona "Todos"
+            DataActions.loadData([]);
+            
         }
+        location.reload()
+        
     });
-        // Resetear la selección al primer elemento
-        // filterParam.selectedIndex = 0;
+
+
+
+
+    // filterTable.addEventListener('change', (e) => {
+    //     const tablaSeleccionada = filterTable.value;
+
+    //     console.log("Tabla seleccionada:", tablaSeleccionada);
+        
+
+    //     if (tablaSeleccionada !== "all") {
+    //         fetchRegistrosPorTabla(tablaSeleccionada);
+    //     } else {
+    //         // Si selecciona "Todos", puedes limpiar el localStorage o cargar todos los datos
+    //         // localStorage.removeItem('tablaSeleccionadaData');
+    //         console.log("Se seleccionó 'Todos', localStorage limpiado.");
+    //     }
+    //     // location.reload()
+    // });
+
 
 
     }
 
 
-    // Llama la función cuando cambie la tabla seleccionada
-    // filterTable.addEventListener('change', (e) => {
-    //     updateFilterParamState();
-    //     // fetchRegistrosPorTabla(filterTable.value);
-    // });
-
-    // filterTable.addEventListener('change', ()=>{
-    //     console.log("la data es:"+ data)
-    // })
-
-
-
-
-
-
-       
-        // console.log("Tabla seleccionada:", tablaSeleccionada);
-
-
-
-    // Llama la función al cargar la página por primera vez
-    // fetchRegistrosPorTabla(filterTable.value);
 
   
     

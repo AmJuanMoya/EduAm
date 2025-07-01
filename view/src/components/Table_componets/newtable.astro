@@ -3,88 +3,115 @@ let {data} = Astro.props;
 export const prerender = false
 import {DataTable} from "simple-datatables";
 
-// try {
-//     const response = await fetch("http://localhost:3000/api/datos/cursos");
-//     const apiData = await response.json();
-    
-//     // Si no hay datos de props, usar los datos de la API
-//     if (!data) {
-//         data = apiData;
-//     }
-    
-//     // console.log("Datos obtenidos de la API:", data);
-// } catch (error) {
-//     console.error("Error al obtener datos:", error);
-//     data = [];
-// }
 ---
 
 
 
 <div class=" bg-slate-200 dark:bg-inherit text-black dark:text-white  p-3 rounded-2xl">
-    <div id="table" data-table-info={JSON.stringify(data)}>
+    <div id="table" >
 
 
 </div>
 
-<script>
-    import {convertJSON, DataTable} from "simple-datatables";
-import { tableData  } from "../../services/stores/GeneralStores";
-    
-    // Usar requestAnimationFrame para asegurar que el DOM esté listo
-    requestAnimationFrame(() => {
-        // Obtener los datos del elemento
-        const tableElement = document.getElementById('table');
 
-        let data = tableData.get().data
-        console.log("Data recibida:", data);
+<script>
+    import { tableManager } from "../../services/tables/Tables.js";
+
+    const filterTable = document.getElementById('filtertable');
+// Inicializar el manager de tablas cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', (e) => {
+    
+    console.log('DOM cargado, inicializando TableManager...');
+    
+    // Inicializar el manager
+    if (tableManager.init()) {
+        console.log('TableManager inicializado, creando tabla inicial...');
+        // Crear tabla inicial
+        tableManager.createTable();
+    } else {
+        console.error('Error al inicializar TableManager');
+    }
+
+    filterTable?.addEventListener('change',()=>{
+        console.log("Refrescando tabla...")
         
+    })
+
+
+
+
+});
+</script>
+
+
+
+
+
+
+<!-- <script>
+    import {convertJSON, DataTable} from "simple-datatables";
+    import { tableData  } from "../../services/stores/GeneralStores";
+    
+    const filterTable = document.getElementById('filtertable');
+    let dataTable = null; // Variable global para mantener la instancia
+    
+    // Función para crear la tabla
+    function createTable() {
+        const tableElement = document.getElementById('table');
+        
+        // Limpiar el contenido del contenedor
+        tableElement.innerHTML = '';
+        
+        let data = tableData.get().data;
+        console.log("Data recibida:", data);
+    
+        if (!data || data.length === 0) {
+            tableElement.innerHTML = '<p class="text-center p-4">No hay datos disponibles</p>';
+            return null;
+        }
+    
         const convertedData = convertJSON({
             data: JSON.stringify(data)
         });
-        // if (tableElement) {
-
-            let dataTable = new DataTable("#table", {
-                data:convertedData, 
-                searchable: true,
-                perPage: 30,
-                perPageSelect: [1, 5, 10, 15, 20],
-                labels: {
-                    placeholder: "Buscar...",
-                    perPage: "registros por pagina",
-                    noRows: "No hay registros que mostrar",
-                    info: "Mostrando {start} a {end} de {rows} registros"
-                }
-                
-            });
-
-            
-
-            tableData.subscribe(() => {
-        // Obtener los nuevos datos del store
-        let newData = tableData.get().data;
-        // Convertir los datos al formato que espera simple-datatables
-        const newConvertedData = convertJSON({ data: JSON.stringify(newData) });
-        // Reemplazar los datos de la tabla sin cambiar la estructura
-        dataTable.insert(newConvertedData.data);
+    
+        return new DataTable("#table", {
+            data: convertedData, 
+            searchable: true,
+            perPage: 10,
+            perPageSelect: [1, 5, 10, 15, 20],
+            labels: {
+                placeholder: "Buscar...",
+                perPage: "registros por pagina",
+                noRows: "No hay registros que mostrar",
+                info: "Mostrando {start} a {end} de {rows} registros"
+            }
+        });
+    }
+    
+    // Función para actualizar la tabla
+    function updateTable() {
+        // Destruir la instancia anterior si existe
+        if (dataTable) {
+            dataTable.destroy();
+            dataTable = null;
+        }
+        
+        // Crear nueva instancia
+        dataTable = createTable();
+    }
+    
+    // Escuchar cambios en el store
+    tableData.subscribe(() => {
+        updateTable();
     });
-            
-            
-
-        // } 
-        // else {
-        //     console.error("Elemento #table no encontrado");
-        // }
-
-
-
-
-
-
+    
+    // Crear tabla inicial
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTable();
     });
+    filterTable.addEventListener('change',()=>{
+        dataTable.destroy();
+        
+    })
 
-
-
-
-    </script>
-
+    </script> -->
