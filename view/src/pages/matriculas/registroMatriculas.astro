@@ -3,6 +3,20 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 
+let identificacion = [];
+
+try {
+  const res = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+  if (res.ok) {
+    identificacion = await res.json();
+  } else {
+    // Es buena práctica manejar el caso en que la respuesta no es OK
+    console.error(`Error al obtener identificaciones: ${res.status} - ${res.statusText}`);
+  }
+} catch (error) {
+  // Captura cualquier error de red o de la solicitud
+  console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+}
 
 ---
 
@@ -54,9 +68,13 @@ import Asidebar from "../../components/asidebar.astro";
                 </div>  
                   <div class="m-5 flex  w-200 ">
                     <select name="" id="" class="rounded-l-md" required>
-                      <option value="">T.I</option>
+                      <!-- <option value="">T.I</option>
                       <option value="">C.C</option>
-                      <option value="">C.E</option>
+                      <option value="">C.E</option> -->
+
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
                     </select>
                     <input type="text" required placeholder=1000009  pattern="^[1-9]\d{9,}$"  class="rounded-r-sm w-190 ">
                   </div>
@@ -135,9 +153,12 @@ import Asidebar from "../../components/asidebar.astro";
                   <label for="" class="block w-50 ">Numero de Documento:  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
                   <div class="m-5 flex  w-200 ">
                     <select name="" id="" class="rounded-l-md">
-                      <option value="cc">C.C</option>
+                      <!-- <option value="cc">C.C</option>
                       <option value="ti">T.I</option>
-                      <option value="ce">C.E</option>
+                      <option value="ce">C.E</option> -->
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
                     </select>
                     <input type="text" placeholder=1000009  pattern="^[1-9]\d{9,}$"  class="rounded-r-sm w-190 " required>
                   </div>
