@@ -1,0 +1,193 @@
+---
+import Panelnav from "../../components/navigation/panelnav.astro";
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+
+let identificacion = [];
+
+try {
+  const res = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+  if (res.ok) {
+    identificacion = await res.json();
+  } else {
+    // Es buena práctica manejar el caso en que la respuesta no es OK
+    console.error(`Error al obtener identificaciones: ${res.status} - ${res.statusText}`);
+  }
+} catch (error) {
+  // Captura cualquier error de red o de la solicitud
+  console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+}
+
+---
+
+<General>
+<Panelnav/>    
+
+<main class="   flex">
+    <Asidebar/>
+    <div class=" w-full mx-5 ">
+        
+        <form action="" class=" dark:bg-slate-950/90 w-[75%]  mx-auto p-5 overflow-auto resize ">
+          <h1 class="text-center text-3xl my-3">Registro de Matriculas</h1>
+            <fieldset class="border border-slate-500/50 p-3 rounded-lg "> <legend class="">DATOS DEL ESTUDIANTE</legend>
+                
+                <div class="mx-auto w-fit">
+                  <div class="flex">
+                    <label for="primer_nombre_estudiante" class="block"> Primer Nombre: </label>
+                    <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>
+                  </div> 
+
+                 <input id="primer_nombre_estudiante" type="text" placeholder="Juan" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                <div class="mx-auto w-fit">
+                  <div class="flex">
+                  <label for="nombres_adicionales_estudiante" class="block ">Nombres Adicionales:</label>
+                  <!-- <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> -->
+                </div>  
+                 <input id="nombres_adicionales_estudiante" type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                </div>
+                 
+                <div class="mx-auto w-fit"> 
+                  <div class="flex">
+                  <label for="" class="block ">Primer Apellido: </label>
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>
+                  <input type="text" placeholder="Moya" class="m-5 rounded-sm w-200" required>
+                </div>
+                  
+                <div class="mx-auto w-fit">    
+                  <label for="" class="block w-50">Apellidos adicionales:</label>
+                  <input type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                </div>
+
+                <div class="mx-auto w-fit">    
+                  <div class="flex">
+                  <label for="" class="block ">Numero de Documento:</label>
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>  
+                  <div class="m-5 flex  w-200 ">
+                    <select name="" id="" class="rounded-l-md" required>
+                      <!-- <option value="">T.I</option>
+                      <option value="">C.C</option>
+                      <option value="">C.E</option> -->
+
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
+                    </select>
+                    <input type="text" required placeholder=1000009  pattern="^[1-9]\d{9,}$"  class="rounded-r-sm w-190 ">
+                  </div>
+                </div>
+
+                <div class="mx-auto w-fit">    
+                  <label for="" class="block  ">EPS: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  <span class="text-sm text-slate-500">(Si no tiene eps coloque no coloque Nada. Se asumira que tiene Sisben)</span></label>
+                  <input type="text" placeholder="Ej. Compensar" class="m-5 rounded-sm w-200">    
+                </div>
+
+                <div class="mx-auto w-fit">    
+                  <label for="" class="block w-50 ">Estrato Socioeconomico:<span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <input type="number"min=1 max=10 placeholder="Ej. 3" class="m-5 rounded-sm w-200">
+                </div>
+
+                <!-- ESTADO MATRICULA Y FECHA MATRICULA SE ASIGNAN DEPENDIENDO DE QUIEN REALIZE
+                     EL FORMULARIO 
+                     -- SI LA REALIZA UN ADMINISTRATIVO DEBEN HABER MAS PASOS DE VALIDACION.
+
+                     -- SI LA REALIZA UN PADRE DE FAMILIA EN ESTE CASO SE CREA AUTMATICAMENTE Y SE ENVIAN
+                        PARCIALEMTE LOS DATOS. -->
+
+                <!-- <label for="">El estudiante es repitente</label>
+                <div></div>-->
+                <div class="mx-auto w-210">   
+                  <label for="" class="text-left block mb-2 ">¿El estudiante es repitente?  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <div class="w-fit ml-5 p-1 ">
+                    <input name="repitente" type="radio" value=true class="mx-3"> Si
+                    <input name="repitente" type="radio" value=false class="mx-3">No
+                  </div>
+                </div>
+
+                <div class="mx-auto w-fit mt-5">    
+                  <label for="" class="block w-fit ">¿En que jordanada le gustaria que el estudiante se encontrase?  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+
+                  <select name="" id="" class="m-5 rounded-sm w-200">
+                    <option  selected disabled value="0" class=""  >Seleccione</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Mañana">Mañana</option>
+                  </select>
+                </div>
+
+                <div class="mx-auto w-fit">    
+                  <label for="" class="block w-50 ">Direccion de Residencia  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <input type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200">
+                </div>
+
+                <div class="mx-auto w-fit mt-5">    
+                  <label for="" class="block w-fit " >¿El estudiante tiene alguna discapacidad que debamos conocer?</label>
+                  <textarea name="" id="" placeholder="Puede dejar este espacio vacio si no la tiene." class="bg-inherit m-5 rounded-sm w-200"></textarea>
+                </div>
+
+            </fieldset>
+
+
+
+
+            <fieldset class="border border-slate-500/50 p-3 rounded-lg mt-7 ">  <legend class="">DATOS ACUDIENTE</legend>
+
+                <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50"> Primer Nombre: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
+                 <input type="text" placeholder="Kevin" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50">Nombres Adicionales: </label>
+                 <input type="text" placeholder="---" class="m-5 rounded-sm w-200" >
+                </div>
+
+                 <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
+                 <input type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                 <div class="mx-auto w-fit">    
+                  <label for="" class="block w-50 ">Numero de Documento:  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <div class="m-5 flex  w-200 ">
+                    <select name="" id="" class="rounded-l-md">
+                      <!-- <option value="cc">C.C</option>
+                      <option value="ti">T.I</option>
+                      <option value="ce">C.E</option> -->
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
+                    </select>
+                    <input type="text" placeholder=1000009  pattern="^[1-9]\d{9,}$"  class="rounded-r-sm w-190 " required>
+                  </div>
+                </div>
+
+
+                <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50">Telefono de Contacto: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span></label>
+                 <input type="text" placeholder="123456789" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50">Correo electronico: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                 <input type="email" placeholder="kevinM@gmail.com" class="m-5 rounded-sm w-200" required>
+                </div>
+
+            </fieldset>
+
+            <fieldset class="border border-slate-500/50 p-3 rounded-lg mt-7 ">  <legend class="">OTROS</legend>
+
+                  <div class="mx-auto w-fit mt-5">    
+                  <label for="" class="block w-fit " >Aqui puede dejar una observacion si debamos de tener algo en cuenta.</label>
+                  <textarea name="" id="" placeholder="Puede dejar este espacio vacio si no la tiene." class="bg-inherit m-5 rounded-sm w-200"></textarea>
+                </div>
+            </fieldset>
+            
+
+        </form>
+    </div>
+</main>
+
+</General>

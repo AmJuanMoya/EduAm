@@ -21,6 +21,9 @@ input, select{
     @apply bg-inherit dark:text-blue-50 
 }
 
+option{
+    @apply dark:bg-slate-900 dark:text-blue-50
+}
 
 .utilscrollbar{
     @apply

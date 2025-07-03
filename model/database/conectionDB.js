@@ -45,7 +45,7 @@ class Database {
                 user: this.db_user,
                 database:this.db_name,
                 port:  this.db_port ,
-                password: this.db_password,
+                // password: this.db_password,
                 // connectTimeout: 30000
             };
             
