@@ -102,7 +102,7 @@ class t_matriculas{
                 matriculaData.correo_acudiente1 || null,
 
                 // Campos que se asignan en el backend
-                'Activa', // Valor por defecto para estado_matricula
+                'Pendiente', // Valor por defecto para estado_matricula
                 new Date().toISOString().slice(0, 19).replace('T', ' ') // Formato 'YYYY-MM-DD HH:MM:SS' para fecha_matricula
             ];
 

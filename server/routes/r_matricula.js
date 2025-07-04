@@ -23,7 +23,7 @@ router.get("/datos/matricula/:doc", async (req, res) => {
     }
 });
 
-// --- NUEVA RUTA POST PARA CREAR MATRÍCULAS ---
+// --- RUTA POST PARA CREAR MATRÍCULAS ---
 router.post("/crear", async (req, res) => {
     const matriculaData = req.body;
     if (!matriculaData.primer_nombre_estudiante || !matriculaData.documento_estudiante || !matriculaData.primer_apellido_estudiante) {
@@ -35,12 +35,12 @@ router.post("/crear", async (req, res) => {
     try {
         const newMatriculaId = await new matricula().createMatricula(matriculaData);
         res.status(201).json({
-            message: 'Matrícula registrada exitosamente.',
+            message: ' 😀​ Matrícula registrada exitosamente ✅​.',
             matriculaId: newMatriculaId
         });
-        console.log('Matrícula registrada con ID:', newMatriculaId);
+        console.log('👉​ Matrícula registrada con ID:', newMatriculaId);
     } catch (error) {
-        console.error('Error al registrar matrícula:', error);
+        console.error(' 😓​ Error al registrar matrícula ​❌​:', error);
         res.status(500).json({ message: 'Error interno del servidor al registrar matrícula.', error: error.message });
     }
 });
