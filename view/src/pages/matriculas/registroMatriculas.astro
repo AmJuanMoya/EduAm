@@ -50,7 +50,7 @@ try {
                  
                 <div class="mx-auto w-fit"> 
                   <div class="flex">
-                  <label id="primer_apellido_estudiante" for="" class="block ">Primer Apellido: </label>
+                  <label for="primer_apellido_estudiante" class="block ">Primer Apellido: </label>
                   <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
                 </div>
                   <input id="primer_apellido_estudiante" name="primer_apellido_estudiante" type="text" placeholder="Moya" class="m-5 rounded-sm w-200" required>
@@ -76,7 +76,7 @@ try {
                         return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
                         })}
                     </select>
-                    <input id="documento_estudiante" name="documento_estudiante" type="text" required placeholder=1000009  pattern="^[1-9]\d{6,9}$"  class="rounded-r-sm w-190 ">
+                    <input id="documento_estudiante" name="documento_estudiante" type="text" required placeholder=1000009    class="rounded-r-sm w-190 ">
                   </div>
                 </div>
 
@@ -145,8 +145,8 @@ try {
                 </div> -->
 
                  <div class="mx-auto w-fit">
-                 <label for="	apellido_acudiente1" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
-                 <input id="	apellido_acudiente1" name="	apellido_acudiente1" type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
+                 <label for="apellido_acudiente1" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
+                 <input id="apellido_acudiente1" name="apellido_acudiente1" type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
                 </div>
 
                  <div class="mx-auto w-fit">    
@@ -160,7 +160,7 @@ try {
                         return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
                         })}
                     </select>
-                    <input id="numero_documento_acudiente1" name="numero_documento_acudiente1" type="text" placeholder=1000009  pattern="^[1-9]\d{6,9}$"  class="rounded-r-sm w-190 " required>
+                    <input id="numero_documento_acudiente1" name="numero_documento_acudiente1" type="text" placeholder=1000009    class="rounded-r-sm w-190 " required>
                   </div>
                 </div>
 
@@ -208,14 +208,15 @@ try {
       const data = {};
 
       // Convertir FormData a un objeto JSON
-      for (const [key, value] of formData.entries()) {
-        // Manejar el radio button 'repitente' para que sea un booleano
-        if (key === 'repitente') {
-          data[key] = value === 'true';
-        } else {
-          data[key] = value;
-        }
-      }
+for (const [key, value] of formData.entries()) {
+    if (key === 'repitente') {
+        data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
+    } else if (key === 'estrato') {
+        data[key] = parseInt(value); // Convertir 'estrato' a entero
+    } else {
+        data[key] = value; // Para todos los demás campos, asignar el valor directamente
+    }
+}
 
       console.log('Datos a enviar:', data); // Para depuración
 

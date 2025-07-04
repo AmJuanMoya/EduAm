@@ -75,7 +75,7 @@ class t_matriculas{
                     id_tipo_documento_acudiente1, numero_documento_acudiente1,
                     tel_contacto_acudiente1, correo_acudiente1,
                     estado_matricula, fecha_matricula
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             // Mapea los datos del objeto matriculaData a un array en el ORDEN correcto para la consulta SQL
@@ -84,22 +84,22 @@ class t_matriculas{
                 matriculaData.nombres_adicionales_estudiante || null,
                 matriculaData.primer_apellido_estudiante || null,
                 matriculaData.apellidos_adicionales_estudiante || null,
-                matriculaData.id_tipo_identificacion || null, // Del frontend: id_tipo_identificacion
-                matriculaData.numero_documento_estudiante || null,
-                matriculaData.eps_estudiante || null, // Del frontend: eps_estudiante
-                matriculaData.estrato_estudiante || null, // Del frontend: estrato_estudiante
+                matriculaData.id_tipo_documento_estudiante || null, // Del frontend: id_tipo_identificacion
+                matriculaData.documento_estudiante || null,
+                matriculaData.eps || null, // Del frontend: eps_estudiante
+                matriculaData.estrato || null, // Del frontend: estrato_estudiante
                 matriculaData.repitente, // Ya es booleano
-                matriculaData.jornada_estudiante || null, // Del frontend: jornada_estudiante
-                matriculaData.direccion_residencia_estudiante || null,
-                matriculaData.discapacidad_estudiante || null, // Del frontend: discapacidad_estudiante
+                matriculaData.jornada || null, // Del frontend: jornada_estudiante
+                matriculaData.direccion_residencia || null,
+                matriculaData.discapacidad || null, // Del frontend: discapacidad_estudiante
                 matriculaData.observaciones || null,
 
-                matriculaData.primer_nombre_acudiente || null, // Del frontend: primer_nombre_acudiente
-                matriculaData.primer_apellido_acudiente || null,
-                matriculaData.id_tipo_identificacion_acudiente || null,
-                matriculaData.numero_documento_acudiente || null,
-                matriculaData.telefono_contacto_acudiente || null,
-                matriculaData.correo_acudiente || null,
+                matriculaData.nombre_acudiente1 || null, // Del frontend: primer_nombre_acudiente
+                matriculaData.apellido_acudiente1 || null,
+                matriculaData.id_tipo_documento_acudiente1 || null,
+                matriculaData.numero_documento_acudiente1 || null,
+                matriculaData.tel_contacto_acudiente1 || null,
+                matriculaData.correo_acudiente1 || null,
 
                 // Campos que se asignan en el backend
                 'Activa', // Valor por defecto para estado_matricula
@@ -113,6 +113,10 @@ class t_matriculas{
             console.error('Error en createMatricula:', error);
             throw error; // Lanza el error para que sea capturado en la ruta
         } finally {
+            if (connection) {
+               await connection.end(); // cierra la conexion
+
+            }
             // Con `mysql2/promise` pool, la conexión se libera automáticamente, no necesitas `connection.end()` aquí.
         }
     }

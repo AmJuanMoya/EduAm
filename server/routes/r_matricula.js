@@ -26,10 +26,10 @@ router.get("/datos/matricula/:doc", async (req, res) => {
 // --- NUEVA RUTA POST PARA CREAR MATRÍCULAS ---
 router.post("/crear", async (req, res) => {
     const matriculaData = req.body;
-    if (!matriculaData.primer_nombre_estudiante || !matriculaData.numero_documento_estudiante || !matriculaData.primer_apellido_estudiante) {
+    if (!matriculaData.primer_nombre_estudiante || !matriculaData.documento_estudiante || !matriculaData.primer_apellido_estudiante) {
         return res.status(400).json({ message: 'Error: Faltan campos requeridos del estudiante.' });
     }
-    if (!matriculaData.primer_nombre_acudiente || !matriculaData.numero_documento_acudiente || !matriculaData.correo_acudiente) {
+    if (!matriculaData.nombre_acudiente1 || !matriculaData.numero_documento_acudiente1 || !matriculaData.correo_acudiente1) {
         return res.status(400).json({ message: 'Error: Faltan campos requeridos del acudiente.' });
     }
     try {
