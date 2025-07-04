@@ -307,7 +307,7 @@ discapacidad TEXT,
 jornada ENUM('Tarde', 'Mañana') NOT NULL,
 direccion_residencia TEXT NOT NULL,
 id_tipo_documento_estudiante INT(11) NOT NULL,
-documento_estudiante INT(11) NOT NULL,
+documento_estudiante INT(11) NOT NULL UNIQUE,
 observaciones TEXT,     
         
 nombre_acudiente1 VARCHAR(255) NOT NULL,
