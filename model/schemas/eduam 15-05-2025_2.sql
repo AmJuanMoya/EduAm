@@ -292,7 +292,7 @@ observaciones TEXT
 -- TABLA MATRICULA
 
 CREATE TABLE t_matricula(
-id_matricula INT(11) NOT NULL PRIMARY KEY,
+id_matricula INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 primer_nombre_estudiante VARCHAR(255) NOT NULL,
 nombres_adicionales_estudiante VARCHAR(255),
 primer_apellido_estudiante VARCHAR(255) NOT NULL,
