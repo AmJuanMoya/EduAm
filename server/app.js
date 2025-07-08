@@ -6,7 +6,7 @@ import matriculasRouter from "./routes/r_matricula.js";
 import identificacionRouter from "./routes/r_tipo_identificacion.js";
 
 const app = express()
-app.use(cors())
+app.use(cors());
 app.use("/api",express.json());
 
 app.use('/api', TablasRouter)
