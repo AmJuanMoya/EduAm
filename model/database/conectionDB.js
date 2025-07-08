@@ -23,7 +23,7 @@ dotenv.config({ path: envPath });
 
 class Database {
     constructor() {
-      this.connection;
+      this.connection = null;
       this.sql;
       this.result;
       this.query;
@@ -39,6 +39,12 @@ class Database {
     }
 
     async connect() {
+
+        if (this.connection && this.connection.connection.state === 'connected') {
+            console.log('🔗 Ya hay una conexión activa a la base de datos 🔗');
+            return this.connection; // retorna la conexión existente
+        }   
+
         try {
             const config = {
                 host: this.db_host, // Usamos IP en lugar de localhost
@@ -56,6 +62,7 @@ class Database {
             
             this.connection = await mysql.createConnection(config);
             console.log('✅ Connected to the database✅');
+            return this.connection; // retorna la conexión establecida
         } catch (err) {
             await this.cerrar();
             console.error("❌ Error al conectarse a la base de datos ❌:", err);
@@ -80,7 +87,12 @@ class Database {
 
     async consultar(sql, values = []) {
         if (!this.connection) {
+
+            await this.connect(); // Asegurarse de que la conexión esté activa
+            if (!this.connection) {
             throw new Error('No hay conexión activa a la base de datos');
+        }
+
         }
 
         try {

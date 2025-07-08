@@ -292,7 +292,7 @@ observaciones TEXT
 -- TABLA MATRICULA
 
 CREATE TABLE t_matricula(
-id_matricula INT(11) NOT NULL PRIMARY KEY,
+id_matricula INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 primer_nombre_estudiante VARCHAR(255) NOT NULL,
 nombres_adicionales_estudiante VARCHAR(255),
 primer_apellido_estudiante VARCHAR(255) NOT NULL,
@@ -307,7 +307,7 @@ discapacidad TEXT,
 jornada ENUM('Tarde', 'Mañana') NOT NULL,
 direccion_residencia TEXT NOT NULL,
 id_tipo_documento_estudiante INT(11) NOT NULL,
-documento_estudiante INT(11) NOT NULL,
+documento_estudiante INT(11) NOT NULL UNIQUE,
 observaciones TEXT,     
         
 nombre_acudiente1 VARCHAR(255) NOT NULL,
