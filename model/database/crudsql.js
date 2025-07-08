@@ -95,7 +95,16 @@ class Crud{
         }
     }
     
-    
+    async querySQL(sql, params = []) {
+        try {
+            const [rows] = await connection.execute(sql, params);
+        return rows;
+        } catch (err) {
+            console.error("Error ejecutando querySQL:", err);
+        throw err;
+    }
+}
+
 
 } 
 

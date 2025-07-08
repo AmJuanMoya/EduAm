@@ -1,0 +1,265 @@
+---
+// Importa tus componentes
+import Panelnav from "../../components/navigation/panelnav.astro";
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+---
+
+<General>
+  <div class="flex min-h-screen bg-[#0A0E22] text-gray-100">
+    <Asidebar />
+
+    <div class="flex-1 p-6">
+      <Panelnav />
+
+      <h1 class="text-3xl font-bold mb-6">Listado de Matrículas</h1>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <input
+          id="buscar"
+          type="text"
+          placeholder="Buscar por nombre o documento"
+          class="px-3 py-2 rounded bg-gray-800 border border-gray-600 w-full sm:w-64 text-sm placeholder:text-gray-400"
+        />
+
+        <div class="text-sm">
+          <label for="cantidad" class="mr-2">Registros por página:</label>
+          <select
+            id="cantidad"
+            class="bg-gray-800 border border-gray-600 rounded px-4 py-2 text-base w-32"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="contenedor" class="bg-[#0A0E22] shadow rounded-lg p-4 overflow-x-auto">
+        <p class="text-gray-400">Cargando matrículas...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const contenedor = document.getElementById("contenedor");
+    const buscarInput = document.getElementById("buscar");
+    const cantidadSelect = document.getElementById("cantidad");
+
+    let todasLasMatriculas = [];
+    let registrosPorPagina = parseInt(cantidadSelect.value);
+    let paginaActual = 1;
+    let criterioOrden = "id_matricula";
+    let ordenAscendente = true;
+
+    const getColorClase = (estado) => {
+      switch (estado) {
+        case "Activa": return "bg-green-600 text-white";
+        case "Pendiente": return "bg-gray-500 text-white";
+        case "Cancela": return "bg-red-600 text-white";
+        case "Retirada": return "bg-yellow-400 text-black";
+        case "Condicional": return "bg-blue-600 text-white";
+        default: return "bg-gray-700 text-white";
+      }
+    };
+
+    async function cargarMatriculas() {
+      try {
+        const res = await fetch("http://localhost:3000/api/datos/matricula");
+        const data = await res.json();
+        todasLasMatriculas = data;
+        renderizarTabla();
+      } catch (error) {
+        contenedor.innerHTML = "<p class='text-red-500'>Error al cargar los datos.</p>";
+        console.error("Error:", error);
+      }
+    }
+
+    function renderizarTabla() {
+      const filtro = buscarInput.value.toLowerCase();
+      const filtrados = todasLasMatriculas.filter(m =>
+        `${m.primer_nombre_estudiante} ${m.primer_apellido_estudiante}`.toLowerCase().includes(filtro) ||
+        String(m.documento_estudiante).includes(filtro)
+      );
+
+      if (criterioOrden) {
+        filtrados.sort((a, b) => {
+          const valorA = a[criterioOrden];
+          const valorB = b[criterioOrden];
+          return ordenAscendente
+            ? (valorA > valorB ? 1 : -1)
+            : (valorA < valorB ? 1 : -1);
+        });
+      }
+
+      const inicio = (paginaActual - 1) * registrosPorPagina;
+      const fin = inicio + registrosPorPagina;
+      const pagina = filtrados.slice(inicio, fin);
+
+      if (pagina.length === 0) {
+        contenedor.innerHTML = "<p class='text-gray-400'>No hay resultados.</p>";
+        return;
+      }
+
+      let tablaHTML = `
+        <table class="min-w-full table-auto text-sm bg-[#0A0E22] text-white">
+          <thead class="bg-gray-700 text-gray-100 uppercase text-xs">
+            <tr class="border-b border-white/10">
+              <th class="px-4 py-2 text-left cursor-pointer" data-orden="id_matricula">ID</th>
+              <th class="px-4 py-2 text-left cursor-pointer" data-orden="primer_nombre_estudiante">Estudiante</th>
+              <th class="px-4 py-2 text-left cursor-pointer" data-orden="documento_estudiante">Documento</th>
+              <th class="px-4 py-2 text-left">Estado</th>
+              <th class="px-4 py-2 text-left">Jornada</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pagina.map(m => `
+              <tr class="border-b border-white/10 hover:bg-white/5 cursor-pointer fila-matricula" data-doc="${m.documento_estudiante}">
+                <td class="px-4 py-2">${m.id_matricula}</td>
+                <td class="px-4 py-2">${m.primer_nombre_estudiante} ${m.primer_apellido_estudiante}</td>
+                <td class="px-4 py-2">${m.documento_estudiante}</td>
+                <td class="px-4 py-2">
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold ${getColorClase(m.estado_matricula)}">
+                    ${m.estado_matricula}
+                  </span>
+                </td>
+                <td class="px-4 py-2">${m.jornada}</td>
+              </tr>
+              <tr class="fila-detalle hidden bg-[#1a1d35]">
+                <td colspan="5" class="p-4 text-sm detalle-panel"></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        <p class="mt-4 text-sm text-gray-400">Mostrando ${pagina.length} de ${filtrados.length} resultados.</p>
+      `;
+
+      contenedor.innerHTML = tablaHTML;
+
+      // Crear paginación
+const paginacion = document.createElement("div");
+paginacion.className = "flex items-center justify-center gap-2 mt-4";
+
+const totalPaginas = Math.ceil(filtrados.length / registrosPorPagina);
+
+if (totalPaginas > 1) {
+  const crearBoton = (texto, pagina, deshabilitado = false) => {
+    const btn = document.createElement("button");
+    btn.textContent = texto;
+    btn.className = `px-3 py-1 rounded ${paginaActual === pagina ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-100 hover:bg-gray-600'} ${deshabilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
+    if (!deshabilitado) {
+      btn.addEventListener("click", () => {
+        paginaActual = pagina;
+        renderizarTabla();
+      });
+    }
+    return btn;
+  };
+
+  // Botón anterior
+  paginacion.appendChild(crearBoton("Anterior", paginaActual - 1, paginaActual === 1));
+
+  // Botones de página
+  for (let i = 1; i <= totalPaginas; i++) {
+    paginacion.appendChild(crearBoton(i, i));
+  }
+
+  // Botón siguiente
+  paginacion.appendChild(crearBoton("Siguiente", paginaActual + 1, paginaActual === totalPaginas));
+}
+
+// Agrega paginación debajo de la tabla
+contenedor.appendChild(paginacion);
+
+
+      document.querySelectorAll(".fila-matricula").forEach((fila, index) => {
+        fila.addEventListener("click", async () => {
+          const doc = fila.dataset.doc;
+          const detalleRow = fila.nextElementSibling;
+          const panel = detalleRow.querySelector(".detalle-panel");
+
+          // Toggle
+          const yaEstaVisible = !detalleRow.classList.contains("hidden");
+
+          // Cierra todos los paneles
+          document.querySelectorAll(".fila-detalle").forEach(f => f.classList.add("hidden"));
+
+          // Si ya estaba visible, simplemente lo cerramos y salimos
+          if (yaEstaVisible) return;
+
+
+          try {
+            const res = await fetch(`http://localhost:3000/api/datos/matricula/${doc}`);
+            const data = await res.json();
+            const m = Array.isArray(data) ? data[0] : data;
+
+            panel.innerHTML = `
+              <div class="text-left text-sm space-y-2">
+                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Datos del estudiante</h2>
+              <p><strong>ID Matrícula:</strong> ${m.id_matricula}</p>
+              <p><strong>Nombres:</strong> ${m.primer_nombre_estudiante} ${m.nombres_adicionales_estudiante || ""}</p>
+              <p><strong>Apellidos:</strong> ${m.primer_apellido_estudiante} ${m.apellidos_adicionales_estudiante || ""}</p>
+              <p><strong>Tipo Documento:</strong> ${m.id_tipo_documento_estudiante}</p>
+              <p><strong>Documento:</strong> ${m.documento_estudiante}</p>
+              <p><strong>EPS:</strong> ${m.eps || "No registrado"}</p>
+              <p><strong>SISBEN:</strong> ${m.sisben || "No registrado"}</p>
+              <p><strong>Estrato:</strong> ${m.estrato}</p>
+              <p><strong>Discapacidad:</strong> ${m.discapacidad || "Ninguna"}</p>
+              <p><strong>Dirección:</strong> ${m.direccion_residencia}</p>
+              <p><strong>Repitente:</strong> ${m.repitente ? "Sí" : "No"}</p>
+
+                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Datos de la matrícula</h2>
+              <p><strong>Fecha de Matrícula:</strong> ${m.fecha_matricula}</p>
+              <p><strong>Jornada:</strong> ${m.jornada}</p>
+              <p><strong>Estado:</strong> 
+                <span class="px-2 py-1 rounded-full text-sm font-medium ${getColorClase(m.estado_matricula)}">
+                  ${m.estado_matricula}
+                </span>
+              </p>
+              <p><strong>Observaciones:</strong> ${m.observaciones || "Ninguna"}</p>
+
+                <h2 class="text-lg font-semibold border-b pb-1 mb-2">Acudiente 1</h2>
+              <p><strong>Nombre:</strong> ${m.nombre_acudiente1} ${m.apellido_acudiente1}</p>
+              <p><strong>Tipo Documento:</strong> ${m.id_tipo_documento_acudiente1}</p>
+              <p><strong>Documento:</strong> ${m.numero_documento_acudiente1}</p>
+              <p><strong>Teléfono:</strong> ${m.tel_contacto_acudiente1}</p>
+              <p><strong>Correo:</strong> ${m.correo_acudiente1 || "No registrado"}</p>
+              </div>
+            `;
+            detalleRow.classList.remove("hidden");
+          } catch (err) {
+            panel.innerHTML = `<p class="text-red-500">Error al cargar el detalle.</p>`;
+          }
+        });
+      });
+
+      document.querySelectorAll("th[data-orden]").forEach(th => {
+        th.addEventListener("click", () => {
+          const campo = th.dataset.orden;
+          if (criterioOrden === campo) {
+            ordenAscendente = !ordenAscendente;
+          } else {
+            criterioOrden = campo;
+            ordenAscendente = true;
+          }
+          renderizarTabla();
+        });
+      });
+    }
+
+    buscarInput.addEventListener("input", () => {
+      paginaActual = 1;
+      renderizarTabla();
+    });
+
+    cantidadSelect.addEventListener("change", () => {
+      registrosPorPagina = parseInt(cantidadSelect.value);
+      paginaActual = 1;
+      renderizarTabla();
+    });
+
+    cargarMatriculas();
+  </script>
+</General>
