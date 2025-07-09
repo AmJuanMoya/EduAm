@@ -43,5 +43,21 @@ router.get("/datos/actividades/nombre/:nombreActividad", async (req, res) => {
         res.status(500).json({ error: 'Error al obtener estudiantes para la actividad' });
     }
 })
+router.get("/datos/actividades/estudiante/detalle/:doc", async (req, res) => {
+  const doc = req.params.doc;
+  try {
+    let actividades = new t_informe_calificaciones();
+    const datos = await actividades.getDetailedActivitiesByStudentDoc(doc);
+
+    if (datos.length <= 0) {
+      res.json({ message: `No se encontraron actividades para el estudiante con documento: ${doc}` });
+    } else {
+      res.json(datos);
+    }
+  } catch (err) {
+    console.error(`❌ Error al obtener actividades detalladas: ${err.message}`);
+    res.status(500).json({ error: 'Error al consultar actividades detalladas' });
+  }
+});
 
 export default router;

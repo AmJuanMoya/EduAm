@@ -7,6 +7,7 @@ import identificacionRouter from "./routes/r_tipo_identificacion.js";
 import actividadesRouter from "./routes/r_actividades.js";
 import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
 
+
 const app = express()
 app.use(cors())
 app.use("/api",express.json());

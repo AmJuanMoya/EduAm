@@ -1,0 +1,60 @@
+---
+const { actividad } = Astro.props;
+
+const coloresPorAsignatura: Record<string, [string, string]> = {
+  Matemáticas: ["bg-blue-600", "bg-blue-500"],
+  Español: ["bg-red-600", "bg-red-500"],
+  Ciencias: ["bg-green-600", "bg-green-500"],
+  Historia: ["bg-yellow-600", "bg-yellow-500"],
+  Inglés: ["bg-indigo-600", "bg-indigo-500"],
+  Literatura: ["bg-purple-600", "bg-purple-500"],
+  Química: ["bg-teal-600", "bg-teal-500"],
+  default: ["bg-slate-700", "bg-slate-600"],
+  Álgebra: ["bg-lime-700", "bg-lime-600"]
+};
+
+const [color, colorClaro] =
+  coloresPorAsignatura[actividad.nombre_asignatura] || coloresPorAsignatura.default;
+---
+
+<div
+  class={`relative p-4 rounded-xl shadow ${color} text-white flex flex-col justify-between w-full min-h-[280px]`}
+  data-asignatura={actividad.nombre_asignatura}
+  data-fecha={new Date(actividad.fecha_entrega).toISOString().split("T")[0]}
+>
+  <div>
+    <h3 class="text-lg font-semibold mb-10 text-center mt-8">{actividad.titulo_actividad}</h3>
+    <p class="text-sm opacity-90 mb-10 text-center">Asignatura: {actividad.nombre_asignatura}</p>
+    <p class="text-sm opacity-90 text-center">Entrega: {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
+  </div>
+
+  <button
+    class="bg-white text-black mt-4 px-4 py-1 rounded ver-detalles"
+    data-id={actividad.id_actividad}
+  >
+    Ver detalles
+  </button>
+</div>
+
+<!-- Modal -->
+<div
+  id={`modal-${actividad.id_actividad}`}
+  class="hidden fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 modal-backdrop"
+>
+  <div class={`modal-content ${colorClaro} w-full max-w-md p-6 rounded-xl text-black relative shadow-lg`}>
+
+
+    <h2 class="text-xl font-bold mb-4 text-center text-white">{actividad.titulo_actividad}</h2>
+    <p class="text-white"><strong>Asignatura:</strong> {actividad.nombre_asignatura}</p>
+    <p class="text-white"><strong>Fecha publicación:</strong> {new Date(actividad.fecha_publicacion).toLocaleDateString("es-CO")}</p>
+    <p class="text-white"><strong>Fecha entrega:</strong> {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
+    <p class="text-white"><strong>Descripción:</strong> {actividad.descripcion_actividad}</p>
+    <p class="text-white"><strong>Docente:</strong> {actividad.docente || "No registrado"}</p>
+    <p class="text-white"><strong>Comentarios:</strong></p>
+    <ul class="list-disc list-inside mb-2">
+      {(actividad.comentarios && actividad.comentarios.length > 0)
+        ? (actividad.comentarios as string[]).map((c: string) => <li class="text-white">{c}</li>)
+        : <li class="text-white">Sin comentarios</li>}
+    </ul>
+  </div>
+</div>
