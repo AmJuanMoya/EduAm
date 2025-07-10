@@ -105,6 +105,15 @@ id_grado INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 nombre_grado VARCHAR(200) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
+--TABLA DOCENTE_CURSO
+CREATE TABLE t_docente_curso (
+  id_docente_curso INT PRIMARY KEY,
+  id_docente INT NOT NULL,
+  id_curso INT NOT NULL,
+  FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente),
+  FOREIGN KEY (id_curso) REFERENCES t_curso(id_curso)
+);
+
 -- TABLA CATEGORIA_ARCHIVO
 CREATE TABLE t_categoria_archivo(
 id_categoria_archivo INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,

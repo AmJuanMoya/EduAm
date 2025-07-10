@@ -279,6 +279,17 @@ INSERT INTO t_docente_asignatura (id_docente_asignatura, id_docente, id_asignatu
 (5, 3, 5), -- Felipe Ruiz enseña Ética y Valores
 (6, 4, 6); -- Gabriela Soto enseña Geografía
 
+-- 23.5. Inserción de datos en t_docente_curso (Asignación de cursos a docentes)
+INSERT INTO t_docente_curso (id_docente_curso, id_docente, id_curso) VALUES
+(1, 1, 1), -- Carlos Guerra enseña en Curso 1
+(2, 1, 2), -- Carlos Guerra también enseña en Curso 2
+(3, 2, 2), -- Diana Vega enseña en Curso 2
+(4, 2, 3), -- Diana Vega también enseña en Curso 3
+(5, 3, 3), -- Felipe Ruiz enseña en Curso 3
+(6, 4, 4), -- Gabriela Soto enseña en Curso 4
+(7, 5, 5), -- Hector Castaño enseña en Curso 5
+(8, 5, 1); -- Hector Castaño también enseña en Curso 1
+
 -- 24. Inserción de datos en t_periodo_actividad (Vinculando periodos a actividades)
 INSERT INTO t_periodo_actividad (id_periodo_actividad, id_periodo, id_actividad) VALUES
 (1, 1, 1),
