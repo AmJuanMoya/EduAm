@@ -1,0 +1,195 @@
+---
+---
+<div id="modalMatricula" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white dark:bg-[#1A1E35] rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl relative">
+    
+    <button id="cerrarModalBtn" class="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
+
+    <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Detalle de Matrícula</h2>
+
+    <!-- Contenedor del contenido dinámico -->
+    <div id="contenidoModal" class="space-y-4 text-sm text-gray-800 dark:text-gray-200">
+      <!-- Aquí se insertan los datos desde JS -->
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="editarBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Editar</button>
+      <button id="guardarBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded hidden">Guardar cambios</button>
+    </div>
+  </div>
+
+  <script type="module">
+    let modoEdicion = false;
+    let matriculaActual = null;
+
+    const editarBtn = document.getElementById("editarBtn");
+    const guardarBtn = document.getElementById("guardarBtn");
+    const contenido = document.getElementById("contenidoModal");
+
+    window.mostrarModalMatricula = function(matricula) {
+      matriculaActual = matricula;
+      modoEdicion = false;
+      renderModal();
+      document.getElementById("modalMatricula").classList.remove("hidden");
+    }
+
+    editarBtn.addEventListener("click", () => {
+      modoEdicion = true;
+      renderModal();
+      editarBtn.classList.add("hidden");
+      guardarBtn.classList.remove("hidden");
+    });
+
+    guardarBtn.addEventListener("click", async () => {
+  const inputs = contenido.querySelectorAll("[data-campo]");
+
+  inputs.forEach(input => {
+    const campo = input.dataset.campo;
+    let valor = input.value;
+
+    // Transformar tipos según campo
+    if (["estrato", "documento_estudiante", "numero_documento_acudiente1"].includes(campo)) {
+      valor = parseInt(valor) || null;
+    }
+
+    if (campo === "repitente") {
+      valor = (valor === "Sí") ? 1 : 0;
+    }
+
+    matriculaActual[campo] = valor;
+  });
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(matriculaActual)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("✅ Matrícula actualizada correctamente");
+    } else {
+      alert("❌ Error al guardar cambios: " + (result.message || result.error));
+    }
+
+  } catch (error) {
+    console.error("Error al actualizar:", error);
+    alert("❌ Error de conexión al servidor");
+  }
+
+  modoEdicion = false;
+  renderModal();
+  editarBtn.classList.remove("hidden");
+  guardarBtn.classList.add("hidden");
+});
+
+
+    function renderModal() {
+  if (!matriculaActual) return;
+
+  if (!modoEdicion) {
+    contenido.innerHTML = `
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📘 Datos del Estudiante</h3>
+        <div><strong>ID de la matricula:</strong> ${matriculaActual.id_matricula}</div>
+        <div><strong>Nombre:</strong> ${matriculaActual.primer_nombre_estudiante} ${matriculaActual.primer_apellido_estudiante}</div>
+        <div><strong>Tipo Documento:</strong> ${matriculaActual.id_tipo_documento_estudiante}</div>
+        <div><strong>Documento:</strong> ${matriculaActual.documento_estudiante}</div>
+        <div><strong>EPS:</strong> ${matriculaActual.eps || "No registrado"}</div>
+        <div><strong>SISBEN:</strong> ${matriculaActual.sisben}</div>
+        <div><strong>Estrato:</strong> ${matriculaActual.estrato}</div>
+        <div><strong>Discapacidad:</strong> ${matriculaActual.discapacidad || "Ninguna"}</div>
+        <div><strong>Dirección:</strong> ${matriculaActual.direccion_residencia}</div>
+        <div><strong>Repitente:</strong> ${matriculaActual.repitente ? "Sí" : "No"}</div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
+        <div><strong>Estado:</strong> ${matriculaActual.estado_matricula}</div>
+        <div><strong>Jornada:</strong> ${matriculaActual.jornada}</div>
+        <div><strong>Fecha de matrícula:</strong> ${matriculaActual.fecha_matricula}</div>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-lg mb-2">👤 Acudiente del estudiante</h3>
+        <div><strong>Nombre:</strong> ${matriculaActual.nombre_acudiente1} ${matriculaActual.apellido_acudiente1}</div>
+        <div><strong>Documento:</strong> ${matriculaActual.numero_documento_acudiente1}</div>
+        <div><strong>Teléfono:</strong> ${matriculaActual.tel_contacto_acudiente1}</div>
+        <div><strong>Correo:</strong> ${matriculaActual.correo_acudiente1}</div>
+      </div>
+    `;
+  } else {
+    contenido.innerHTML = `
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📘 Datos del Estudiante</h3>
+        <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
+        ${crearInput("primer_nombre_estudiante", "Nombres")}
+        ${crearInput("primer_apellido_estudiante", "Apellidos")}
+        ${crearSelect("id_tipo_documento_estudiante", "Tipo Documento", ["TI", "CC", "CE", "RC"])}
+        ${crearInput("documento_estudiante", "Documento")}
+        ${crearInput("eps", "EPS")}
+        ${crearInput("sisben", "SISBEN")}
+        ${crearInput("estrato", "Estrato")}
+        ${crearInput("discapacidad", "Discapacidad")}
+        ${crearInput("direccion_residencia", "Dirección")}
+        ${crearSelect("repitente", "Repitente", ["Sí", "No"])}
+      </div>
+
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
+        ${crearSelect("estado_matricula", "Estado", ["Activa", "Pendiente", "Cancela", "Retirada", "Condicional"])}
+        ${crearSelect("jornada", "Jornada", ["Mañana", "Tarde", "Noche"])}
+        ${crearInput("fecha_matricula", "Fecha de matrícula", "date")}
+      </div>
+
+      <div>
+        <h3 class="font-bold text-lg mb-2">👤 Acudiente 1</h3>
+        ${crearInput("nombre_acudiente1", "Nombres")}
+        ${crearInput("apellido_acudiente1", "Apellidos")}
+        ${crearInput("numero_documento_acudiente1", "Documento")}
+        ${crearInput("tel_contacto_acudiente1", "Teléfono")}
+        ${crearInput("correo_acudiente1", "Correo", "email")}
+      </div>
+    `;
+  }
+}
+
+function crearInput(campo, label, tipo = "text") {
+  return `
+    <div class="mb-2">
+      <label class="block text-sm mb-1">${label}:</label>
+      <input type="${tipo}" value="${matriculaActual[campo] || ''}" data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded" />
+    </div>
+  `;
+}
+
+function crearSelect(campo, label, opciones = []) {
+  return `
+    <div class="mb-2">
+      <label class="block text-sm mb-1">${label}:</label>
+      <select data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded">
+        ${opciones.map(op => `
+          <option value="${op}" ${op === matriculaActual[campo] ? "selected" : ""}>${op}</option>
+        `).join("")}
+      </select>
+    </div>
+  `;
+}
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("cerrarModalBtn").addEventListener("click", () => {
+        document.getElementById("modalMatricula").classList.add("hidden");
+        editarBtn.classList.remove("hidden");
+        guardarBtn.classList.add("hidden");
+        modoEdicion = false;
+      });
+    });
+  </script>
+
+</div>

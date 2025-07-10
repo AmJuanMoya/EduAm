@@ -4,44 +4,44 @@ import Crud from "../model/database/crudsql.js";
 class t_matriculas{
 
     constructor(){
-        this.id_matricula;
-        this.primer_nombre_estudiante ;
-        this.nombres_adicionales_estudiante;
-        this.primer_apellido_estudiante;
-        this.apellidos_adicionales_estudiante;
-        this.estado_matricula;
-        this.fecha_matricula;
-        this.repitente;
-        this.eps;
-        this.sisben;
-        this.estrato;
-        this.discapacidad;
-        this.jornada;
-        this.direccion_residencia;
-        this.id_tipo_documento_estudiante;
-        this.documento_estudiante;
-        this.observaciones;
+        this.id_matricula = "";
+        this.primer_nombre_estudiante = "";
+        this.nombres_adicionales_estudiante = "";
+        this.primer_apellido_estudiante = "";
+        this.apellidos_adicionales_estudiante = "";
+        this.estado_matricula = "";
+        this.fecha_matricula = "";
+        this.repitente = "";
+        this.eps = "";
+        this.sisben = "";
+        this.estrato = "";
+        this.discapacidad ="";
+        this.jornada = "";
+        this.direccion_residencia ="";
+        this.id_tipo_documento_estudiante ="";
+        this.documento_estudiante = "";
+        this.observaciones = "";
 
-        this.nombre_acudiente1;
-        this.apellido_acudiante1;
-        this.id_tipo_documento_acudiente1;
-        this.numero_documento_acudiente1;
-        this.tel_contacto_acudiente1;
-        this.correo_acudiente1;
+        this.nombre_acudiente1 ="";
+        this.apellido_acudiente1 ="";
+        this.id_tipo_documento_acudiente1 ="";
+        this.numero_documento_acudiente1="";
+        this.tel_contacto_acudiente1="";
+        this.correo_acudiente1="";
 
-        this.nombre_acudiente2;
-        this.apellido_acudiante2;
-        this.id_tipo_documento_acudiente2;
-        this.numero_documento_acudiente2;
-        this.tel_contacto_acudiente2;
-        this.correo_acudiente2;
+        this.nombre_acudiente2="";
+        this.apellido_acudiente2="";
+        this.id_tipo_documento_acudiente2="";
+        this.numero_documento_acudiente2="";
+        this.tel_contacto_acudiente2="";
+        this.correo_acudiente2="";
 
-        this.nombre_acudiente3;
-        this.apellido_acudiante3;
-        this.id_tipo_documento_acudiente3;
-        this.numero_documento_acudiente3;
-        this.tel_contacto_acudiente3;
-        this.correo_acudiente3;
+        this.nombre_acudiente3="";
+        this.apellido_acudiente3="";
+        this.id_tipo_documento_acudiente3="";
+        this.numero_documento_acudiente3="";
+        this.tel_contacto_acudiente3="";
+        this.correo_acudiente3="";
         
         this.db = new Database();
         this.crud = new Crud;
@@ -56,14 +56,6 @@ class t_matriculas{
         return await this.crud.getAll("t_matricula");
     }
 
-    async getall_matriculas() {
-        await this.db.connect();
-        const query = "SELECT * FROM t_matricula";
-        await this.db.consultar(query);
-        const datos = this.db.getData();
-        await this.db.cerrar();
-        return datos;
-    }
 
     async insert_matricula() {
         await this.db.connect();
@@ -87,21 +79,21 @@ class t_matriculas{
                 observaciones,
 
                 nombre_acudiente1,
-                apellido_acudiante1,
+                apellido_acudiente1,
                 id_tipo_documento_acudiente1,
                 numero_documento_acudiente1,
                 tel_contacto_acudiente1,
                 correo_acudiente1,
 
                 nombre_acudiente2,
-                apellido_acudiante2,
+                apellido_acudiente2,
                 id_tipo_documento_acudiente2,
                 numero_documento_acudiente2,
                 tel_contacto_acudiente2,
                 correo_acudiente2,
 
                 nombre_acudiente3,
-                apellido_acudiante3,
+                apellido_acudiente3,
                 id_tipo_documento_acudiente3,
                 numero_documento_acudiente3,
                 tel_contacto_acudiente3,
@@ -127,21 +119,21 @@ class t_matriculas{
             this.observaciones,
 
             this.nombre_acudiente1,
-            this.apellido_acudiante1,
+            this.apellido_acudiente1,
             this.id_tipo_documento_acudiente1,
             this.numero_documento_acudiente1,
             this.tel_contacto_acudiente1,
             this.correo_acudiente1,
 
             this.nombre_acudiente2,
-            this.apellido_acudiante2,
+            this.apellido_acudiente2,
             this.id_tipo_documento_acudiente2,
             this.numero_documento_acudiente2,
             this.tel_contacto_acudiente2,
             this.correo_acudiente2,
 
             this.nombre_acudiente3,
-            this.apellido_acudiante3,
+            this.apellido_acudiente3,
             this.id_tipo_documento_acudiente3,
             this.numero_documento_acudiente3,
             this.tel_contacto_acudiente3,
@@ -154,6 +146,25 @@ class t_matriculas{
 
     async update_matricula() {
         await this.db.connect();
+        if (this.id_tipo_documento_estudiante === "TI") {
+            this.id_tipo_documento_estudiante = 2;
+        } else if (this.id_tipo_documento_estudiante === "CC") {
+            this.id_tipo_documento_estudiante = 1;
+        } else if (this.id_tipo_documento_estudiante === "CE") {
+            this.id_tipo_documento_estudiante = 4;
+        } else if(this.id_tipo_documento_estudiante === "RC") {
+            this.id_tipo_documento_estudiante = 3
+        }
+
+        if (this.id_tipo_documento_acudiente1 == "CC"){
+            this.id_tipo_documento_acudiente1 = 1
+        } else if (this.id_tipo_documento_acudiente1  === "CC") {
+            this.id_tipo_documento_acudiente1  = 1;
+        } else if (this.id_tipo_documento_acudiente1  === "CE") {
+            this.id_tipo_documento_acudiente1  = 4;
+        } else if(this.id_tipo_documento_acudiente1  === "RC") {
+            this.id_tipo_documento_acudiente1 = 3
+        }
         const query = `
             UPDATE t_matricula SET
                 primer_nombre_estudiante = ?,
@@ -174,21 +185,21 @@ class t_matriculas{
                 observaciones = ?,
 
                 nombre_acudiente1 = ?,
-                apellido_acudiante1 = ?,
+                apellido_acudiente1 = ?,
                 id_tipo_documento_acudiente1 = ?,
                 numero_documento_acudiente1 = ?,
                 tel_contacto_acudiente1 = ?,
                 correo_acudiente1 = ?,
 
                 nombre_acudiente2 = ?,
-                apellido_acudiante2 = ?,
+                apellido_acudiente2 = ?,
                 id_tipo_documento_acudiente2 = ?,
                 numero_documento_acudiente2 = ?,
                 tel_contacto_acudiente2 = ?,
                 correo_acudiente2 = ?,
 
                 nombre_acudiente3 = ?,
-                apellido_acudiante3 = ?,
+                apellido_acudiente3 = ?,
                 id_tipo_documento_acudiente3 = ?,
                 numero_documento_acudiente3 = ?,
                 tel_contacto_acudiente3 = ?,
@@ -214,32 +225,42 @@ class t_matriculas{
             this.observaciones,
 
             this.nombre_acudiente1,
-            this.apellido_acudiante1,
+            this.apellido_acudiente1,
             this.id_tipo_documento_acudiente1,
             this.numero_documento_acudiente1,
             this.tel_contacto_acudiente1,
             this.correo_acudiente1,
 
             this.nombre_acudiente2,
-            this.apellido_acudiante2,
+            this.apellido_acudiente2,
             this.id_tipo_documento_acudiente2,
             this.numero_documento_acudiente2,
             this.tel_contacto_acudiente2,
             this.correo_acudiente2,
 
             this.nombre_acudiente3,
-            this.apellido_acudiante3,
+            this.apellido_acudiente3,
             this.id_tipo_documento_acudiente3,
             this.numero_documento_acudiente3,
             this.tel_contacto_acudiente3,
             this.correo_acudiente3,
 
             this.id_matricula
-        ];
+        ].map(v => v === undefined ? null : v);
+        
         await this.db.consultar(query, values);
         await this.db.cerrar();
         return this.db.getData();
     }
+
+    async delete_matricula(id) {
+    await this.crud.connect();
+    const query = "DELETE FROM t_matricula WHERE id_matricula = ?";
+    await this.crud.consultar(query, [id]);
+    await this.crud.cerrar();
+    return this.crud.getData();
+}
+
 
     get id_matricula() {
         return this._id_matricula;
@@ -368,10 +389,10 @@ class t_matriculas{
         this._nombre_acudiente1 = value;
     }
 
-    get apellido_acudiante1() {
+    get apellido_acudiente1() {
         return this._apellido_acudiante1;
     }
-    set apellido_acudiante1(value) {
+    set apellido_acudiente1(value) {
         this._apellido_acudiante1 = value;
     }
 
@@ -411,10 +432,10 @@ class t_matriculas{
         this._nombre_acudiente2 = value;
     }
 
-    get apellido_acudiante2() {
+    get apellido_acudiente2() {
         return this._apellido_acudiante2;
     }
-    set apellido_acudiante2(value) {
+    set apellido_acudiente2(value) {
         this._apellido_acudiante2 = value;
     }
 
@@ -454,10 +475,10 @@ class t_matriculas{
         this._nombre_acudiente3 = value;
     }
 
-    get apellido_acudiante3() {
+    get apellido_acudiente3() {
         return this._apellido_acudiante3;
     }
-    set apellido_acudiante3(value) {
+    set apellido_acudiente3(value) {
         this._apellido_acudiante3 = value;
     }
 
