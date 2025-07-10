@@ -83,9 +83,9 @@ nombre_curso VARCHAR(200) NOT NULL
 
 -- TABLA ASIGNATURA
 CREATE TABLE t_asignaturas (
-id_asignatura INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-nombre_asignatura VARCHAR(200) NOT NULL     
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+    id_asignatura INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nombre_asignatura VARCHAR(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
 
@@ -105,7 +105,7 @@ id_grado INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 nombre_grado VARCHAR(200) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
---TABLA DOCENTE_CURSO
+-- TABLA DOCENTE_CURSO
 CREATE TABLE t_docente_curso (
   id_docente_curso INT PRIMARY KEY,
   id_docente INT NOT NULL,
@@ -135,7 +135,7 @@ id_tipo_archivo INT(11) NOT NULL
 CREATE TABLE t_permisos(
 id_permiso INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 nombre_permiso VARCHAR(200) NOT NULL UNIQUE,
-descripcion_permiso TEXT NULL    
+descripcion_permiso TEXT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -143,7 +143,7 @@ descripcion_permiso TEXT NULL    
 CREATE TABLE t_rol_permisos(
 id_rol_permiso INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 id_rol INT(11) NOT NULL,
-id_permisos INT(11) NOT NULL    
+id_permisos INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -159,11 +159,11 @@ CREATE TABLE t_anuncios (
 id_anuncio INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 titulo_anuncio VARCHAR(255) NOT NULL,
 descripcion_anuncio TEXT NOT NULL,
-fecha_creacion  DATETIME DEFAULT CURRENT_TIMESTAMP,
+fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
 fecha_expiracion DATETIME NULL,
 -- id_autor == id_usuario
 id_autor INT(11) NOT NULL,
-estado BOOLEAN DEFAULT FALSE    
+estado BOOLEAN DEFAULT FALSE 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -171,7 +171,7 @@ estado BOOLEAN DEFAULT FALSE    
 CREATE TABLE t_comentarios_anuncios(
 id_comentarios_anuncio INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_anuncio INT(11) NOT NULL,
-id_comentario INT(11) NOT NULL    
+id_comentario INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -188,9 +188,9 @@ id_anuncio INT(11) NOT NULL
 CREATE TABLE t_anuncios_contextos (
 id_anuncio_contexto INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
 id_anuncio INT(11) NOT NULL,
-    
+
 -- general == institucional    
-contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado'    
+contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado' 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -199,7 +199,7 @@ contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado'  
 CREATE TABLE t_docente_asignatura(
 id_docente_asignatura INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_docente INT(11) NOT NULL,
-id_asignatura INT(11) NOT NULL    
+id_asignatura INT(11) NOT NULL 
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
@@ -226,8 +226,8 @@ id_periodo INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 -- el nombre del periodo es el numero por ejemplo
 nombre_periodo VARCHAR(200) NOT NULL UNIQUE,
 fecha_inicio DATE NOT NULL,
-fecha_fin DATE,  
-año_academico YEAR NOT NULL   
+fecha_fin DATE, 
+año_academico YEAR NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -236,7 +236,7 @@ año_academico YEAR NOT NULL  
 CREATE TABLE t_periodo_actividad(
 id_periodo_actividad INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
 id_periodo INT(11) NOT NULL,
-id_actividad INT(11) NOT NULL    
+id_actividad INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -252,8 +252,8 @@ id_actividad INT(11) NOT NULL
 
 CREATE TABLE t_comentario_actividad(
 id_comentario_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-id_comentario INT(11) NOT NULL,   
-id_actividad INT(11) NOT NULL    
+id_comentario INT(11) NOT NULL, 
+id_actividad INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci; 
 
 
@@ -285,7 +285,7 @@ id_curso INT(11) NOT NULL,
 id_periodo INT(11) NOT NULL,
 fecha DATE NOT NULL,
 estado ENUM('Presente', 'Ausente', 'Retardo', 'Justificado', 'Retirado'),
-observaciones TEXT     
+observaciones TEXT 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- TABLA BOLETIN
@@ -297,10 +297,10 @@ id_curso INT(11) NOT NULL,
 id_periodo INT(11) NOT NULL,
 id_asignatura INT(11) NOT NULL,
 id_informe_calificaciones INT(11) NOT NULL,
-desempeño ENUM('Bajo', 'Basico','Alto', 'Superior' ) NOT NULL,    
+desempeño ENUM('Bajo', 'Basico','Alto', 'Superior' ) NOT NULL, 
 area_academica VARCHAR(255),
 fecha_emision DATE NOT NULL,
-observaciones TEXT     
+observaciones TEXT 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -312,7 +312,7 @@ id_matricula INT(11) NOT NULL PRIMARY KEY,
 primer_nombre_estudiante VARCHAR(255) NOT NULL,
 nombres_adicionales_estudiante VARCHAR(255),
 primer_apellido_estudiante VARCHAR(255) NOT NULL,
-apellidos_adicionales_estudiante VARCHAR(255) NOT NULL,    
+apellidos_adicionales_estudiante VARCHAR(255) NOT NULL, 
 estado_matricula ENUM('Activa', 'Cancela', 'Retirada', 'Condicional', 'Pendiente') NOT NULL,
 fecha_matricula DATE NOT NULL,
 repitente BOOLEAN NOT NULL,
@@ -324,22 +324,22 @@ jornada ENUM('Tarde', 'Mañana') NOT NULL,
 direccion_residencia TEXT NOT NULL,
 id_tipo_documento_estudiante INT(11) NOT NULL,
 documento_estudiante INT(11) NOT NULL,
-observaciones TEXT,     
-        
+observaciones TEXT, 
+
 nombre_acudiente1 VARCHAR(255) NOT NULL,
 apellido_acudiente1 VARCHAR(255) NOT NULL,
 id_tipo_documento_acudiente1 INT(11) NOT NULL,
 numero_documento_acudiente1 INT(11) NOT NULL,
 tel_contacto_acudiente1 VARCHAR(15) NOT NULL,
-correo_acudiente1 VARCHAR(255),    
+correo_acudiente1 VARCHAR(255), 
 
 nombre_acudiente2 VARCHAR(255),
 apellido_acudiente2 VARCHAR(255) ,
 id_tipo_documento_acudiente2 INT(11),
 numero_documento_acudiente2 INT(11),
 tel_contacto_acudiente2 VARCHAR(15) ,
-correo_acudiente2 VARCHAR(255),     
-    
+correo_acudiente2 VARCHAR(255), 
+
 nombre_acudiente3 VARCHAR(255),
 apellido_acudiente3 VARCHAR(255) ,
 id_tipo_documento_acudiente3 INT(11),
@@ -351,9 +351,9 @@ correo_acudiente3 VARCHAR(255)
 
 -- TABLA TIPO ARCHIVO
 
-CREATE  TABLE t_tipo_archivo(
+CREATE TABLE t_tipo_archivo(
 id_tipo_archivo INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-tipo_archivo VARCHAR(200) NOT NULL UNIQUE    
+tipo_archivo VARCHAR(200) NOT NULL UNIQUE 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -362,7 +362,7 @@ tipo_archivo VARCHAR(200) NOT NULL UNIQUE    
 CREATE TABLE t_anexos_matricula(
 id_anexo_matricula INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_archivo INT(11) NOT NULL,
-id_matricula INT(11) NOT NULL    
+id_matricula INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -370,7 +370,7 @@ id_matricula INT(11) NOT NULL    
 CREATE TABLE t_tipo_identificacion(
 id_identificacion INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 tipo_identificacion VARCHAR(200) NOT NULL,
-descripcion_tipo TEXT    
+descripcion_tipo TEXT 
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
