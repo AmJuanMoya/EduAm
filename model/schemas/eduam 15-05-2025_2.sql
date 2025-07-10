@@ -259,14 +259,19 @@ id_actividad INT(11) NOT NULL    
 
 -- TABLA ACTIVIDAD
 CREATE TABLE t_actividad (
-id_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-titulo_actividad VARCHAR(255) NOT NULL,
-descripcion_actividad TEXT,     
-fecha_publicacion  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-fecha_entrega DATETIME,
-calificacion_nota DECIMAL(2,1) NOT NULL,
-id_categoria_actividad INT(11) NOT NULL    
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+  id_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  titulo_actividad VARCHAR(255) NOT NULL,
+  descripcion_actividad TEXT,
+  fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  fecha_entrega DATETIME,
+  calificacion_nota DECIMAL(2,1) NOT NULL,
+  id_categoria_actividad INT(11) NOT NULL,
+  id_docente INT(11) NOT NULL,
+  estado ENUM('Asignado', 'Pendiente', 'Entregado', 'Calificado', 'No entregado') NOT NULL DEFAULT 'Asignado',
+  FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad),
+  FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
 
 
 -- TABLA ASISTENCIA

@@ -175,13 +175,15 @@ INSERT INTO t_categoria_actividad (id_categoria_actividad, nombre_categoria_acti
 (5, 'Investigación Individual');
 
 -- 11. Inserción de datos en t_actividad (Vinculadas a categorías)
-INSERT INTO t_actividad (id_actividad, titulo_actividad, descripcion_actividad, fecha_publicacion, fecha_entrega, calificacion_nota, id_categoria_actividad) VALUES
-(1, 'Análisis de Cuentos Clásicos', 'Análisis literario de "Cien años de soledad".', '2024-03-01 08:00:00', '2024-03-15 23:59:59', 5.0, 1),
-(2, 'Experimento de Química', 'Práctica de laboratorio sobre reacciones ácido-base.', '2024-03-05 09:00:00', '2024-03-19 17:00:00', 4.5, 3),
-(3, 'Resolución de Problemas de Álgebra', 'Conjunto de ejercicios sobre ecuaciones lineales.', '2024-03-10 10:00:00', '2024-03-24 23:59:59', 4.0, 1),
-(4, 'Presentación de Historia', 'Exposición sobre la Revolución Francesa.', '2024-03-15 11:00:00', '2024-03-29 17:00:00', 5.0, 3),
-(5, 'Ensayo sobre Ética', 'Redacción de un ensayo argumentativo sobre la ética en la IA.', '2024-03-20 12:00:00', '2024-04-03 23:59:59', 3.8, 1),
-(6, 'Debate de Geografía', 'Debate grupal sobre el cambio climático y sus efectos.', '2024-04-01 13:00:00', '2024-04-10 17:00:00', 4.2, 4);
+-- 11. Inserción de datos en t_actividad (Vinculadas a categorías, docente asignado y estado calificado)
+INSERT INTO t_actividad (id_actividad, titulo_actividad , descripcion_actividad, fecha_publicacion, fecha_entrega, calificacion_nota, id_categoria_actividad, id_docente, estado) VALUES
+(1, 'Análisis de Cuentos Clásicos', 'Análisis literario de "Cien años de soledad".', '2024-03-01 08:00:00', '2024-03-15 23:59:59', 5.0, 1, 2, 'Calificado'),
+(2, 'Experimento de Química', 'Práctica de laboratorio sobre reacciones ácido-base.', '2024-03-05 09:00:00', '2024-03-19 17:00:00', 4.5, 3, 3, 'Calificado'),
+(3, 'Resolución de Problemas de Álgebra', 'Conjunto de ejercicios sobre ecuaciones lineales.', '2024-03-10 10:00:00', '2024-03-24 23:59:59', 4.0, 1, 4, 'Calificado'),
+(4, 'Presentación de Historia', 'Exposición sobre la Revolución Francesa.', '2024-03-15 11:00:00', '2024-03-29 17:00:00', 5.0, 3, 5, 'Calificado'),
+(5, 'Ensayo sobre Ética', 'Redacción de un ensayo argumentativo sobre la ética en la IA.', '2024-03-20 12:00:00', '2024-04-03 23:59:59', 3.8, 1, 6, 'Calificado'),
+(6, 'Debate de Geografía', 'Debate grupal sobre el cambio climático y sus efectos.', '2024-04-01 13:00:00', '2024-04-10 17:00:00', 4.2, 4, 2, 'Calificado');
+
 
 -- 12. Inserción de datos en t_asignaturas
 INSERT INTO t_asignaturas (id_asignatura, nombre_asignatura) VALUES
