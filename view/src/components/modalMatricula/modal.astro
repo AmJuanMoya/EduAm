@@ -13,6 +13,7 @@
     </div>
 
     <div class="mt-6 flex justify-end gap-2">
+      <button id="eliminarBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Eliminar</button>
       <button id="editarBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Editar</button>
       <button id="guardarBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded hidden">Guardar cambios</button>
     </div>
@@ -21,10 +22,12 @@
   <script type="module">
     let modoEdicion = false;
     let matriculaActual = null;
+    let opciones = [];
 
     const editarBtn = document.getElementById("editarBtn");
     const guardarBtn = document.getElementById("guardarBtn");
     const contenido = document.getElementById("contenidoModal");
+    const eliminarBtn = document.getElementById("eliminarBtn");
 
     window.mostrarModalMatricula = function(matricula) {
       matriculaActual = matricula;
@@ -41,14 +44,14 @@
     });
 
     guardarBtn.addEventListener("click", async () => {
-  const inputs = contenido.querySelectorAll("[data-campo]");
+    const inputs = contenido.querySelectorAll("[data-campo]");
 
   inputs.forEach(input => {
     const campo = input.dataset.campo;
     let valor = input.value;
 
     // Transformar tipos según campo
-    if (["estrato", "documento_estudiante", "numero_documento_acudiente1"].includes(campo)) {
+    if (["estrato", "documento_estudiante", "numero_documento_acudiente1", "id_tipo_documento_estudiante", "estado_matricula", "jornada", "repitente"].includes(campo)) {
       valor = parseInt(valor) || null;
     }
 
@@ -129,20 +132,32 @@
         <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
         ${crearInput("primer_nombre_estudiante", "Nombres")}
         ${crearInput("primer_apellido_estudiante", "Apellidos")}
-        ${crearSelect("id_tipo_documento_estudiante", "Tipo Documento", ["TI", "CC", "CE", "RC"])}
+        ${crearSelect("id_tipo_documento_estudiante", "Tipo Documento",opciones)}
         ${crearInput("documento_estudiante", "Documento")}
         ${crearInput("eps", "EPS")}
         ${crearInput("sisben", "SISBEN")}
         ${crearInput("estrato", "Estrato")}
         ${crearInput("discapacidad", "Discapacidad")}
         ${crearInput("direccion_residencia", "Dirección")}
-        ${crearSelect("repitente", "Repitente", ["Sí", "No"])}
+        ${crearSelect("repitente", "Repitente", [
+          { id: 0, nombre: "No" },
+          { id: 1, nombre: "Sí" }
+        ])}
       </div>
 
       <div class="mb-4">
         <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
-        ${crearSelect("estado_matricula", "Estado", ["Activa", "Pendiente", "Cancela", "Retirada", "Condicional"])}
-        ${crearSelect("jornada", "Jornada", ["Mañana", "Tarde", "Noche"])}
+        ${crearSelect("estado_matricula", "Estado", [
+          { id: 1, nombre: "Activa" },
+          { id: 2, nombre: "Pendiente" },
+          { id: 3, nombre: "Cancela" },
+          { id: 4, nombre: "Retirada" },
+          { id: 5, nombre: "Condicional" }
+        ])}
+        ${crearSelect("jornada", "Jornada", [
+          { id: 1, nombre: "Mañana" },
+          { id: 2, nombre: "Tarde" },
+        ])}
         ${crearInput("fecha_matricula", "Fecha de matrícula", "date")}
       </div>
 
@@ -157,6 +172,7 @@
     `;
   }
 }
+
 
 function crearInput(campo, label, tipo = "text") {
   return `
@@ -173,7 +189,7 @@ function crearSelect(campo, label, opciones = []) {
       <label class="block text-sm mb-1">${label}:</label>
       <select data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded">
         ${opciones.map(op => `
-          <option value="${op}" ${op === matriculaActual[campo] ? "selected" : ""}>${op}</option>
+          <option value="${op.id}" ${op.id == matriculaActual[campo] ? "selected" : ""}>${op.nombre}</option>
         `).join("")}
       </select>
     </div>
@@ -181,6 +197,31 @@ function crearSelect(campo, label, opciones = []) {
 }
 
 
+document.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("cerrarModalBtn").addEventListener("click", () => {
+    document.getElementById("modalMatricula").classList.add("hidden");
+    editarBtn.classList.remove("hidden");
+    guardarBtn.classList.add("hidden");
+    modoEdicion = false;
+  });
+
+  // Fetch dinámico de tipos de documento
+  try {
+    const response = await fetch("http://localhost:3000/api/tipos-identificacion");
+    if (!response.ok) throw new Error("No se pudo cargar los tipos de documento");
+
+    opciones = await response.json();
+  } catch (error) {
+    console.error("Error al cargar tipos de documento:", error);
+    // Fallback
+    opciones = [
+      { id: 1, nombre: "CC" },
+      { id: 2, nombre: "TI" },
+      { id: 3, nombre: "RC" },
+      { id: 4, nombre: "CE" }
+    ];
+  }
+});
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("cerrarModalBtn").addEventListener("click", () => {
@@ -190,6 +231,40 @@ function crearSelect(campo, label, opciones = []) {
         modoEdicion = false;
       });
     });
+
+    eliminarBtn.addEventListener("click", async () => {
+  if (!matriculaActual) return;
+
+  const confirmar = confirm("¿Estás seguro de que deseas eliminar esta matrícula?");
+  if (!confirmar) return;
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
+      method: "DELETE"
+    });
+
+    if (response.ok) {
+      alert("✅ Matrícula eliminada correctamente.");
+      document.getElementById("modalMatricula").classList.add("hidden");
+      editarBtn.classList.remove("hidden");
+      guardarBtn.classList.add("hidden");
+      modoEdicion = false;
+
+      // Opcional: recargar o actualizar la tabla
+      if (typeof window.actualizarTablaMatriculas === "function") {
+        window.actualizarTablaMatriculas();
+      }
+
+    } else {
+      const result = await response.json();
+      alert("❌ Error al eliminar la matrícula: " + (result.message || result.error));
+    }
+  } catch (error) {
+    console.error("Error al eliminar:", error);
+    alert("❌ Error de conexión al servidor");
+  }
+});
+
   </script>
 
 </div>

@@ -158,8 +158,8 @@ class t_matriculas{
 
         if (this.id_tipo_documento_acudiente1 == "CC"){
             this.id_tipo_documento_acudiente1 = 1
-        } else if (this.id_tipo_documento_acudiente1  === "CC") {
-            this.id_tipo_documento_acudiente1  = 1;
+        } else if (this.id_tipo_documento_acudiente1  === "TI") {
+            this.id_tipo_documento_acudiente1  = 2;
         } else if (this.id_tipo_documento_acudiente1  === "CE") {
             this.id_tipo_documento_acudiente1  = 4;
         } else if(this.id_tipo_documento_acudiente1  === "RC") {
@@ -253,12 +253,12 @@ class t_matriculas{
         return this.db.getData();
     }
 
-    async delete_matricula(id) {
-    await this.crud.connect();
+    async delete_matricula(doc) {
+    await this.db.connect();
     const query = "DELETE FROM t_matricula WHERE id_matricula = ?";
-    await this.crud.consultar(query, [id]);
-    await this.crud.cerrar();
-    return this.crud.getData();
+    await this.db.consultar(query, [doc]);
+    await this.db.cerrar();
+    return this.db.getData();
 }
 
 

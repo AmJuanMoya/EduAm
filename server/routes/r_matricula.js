@@ -42,11 +42,14 @@ router.get("/datos/matricula/:doc", async (req, res) => {
    try {
     const datos = req.body;
     console.log(datos);
-    const id = req.params.id;
+    const id_matricula = req.params.id_matricula;
+
+    console.log("ID recibido:", id_matricula);
+    console.log("Datos recibidos:", datos);
 
     const instancia = new matricula();
 
-    instancia.id_matricula = id;
+    instancia.id_matricula = id_matricula;
 
     for (let campo in datos) {
       if (instancia.hasOwnProperty(campo)) {
@@ -61,6 +64,27 @@ router.get("/datos/matricula/:doc", async (req, res) => {
     res.status(500).json({ error: "Error al actualizar la matrícula", detalle: error.message });
   }
 });
+
+
+router.delete("/datos/matricula/:doc", async (req, res) => {
+    try {
+        const doc = req.params.doc;
+        console.log(`Solicitud para eliminar matrícula con documento: ${doc}`);
+        
+        const crud = new matricula();
+        const resultado = await crud.delete_matricula(doc);
+
+        if (resultado.affectedRows === 0) {
+            res.status(404).json({ error: `No se encontró matrícula con documento: ${doc}` });
+        } else {
+            res.json({ mensaje: `Matrícula eliminada con éxito para documento: ${doc}` });
+        }
+    } catch (err) {
+        console.error('Error al eliminar matrícula:', err);
+        res.status(500).json({ error: 'Error al eliminar matrícula' });
+    }
+});
+
 
 
 
