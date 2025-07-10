@@ -56,53 +56,54 @@ INSERT INTO t_estado_usuario (id_estado_usuario, nombre_estado_usuario) VALUES
 (4, 'Bloqueado');
 
 -- 3. Inserción de datos en t_usuarios (1 admin, 5 docentes, 15 estudiantes, 15 acudientes)
--- Administrador
-INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario) VALUES
-(1, 'Andrea', 'Mendez', 'andrea.mendez@eduam.com', 'passadmin1', '3001002000', 'avatar_andrea.jpg', 1, 1);
+-- Administradora
+INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario, id_tipo_documento, documento) VALUES
+(1, 'Andrea', 'Mendez', 'andrea.mendez@eduam.com', 'passadmin1', '3001002000', 'avatar_andrea.jpg', 1, 1, 1, 1000100001);
 
 -- Docentes
-INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario) VALUES
-(2, 'Carlos', 'Guerra', 'carlos.guerra@eduam.com', 'passdocente1', '3101002001', 'avatar_carlos.jpg', 2, 1),
-(3, 'Diana', 'Vega', 'diana.vega@eduam.com', 'passdocente2', '3101002002', 'avatar_diana.jpg', 2, 1),
-(4, 'Felipe', 'Ruiz', 'felipe.ruiz@eduam.com', 'passdocente3', '3101002003', 'avatar_felipe.jpg', 2, 1),
-(5, 'Gabriela', 'Soto', 'gabriela.soto@eduam.com', 'passdocente4', '3101002004', 'avatar_gabriela.jpg', 2, 1),
-(6, 'Hector', 'Castaño', 'hector.castano@eduam.com', 'passdocente5', '3101002005', 'avatar_hector.jpg', 2, 1);
+INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario, id_tipo_documento, documento) VALUES
+(2, 'Carlos', 'Guerra', 'carlos.guerra@eduam.com', 'passdocente1', '3101002001', 'avatar_carlos.jpg', 2, 1, 1, 1000100002),
+(3, 'Diana', 'Vega', 'diana.vega@eduam.com', 'passdocente2', '3101002002', 'avatar_diana.jpg', 2, 1, 1, 1000100003),
+(4, 'Felipe', 'Ruiz', 'felipe.ruiz@eduam.com', 'passdocente3', '3101002003', 'avatar_felipe.jpg', 2, 1, 1, 1000100004),
+(5, 'Gabriela', 'Soto', 'gabriela.soto@eduam.com', 'passdocente4', '3101002004', 'avatar_gabriela.jpg', 2, 1, 1, 1000100005),
+(6, 'Hector', 'Castaño', 'hector.castano@eduam.com', 'passdocente5', '3101002005', 'avatar_hector.jpg', 2, 1, 1, 1000100006);
 
--- Estudiantes (15 estudiantes)
-INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario) VALUES
-(7, 'Alejandro', 'Lopez', 'alejandro.lopez@eduam.com', 'passest1', '3201003001', 'avatar_alejandro.jpg', 3, 1),
-(8, 'Brenda', 'Jimenez', 'brenda.jimenez@eduam.com', 'passest2', '3201003002', 'avatar_brenda.jpg', 3, 1),
-(9, 'Cristian', 'Mora', 'cristian.mora@eduam.com', 'passest3', '3201003003', 'avatar_cristian.jpg', 3, 1),
-(10, 'Daniela', 'Pardo', 'daniela.pardo@eduam.com', 'passest4', '3201003004', 'avatar_daniela.jpg', 3, 1),
-(11, 'Esteban', 'Quintero', 'esteban.quintero@eduam.com', 'passest5', '3201003005', 'avatar_esteban.jpg', 3, 1),
-(12, 'Fernanda', 'Rojas', 'fernanda.rojas@eduam.com', 'passest6', '3201003006', 'avatar_fernanda.jpg', 3, 1),
-(13, 'Gustavo', 'Vargas', 'gustavo.vargas@eduam.com', 'passest7', '3201003007', 'avatar_gustavo.jpg', 3, 1),
-(14, 'Isabel', 'Marin', 'isabel.marin@eduam.com', 'passest8', '3201003008', 'avatar_isabel.jpg', 3, 1),
-(15, 'Julian', 'Osorio', 'julian.osorio@eduam.com', 'passest9', '3201003009', 'avatar_julian.jpg', 3, 1),
-(16, 'Karen', 'Nieto', 'karen.nieto@eduam.com', 'passest10', '3201003010', 'avatar_karen.jpg', 3, 1),
-(17, 'Leonardo', 'Paz', 'leonardo.paz@eduam.com', 'passest11', '3201003011', 'avatar_leonardo.jpg', 3, 1),
-(18, 'Maria', 'Serrano', 'maria.serrano@eduam.com', 'passest12', '3201003012', 'avatar_maria_e.jpg', 3, 1),
-(19, 'Nicolas', 'Torres', 'nicolas.torres@eduam.com', 'passest13', '3201003013', 'avatar_nicolas.jpg', 3, 1),
-(20, 'Olga', 'Urrego', 'olga.urrego@eduam.com', 'passest14', '3201003014', 'avatar_olga_e.jpg', 3, 1),
-(21, 'Pedro', 'Velez', 'pedro.velez@eduam.com', 'passest15', '3201003015', 'avatar_pedro_e.jpg', 3, 1);
+-- Estudiantes (Tarjeta de Identidad)
+INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario, id_tipo_documento, documento) VALUES
+(7, 'Alejandro', 'Lopez', 'alejandro.lopez@eduam.com', 'passest1', '3201003001', 'avatar_alejandro.jpg', 3, 1, 2, 1020304007),
+(8, 'Brenda', 'Jimenez', 'brenda.jimenez@eduam.com', 'passest2', '3201003002', 'avatar_brenda.jpg', 3, 1, 2, 1020304008),
+(9, 'Cristian', 'Mora', 'cristian.mora@eduam.com', 'passest3', '3201003003', 'avatar_cristian.jpg', 3, 1, 2, 1020304009),
+(10, 'Daniela', 'Pardo', 'daniela.pardo@eduam.com', 'passest4', '3201003004', 'avatar_daniela.jpg', 3, 1, 2, 1020304010),
+(11, 'Esteban', 'Quintero', 'esteban.quintero@eduam.com', 'passest5', '3201003005', 'avatar_esteban.jpg', 3, 1, 2, 1020304011),
+(12, 'Fernanda', 'Rojas', 'fernanda.rojas@eduam.com', 'passest6', '3201003006', 'avatar_fernanda.jpg', 3, 1, 2, 1020304012),
+(13, 'Gustavo', 'Vargas', 'gustavo.vargas@eduam.com', 'passest7', '3201003007', 'avatar_gustavo.jpg', 3, 1, 2, 1020304013),
+(14, 'Isabel', 'Marin', 'isabel.marin@eduam.com', 'passest8', '3201003008', 'avatar_isabel.jpg', 3, 1, 2, 1020304014),
+(15, 'Julian', 'Osorio', 'julian.osorio@eduam.com', 'passest9', '3201003009', 'avatar_julian.jpg', 3, 1, 2, 1020304015),
+(16, 'Karen', 'Nieto', 'karen.nieto@eduam.com', 'passest10', '3201003010', 'avatar_karen.jpg', 3, 1, 2, 1020304016),
+(17, 'Leonardo', 'Paz', 'leonardo.paz@eduam.com', 'passest11', '3201003011', 'avatar_leonardo.jpg', 3, 1, 2, 1020304017),
+(18, 'Maria', 'Serrano', 'maria.serrano@eduam.com', 'passest12', '3201003012', 'avatar_maria_e.jpg', 3, 1, 2, 1020304018),
+(19, 'Nicolas', 'Torres', 'nicolas.torres@eduam.com', 'passest13', '3201003013', 'avatar_nicolas.jpg', 3, 1, 2, 1020304019),
+(20, 'Olga', 'Urrego', 'olga.urrego@eduam.com', 'passest14', '3201003014', 'avatar_olga_e.jpg', 3, 1, 2, 1020304020),
+(21, 'Pedro', 'Velez', 'pedro.velez@eduam.com', 'passest15', '3201003015', 'avatar_pedro_e.jpg', 3, 1, 2, 1020304021);
 
--- Acudientes (15 acudientes, uno por cada estudiante)
-INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario) VALUES
-(22, 'Laura', 'Lopez', 'laura.lopez@eduam.com', 'passacudiente1', '3301004001', 'avatar_laura_a.jpg', 4, 1), -- Acudiente de Alejandro
-(23, 'Miguel', 'Jimenez', 'miguel.jimenez@eduam.com', 'passacudiente2', '3301004002', 'avatar_miguel_a.jpg', 4, 1), -- Acudiente de Brenda
-(24, 'Natalia', 'Mora', 'natalia.mora@eduam.com', 'passacudiente3', '3301004003', 'avatar_natalia_a.jpg', 4, 1), -- Acudiente de Cristian
-(25, 'Oscar', 'Pardo', 'oscar.pardo@eduam.com', 'passacudiente4', '3301004004', 'avatar_oscar_a.jpg', 4, 1), -- Acudiente de Daniela
-(26, 'Paola', 'Quintero', 'paola.quintero@eduam.com', 'passacudiente5', '3301004005', 'avatar_paola_a.jpg', 4, 1), -- Acudiente de Esteban
-(27, 'Ricardo', 'Rojas', 'ricardo.rojas@eduam.com', 'passacudiente6', '3301004006', 'avatar_ricardo_a.jpg', 4, 1), -- Acudiente de Fernanda
-(28, 'Sara', 'Vargas', 'sara.vargas@eduam.com', 'passacudiente7', '3301004007', 'avatar_sara_a.jpg', 4, 1), -- Acudiente de Gustavo
-(29, 'Tomas', 'Marin', 'tomas.marin@eduam.com', 'passacudiente8', '3301004008', 'avatar_tomas_a.jpg', 4, 1), -- Acudiente de Isabel
-(30, 'Ursula', 'Osorio', 'ursula.osorio@eduam.com', 'passacudiente9', '3301004009', 'avatar_ursula_a.jpg', 4, 1), -- Acudiente de Julian
-(31, 'Viviana', 'Nieto', 'viviana.nieto@eduam.com', 'passacudiente10', '3301004010', 'avatar_viviana_a.jpg', 4, 1), -- Acudiente de Karen
-(32, 'Wilson', 'Paz', 'wilson.paz@eduam.com', 'passacudiente11', '3301004011', 'avatar_wilson_a.jpg', 4, 1), -- Acudiente de Leonardo
-(33, 'Ximena', 'Serrano', 'ximena.serrano@eduam.com', 'passacudiente12', '3301004012', 'avatar_ximena_a.jpg', 4, 1), -- Acudiente de Maria
-(34, 'Yolanda', 'Torres', 'yolanda.torres@eduam.com', 'passacudiente13', '3301004013', 'avatar_yolanda_a.jpg', 4, 1), -- Acudiente de Nicolas
-(35, 'Zoe', 'Urrego', 'zoe.urrego@eduam.com', 'passacudiente14', '3301004014', 'avatar_zoe_a.jpg', 4, 1), -- Acudiente de Olga
-(36, 'David', 'Velez', 'david.velez@eduam.com', 'passacudiente15', '3301004015', 'avatar_david_a.jpg', 4, 1); -- Acudiente de Pedro
+-- Acudientes (Cédula de Ciudadanía)
+INSERT INTO t_usuarios (id_usuario, nombres_usuario, apellidos_usuario, correo_usuario, contraseña_usuario, telefono_usuario, avatar_url_usuario, id_rol, id_estado_usuario, id_tipo_documento, documento) VALUES
+(22, 'Laura', 'Lopez', 'laura.lopez@eduam.com', 'passacudiente1', '3301004001', 'avatar_laura_a.jpg', 4, 1, 1, 1000100022),
+(23, 'Miguel', 'Jimenez', 'miguel.jimenez@eduam.com', 'passacudiente2', '3301004002', 'avatar_miguel_a.jpg', 4, 1, 1, 1000100023),
+(24, 'Natalia', 'Mora', 'natalia.mora@eduam.com', 'passacudiente3', '3301004003', 'avatar_natalia_a.jpg', 4, 1, 1, 1000100024),
+(25, 'Oscar', 'Pardo', 'oscar.pardo@eduam.com', 'passacudiente4', '3301004004', 'avatar_oscar_a.jpg', 4, 1, 1, 1000100025),
+(26, 'Paola', 'Quintero', 'paola.quintero@eduam.com', 'passacudiente5', '3301004005', 'avatar_paola_a.jpg', 4, 1, 1, 1000100026),
+(27, 'Ricardo', 'Rojas', 'ricardo.rojas@eduam.com', 'passacudiente6', '3301004006', 'avatar_ricardo_a.jpg', 4, 1, 1, 1000100027),
+(28, 'Sara', 'Vargas', 'sara.vargas@eduam.com', 'passacudiente7', '3301004007', 'avatar_sara_a.jpg', 4, 1, 1, 1000100028),
+(29, 'Tomas', 'Marin', 'tomas.marin@eduam.com', 'passacudiente8', '3301004008', 'avatar_tomas_a.jpg', 4, 1, 1, 1000100029),
+(30, 'Ursula', 'Osorio', 'ursula.osorio@eduam.com', 'passacudiente9', '3301004009', 'avatar_ursula_a.jpg', 4, 1, 1, 1000100030),
+(31, 'Viviana', 'Nieto', 'viviana.nieto@eduam.com', 'passacudiente10', '3301004010', 'avatar_viviana_a.jpg', 4, 1, 1, 1000100031),
+(32, 'Wilson', 'Paz', 'wilson.paz@eduam.com', 'passacudiente11', '3301004011', 'avatar_wilson_a.jpg', 4, 1, 1, 1000100032),
+(33, 'Ximena', 'Serrano', 'ximena.serrano@eduam.com', 'passacudiente12', '3301004012', 'avatar_ximena_a.jpg', 4, 1, 1, 1000100033),
+(34, 'Yolanda', 'Torres', 'yolanda.torres@eduam.com', 'passacudiente13', '3301004013', 'avatar_yolanda_a.jpg', 4, 1, 1, 1000100034),
+(35, 'Zoe', 'Urrego', 'zoe.urrego@eduam.com', 'passacudiente14', '3301004014', 'avatar_zoe_a.jpg', 4, 1, 1, 1000100035),
+(36, 'David', 'Velez', 'david.velez@eduam.com', 'passacudiente15', '3301004015', 'avatar_david_a.jpg', 4, 1, 1, 1000100036);
+
 
 -- 4. Inserción de datos en t_comentarios (Vinculados a usuarios de tipo estudiante o docente)
 INSERT INTO t_comentarios (id_comentario, comentario, id_usuario) VALUES
