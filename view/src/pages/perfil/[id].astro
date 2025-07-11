@@ -1,0 +1,87 @@
+---
+
+import '../../styles/global.css';
+
+
+export const prerender = false;
+const { id } = Astro.params;
+let userData = {};
+try {
+    
+    const response = await fetch(`http://localhost:3000/api/datos/usuario/${id}`);
+
+    if (response.ok) {
+        userData = await response.json(); 
+    } else {
+
+        console.error(`Error al obtener el perfil para el ID ${id}:`, response.status, response.statusText);
+   
+    }
+} catch (error) {
+ 
+    console.error('Error al conectar con el backend o al parsear la respuesta:', error);
+}
+
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-2xl">
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <div class="relative w-24 h-24 mx-auto rounded-full bg-gray-300 flex items-center justify-center border-4 border-white overflow-hidden">
+                <svg class="w-16 h-16 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM12 12.993a4.998 4.998 0 000-9.996 4.998 4.998 0 000 9.996z" />
+                </svg>
+            </div>
+            <h1 class="mt-4 text-2xl font-bold">Gustavo Vargas</h1>
+            <p class="text-blue-200">Estudiante</p> </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Información de Contacto</h2>
+                <div class="mb-3">
+                    <p class="text-gray-600"><strong>Correo Electrónico:</strong></p>
+                    <p class="text-gray-900">gustavo.vargas@eduam.com</p>
+                </div>
+                <div class="mb-3">
+                    <p class="text-gray-600"><strong>Teléfono:</strong></p>
+                    <p class="text-gray-900">3201003007</p>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Detalles Personales</h2>
+                <div class="mb-3">
+                    <p class="text-gray-600"><strong>ID de Usuario:</strong></p>
+                    <p class="text-gray-900">13</p>
+                </div>
+                <div class="mb-3">
+                    <p class="text-gray-600"><strong>Número de Documento:</strong></p>
+                    <p class="text-gray-900">1020304013</p>
+                </div>
+                <div class="mb-3">
+                    <p class="text-gray-600"><strong>Rol:</strong></p>
+                    <p class="text-gray-900">{userData.nombre_rol || 'N/A'}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 border-t mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Actividades / Cursos</h2>
+            <p class="text-gray-500">Aquí se mostrarían las actividades si fuera estudiante, o los cursos si fuera docente, una vez que la API te envíe esos datos.</p>
+            <ul class="list-disc list-inside mt-4 text-gray-700">
+                <li>Actividad: Tarea de Matemáticas (Calificación: Pendiente)</li>
+                <li>Curso: Programación Web I</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
