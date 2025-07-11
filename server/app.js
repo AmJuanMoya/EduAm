@@ -6,6 +6,8 @@ import matriculasRouter from "./routes/r_matricula.js";
 import identificacionRouter from "./routes/r_tipo_identificacion.js";
 import actividadesRouter from "./routes/r_actividades.js";
 import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
+import crearActividadRouter from './routes/r_creacion_actividad.js';
+import categoriasRouter from './routes/r_categorias.js';
 
 
 const app = express()
@@ -17,6 +19,8 @@ app.use("/api", matriculasRouter);
 app.use("/api", identificacionRouter);
 app.use("/api", actividadesRouter);
 app.use("/api", actividadDetalleRouter);
+app.use("/api", crearActividadRouter);
+app.use("/api", categoriasRouter);
 
 
 
