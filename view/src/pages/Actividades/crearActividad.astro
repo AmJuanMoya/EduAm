@@ -1,0 +1,173 @@
+---
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+import Panelnav from "../../components/navigation/panelnav.astro";
+
+// ID del docente (puedes hacerlo dinámico)
+const idDocente = 1;
+
+let asignaciones = [];
+let categorias = [];
+
+// Obtener asignaciones por docente
+try {
+  const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/crear/${idDocente}`);
+  const contentType = resAsignaciones.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    const data = await resAsignaciones.json();
+    asignaciones = Array.isArray(data) ? data : [];
+  } else {
+    console.error("⚠️ Respuesta de asignaciones no es JSON:", await resAsignaciones.text());
+  }
+} catch (err) {
+  console.error("❌ Error al obtener asignaciones:", err);
+}
+
+// Obtener categorías
+try {
+  const resCategorias = await fetch("http://localhost:3000/api/categorias");
+  const contentType = resCategorias.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    const data = await resCategorias.json();
+    categorias = Array.isArray(data) ? data : [];
+  } else {
+    console.error("⚠️ Respuesta de categorías no es JSON:", await resCategorias.text());
+  }
+} catch (err) {
+  console.error("❌ Error al obtener categorías:", err);
+}
+---
+
+<General>
+  <Panelnav />
+  <div class="bg-slate-900 flex min-h-screen text-white">
+    <Asidebar />
+
+    <div class="flex-1 p-6">
+      <h1 class="text-2xl font-bold mb-6 text-center">Crear Actividad</h1>
+
+      <form id="formActividad" class="max-w-lg mx-auto bg-slate-800 p-6 rounded-xl shadow space-y-4">
+        <div>
+          <label for="selectAsignacion" class="block mb-1">Curso y Asignatura</label>
+          <select id="selectAsignacion" class="w-full p-2 rounded text-black" required>
+            <option value="">Seleccione...</option>
+            {
+              asignaciones.map((asig) => (
+                <option value={JSON.stringify({ id_curso: asig.id_curso, id_asignatura: asig.id_asignatura })}>
+                  {asig.nombre_asignatura} - Curso {asig.grado}° {asig.letra}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="categoria" class="block mb-1">Categoría</label>
+          <select id="categoria" class="w-full p-2 rounded text-black" required>
+            <option value="">Seleccione categoría...</option>
+            {
+              categorias.map((cat) => (
+                <option value={cat.id_categoria_actividad}>{cat.nombre_categoria_actividad}</option>
+              ))
+            }
+          </select>
+        </div>
+
+        <div>
+          <label for="titulo" class="block mb-1">Título</label>
+          <input id="titulo" type="text" class="w-full p-2 rounded text-black" required />
+        </div>
+
+        <div>
+          <label for="descripcion" class="block mb-1">Descripción</label>
+          <textarea id="descripcion" rows="4" class="w-full p-2 rounded text-black" required></textarea>
+        </div>
+
+        <div>
+          <label for="fecha_entrega" class="block mb-1">Fecha de entrega</label>
+          <input id="fecha_entrega" type="date" class="w-full p-2 rounded text-black" required />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold"
+        >
+          Crear Actividad
+        </button>
+
+        <p id="mensaje" class="mt-2 text-center"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script de envío -->
+  <script type="module">
+    window.docenteActual = {
+      id: 1
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("formActividad");
+      const selectAsignacion = document.getElementById("selectAsignacion");
+      const categoria = document.getElementById("categoria");
+      const titulo = document.getElementById("titulo");
+      const descripcion = document.getElementById("descripcion");
+      const fechaEntrega = document.getElementById("fecha_entrega");
+      const mensaje = document.getElementById("mensaje");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const seleccion = selectAsignacion.value;
+        if (!seleccion) {
+          mensaje.textContent = "Seleccione curso y asignatura.";
+          mensaje.className = "text-yellow-400 text-center";
+          return;
+        }
+
+        let ids;
+        try {
+          ids = JSON.parse(seleccion);
+        } catch (err) {
+          mensaje.textContent = "Error al interpretar la selección.";
+          mensaje.className = "text-red-400 text-center";
+          return;
+        }
+
+        const payload = {
+          id_docente: window.docenteActual.id,
+          id_curso: parseInt(ids.id_curso),
+          id_asignatura: parseInt(ids.id_asignatura),
+          id_categoria_actividad: parseInt(categoria.value),
+          titulo_actividad: titulo.value,
+          descripcion_actividad: descripcion.value,
+          fecha_entrega: fechaEntrega.value
+        };
+
+        try {
+          const res = await fetch("http://localhost:3000/api/actividad/crear", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const resultado = await res.json();
+          if (res.ok) {
+            mensaje.textContent = "✅ Actividad creada correctamente.";
+            mensaje.className = "text-green-400 text-center";
+            form.reset();
+          } else {
+            mensaje.textContent = resultado.error || "❌ Error al crear la actividad.";
+            mensaje.className = "text-red-400 text-center";
+          }
+        } catch (err) {
+          mensaje.textContent = "❌ No se pudo conectar con el servidor.";
+          mensaje.className = "text-red-400 text-center";
+          console.error(err);
+        }
+      });
+    });
+  </script>
+</General>
