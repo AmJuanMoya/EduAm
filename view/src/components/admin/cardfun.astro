@@ -1,0 +1,11 @@
+---
+let {title ="CardTitulo", clases = "", direction= "/" } = Astro.props
+ 
+
+---
+
+
+<div class:list=`group hover:ring-blue-700 overflow-hidden m-1 p-1 w-70 h-20 flex justify-center items-center rounded-md bg-linear-to-br  from-bg-blue-800/40  to-blue-700/60 bg-[url:(/logoam.png)] ${clases}`>
+    <img class=" size-50   rotate-45 opacity-5 object-cover group-hover:scale-125 group-hover:-rotate-45 transition-all " src="/logoam.png" alt="Logo Eduam">
+    <a class="group-hover:text-blue-500 group-hover:scale-105  transition-all text-2xl  absolute" href={direction}>{title}</a>
+</div>

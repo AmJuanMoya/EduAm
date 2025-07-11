@@ -68,12 +68,13 @@ import Asidebar from "../../components/asidebar.astro";
     async function cargarMatriculas() {
       try {
         const res = await fetch("http://localhost:3000/api/datos/matricula");
+        if (!res.ok) throw new Error("Error en la respuesta del servidor");
         const data = await res.json();
         todasLasMatriculas = data;
         renderizarTabla();
       } catch (error) {
         contenedor.innerHTML = "<p class='text-red-500'>Error al cargar los datos.</p>";
-        console.error("Error:", error);
+        console.error("Hay un Error y es:", error);
       }
     }
 

@@ -56,9 +56,13 @@ try {
                   <input id="primer_apellido_estudiante" name="primer_apellido_estudiante" type="text" placeholder="Moya" class="m-5 rounded-sm w-200" required>
                 </div>
                   
-                <div class="mx-auto w-fit">    
+                <div class="mx-auto w-fit">   
+                  <div class="flex"> 
                   <label id="apellidos_adicionales_estudiante" for="" class="block w-50">Apellidos adicionales:</label>
-                  <input id="apellidos_adicionales_estudiante" name="apellidos_adicionales_estudiante" type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>  
+                  <input id="apellidos_adicionales_estudiante" required name="apellidos_adicionales_estudiante" type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                
                 </div>
 
                 <div class="mx-auto w-fit">    
@@ -198,15 +202,15 @@ try {
 
 </General>
 
-<main class="flex">
-<Asidebar/>
+<main class="flex border">
+
 <div class=" w-full mx-5 ">
-<form id="registroMatriculaForm" action="" method="POST" class=" dark:bg-slate-950/90 w-[75%] mx-auto p-5 overflow-auto resize ">
-</form>
+<!-- <form id="registroMatriculaForm" action="" method="POST" class=" dark:bg-slate-950/90 w-[75%] mx-auto p-5 overflow-auto resize ">
+</form> -->
 </div>
 
     <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-95 duration-300">
+        <div class="bg-white  dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-95 duration-300">
             <div class="text-center">
                 <div id="modalIcon" class="text-6xl mb-4"></div>
                 <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gray-900 dark:text-white"></h3>
@@ -282,7 +286,7 @@ try {
         console.log('Datos a enviar:', data); // Para depuración
 
         try {
-            const response = await fetch('http://localhost:3000/api/crear', { // Asegúrate que esta URL sea la correcta
+            const response = await fetch('http://localhost:3000/api/datos/matricula', { // Asegúrate que esta URL sea la correcta
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
