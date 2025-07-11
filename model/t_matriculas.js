@@ -18,13 +18,13 @@ class t_matriculas{
         this.discapacidad ="";
         this.jornada = "";
         this.direccion_residencia ="";
-        this.id_tipo_documento_estudiante ="";
+        this.id_tipo_documento_estudiante ;
         this.documento_estudiante = "";
         this.observaciones = "";
 
         this.nombre_acudiente1 ="";
         this.apellido_acudiente1 ="";
-        this.id_tipo_documento_acudiente1 ="";
+        this.id_tipo_documento_acudiente1 ;
         this.numero_documento_acudiente1="";
         this.tel_contacto_acudiente1="";
         this.correo_acudiente1="";
@@ -146,25 +146,6 @@ class t_matriculas{
 
     async update_matricula() {
         await this.db.connect();
-        if (this.id_tipo_documento_estudiante === "TI") {
-            this.id_tipo_documento_estudiante = 2;
-        } else if (this.id_tipo_documento_estudiante === "CC") {
-            this.id_tipo_documento_estudiante = 1;
-        } else if (this.id_tipo_documento_estudiante === "CE") {
-            this.id_tipo_documento_estudiante = 4;
-        } else if(this.id_tipo_documento_estudiante === "RC") {
-            this.id_tipo_documento_estudiante = 3
-        }
-
-        if (this.id_tipo_documento_acudiente1 == "CC"){
-            this.id_tipo_documento_acudiente1 = 1
-        } else if (this.id_tipo_documento_acudiente1  === "TI") {
-            this.id_tipo_documento_acudiente1  = 2;
-        } else if (this.id_tipo_documento_acudiente1  === "CE") {
-            this.id_tipo_documento_acudiente1  = 4;
-        } else if(this.id_tipo_documento_acudiente1  === "RC") {
-            this.id_tipo_documento_acudiente1 = 3
-        }
         const query = `
             UPDATE t_matricula SET
                 primer_nombre_estudiante = ?,

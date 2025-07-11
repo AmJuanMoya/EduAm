@@ -1,0 +1,88 @@
+<div id="modalMatricula" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+  <div class="bg-[#2A2D46] text-white rounded-xl shadow-xl max-w-3xl w-full p-6 overflow-y-auto max-h-[90vh] text-[15px] space-y-6">
+    
+    <div class="flex justify-between items-center border-b border-gray-600 pb-2 mb-4">
+      <h2 class="text-xl font-semibold">Detalle de Matrícula</h2>
+      <button id="cerrarModal" class="text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+    </div>
+
+    <div id="modalContenido" class="space-y-4">
+      <!-- Aquí se inyecta el contenido dinámico -->
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  const modal = document.getElementById("modalMatricula");
+  const modalContenido = document.getElementById("modalContenido");
+  const cerrarBtn = document.getElementById("cerrarModal");
+
+  window.addEventListener("abrirModalMatricula", (e) => {
+    const data = e.detail;
+
+    const section = (icon, color, title, content) => `
+      <div class="border border-gray-600 rounded-md p-4">
+        <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-[${color}]">
+          ${icon}
+          ${title}
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${content}</div>
+      </div>
+    `;
+
+    const field = (label, value) =>
+      `<p><strong>${label}:</strong> ${value ?? "No registrado"}</p>`;
+
+    const estudiante = [
+      field("ID Matrícula", data.id_matricula),
+      field("Nombre", `${data.primer_nombre_estudiante} ${data.primer_apellido_estudiante}`),
+      field("Tipo Documento", data.tipo_documento || "Desconocido"),
+      field("Documento", data.documento_estudiante),
+      field("EPS", data.eps),
+      field("SISBEN", data.sisben),
+      field("Estrato", data.estrato),
+      field("Discapacidad", data.discapacidad || "Ninguna"),
+      field("Dirección", data.direccion_residencia),
+      field("Repitente", data.repitente ? "Sí" : "No")
+    ].join("");
+
+    const matricula = [
+      field("Estado", `<span class="${getColorClase(data.estado_matricula)}">${data.estado_matricula}</span>`),
+      field("Jornada", data.jornada),
+      field("Fecha de matrícula", data.fecha_matricula)
+    ].join("");
+
+    const acudiente = [
+      field("Nombre", `${data.nombre_acudiente1} ${data.apellido_acudiente1}`),
+      field("Documento", data.numero_documento_acudiente1),
+      field("Teléfono", data.tel_contacto_acudiente1),
+      field("Correo", data.correo_acudiente1)
+    ].join("");
+
+    modalContenido.innerHTML = `
+      ${section('📘', '#38bdf8', 'Datos del Estudiante', estudiante)}
+      ${section('📗', '#4ade80', 'Datos de la Matrícula', matricula)}
+      ${section('🧑‍🤝‍🧑', '#c084fc', 'Acudiente del estudiante', acudiente)}
+    `;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  });
+
+  cerrarBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  });
+
+  function getColorClase(estado) {
+    const clases = {
+      Activa: "inline-block px-2 py-1 rounded bg-green-200 text-green-800",
+      Pendiente: "inline-block px-2 py-1 rounded bg-gray-300 text-gray-900",
+      Cancela: "inline-block px-2 py-1 rounded bg-red-300 text-red-900",
+      Retirada: "inline-block px-2 py-1 rounded bg-yellow-300 text-yellow-900",
+      Condicional: "inline-block px-2 py-1 rounded bg-blue-300 text-blue-900"
+    };
+    return clases[estado] || "inline-block px-2 py-1 rounded bg-gray-300 text-gray-900";
+  }
+</script>
