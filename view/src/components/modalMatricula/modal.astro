@@ -25,23 +25,35 @@
     const eliminarBtn = document.getElementById("eliminarBtn");
 
     window.mostrarModalMatricula = async function(matricula) {
-  matriculaActual = matricula;
-  modoEdicion = false;
+      matriculaActual = matricula;
+      modoEdicion = false;
 
   if (opciones.length === 0) {
-    try {
-      const response = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
-      opciones = await response.json();
-    } catch (error) {
-      console.error("Error al cargar tipos de documento:", error);
-      opciones = [
-        { id: 1, nombre: "Cédula de Ciudadanía" },
-        { id: 2, nombre: "Tarjeta de Identidad" },
-        { id: 3, nombre: "Registro Civil" },
-        { id: 4, nombre: "Pasaporte" }
-      ];
+  try {
+    const response = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+    const data = await response.json();
+    console.log(data)
+
+    if (!Array.isArray(data)) {
+      throw new Error("La respuesta no es un array");
     }
+
+    opciones = data.map(item => ({
+      id: item.id || item.id_identificacion,
+      nombre: item.nombre || item.tipo_identificacion
+    }));
+
+  } catch (error) {
+    console.error("Error al cargar tipos de documento:", error);
+    opciones = [
+      { id: 1, nombre: "Cédula de Ciudadanía" },
+      { id: 2, nombre: "Tarjeta de Identidad" },
+      { id: 3, nombre: "Registro Civil" },
+      { id: 4, nombre: "Pasaporte" }
+    ];
   }
+}
+
       renderModal();
       document.getElementById("modalMatricula").classList.remove("hidden");
     };
@@ -54,21 +66,31 @@
     });
 
     guardarBtn.addEventListener("click", async () => {
-      const inputs = contenido.querySelectorAll("[data-campo]");
-      inputs.forEach(input => {
-        const campo = input.dataset.campo;
-        let valor = input.value;
+    const inputs = contenido.querySelectorAll("[data-campo]");
+    let datosValidos = true;
 
-        if (["estrato", "documento_estudiante", "numero_documento_acudiente1", "id_tipo_documento_estudiante", "estado_matricula", "jornada", "repitente"].includes(campo)) {
-          valor = parseInt(valor) || null;
+    inputs.forEach(input => {
+      const campo = input.dataset.campo;
+      let valor = input.value;
+
+      if (valor === "" || typeof valor === "undefined") {
+        if (["id_tipo_documento_estudiante", "estado_matricula", "jornada"].includes(campo)) {
+          datosValidos = false;
+          input.classList.add("border-red-500");
         }
+        valor = null;
+      } else if (["estrato", "documento_estudiante", "numero_documento_acudiente1", "id_tipo_documento_estudiante", "estado_matricula", "jornada", "repitente"].includes(campo)) {
+        valor = parseInt(valor);
+        if (isNaN(valor)) valor = null;
+      }
 
-        if (campo === "repitente") {
-          valor = parseInt(valor); // Ya es 0 o 1
-        }
+      matriculaActual[campo] = valor;
+    });
 
-        matriculaActual[campo] = valor;
-      });
+    if (!datosValidos) {
+      alert("⚠️ Por favor completa los campos obligatorios.");
+      return;
+    }
 
       try {
         const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
@@ -98,24 +120,6 @@
       editarBtn.classList.remove("hidden");
       guardarBtn.classList.add("hidden");
     });
-
-    function obtenerNombreTipoDocumento(id) {
-      const tipo = opciones.find(o => o.id == id);
-      return tipo ? tipo.nombre : "Desconocido";
-    }
-
-      try {
-        const response = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
-        opciones = await response.json();
-      } catch (error) {
-        console.error("Error al cargar tipos de documento:", error);
-        opciones = [
-          { id: 1, nombre: "Cédula de Ciudadanía" },
-          { id: 2, nombre: "Tarjeta de Identidad" },
-          { id: 3, nombre: "Registro Civil" },
-          { id: 4, nombre: "Pasaporte" }
-        ];
-      }
     
 
     eliminarBtn.addEventListener("click", async () => {
@@ -125,7 +129,7 @@
       if (!confirmar) return;
 
       try {
-        const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
+        const response = await fetch(`http://localhost:3000/api/datos/matricula/actualizar`, {
           method: "DELETE"
         });
 
@@ -149,6 +153,11 @@
         alert("❌ Error de conexión al servidor");
       }
     });
+
+    function obtenerNombreTipoDocumento(id) {
+        const tipo = opciones.find(o => o.id == id);
+        return tipo ? tipo.nombre : "Desconocido";
+    }
 
     function renderModal() {
       if (!matriculaActual) return;

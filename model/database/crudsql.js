@@ -65,10 +65,14 @@ class Crud{
             await this.db.connect();
             
             const keys = Object.keys(data);
+            console.log(keys)
             const values = Object.values(data);
-            const setClause = `${keys.map((k)=> `${k} = ? ` )}`
+            console.log(values)
+            const setClause = keys.map((k) => `${k} = ?`).join(', ');
+            console.log(setClause)
 
             const query = `UPDATE ${table} SET ${setClause} WHERE ${condition}`;
+            console.log(query)
             await this.db.consultar(query, values);
 
             await this.db.cerrar();

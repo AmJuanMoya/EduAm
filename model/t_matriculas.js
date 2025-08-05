@@ -18,13 +18,13 @@ class t_matriculas{
         this.discapacidad ="";
         this.jornada = "";
         this.direccion_residencia ="";
-        this.id_tipo_documento_estudiante ;
+        this.id_tipo_documento_estudiante = "";
         this.documento_estudiante = "";
         this.observaciones = "";
 
         this.nombre_acudiente1 ="";
         this.apellido_acudiente1 ="";
-        this.id_tipo_documento_acudiente1 ;
+        this.id_tipo_documento_acudiente1 = "";
         this.numero_documento_acudiente1="";
         this.tel_contacto_acudiente1="";
         this.correo_acudiente1="";
@@ -144,94 +144,57 @@ class t_matriculas{
         return this.db.getData();
     }
 
+    
     async update_matricula() {
-        await this.db.connect();
-        const query = `
-            UPDATE t_matricula SET
-                primer_nombre_estudiante = ?,
-                nombres_adicionales_estudiante = ?,
-                primer_apellido_estudiante = ?,
-                apellidos_adicionales_estudiante = ?,
-                estado_matricula = ?,
-                fecha_matricula = ?,
-                repitente = ?,
-                eps = ?,
-                sisben = ?,
-                estrato = ?,
-                discapacidad = ?,
-                jornada = ?,
-                direccion_residencia = ?,
-                id_tipo_documento_estudiante = ?,
-                documento_estudiante = ?,
-                observaciones = ?,
+    const data = {
+        primer_nombre_estudiante: this.primer_nombre_estudiante,
+        nombres_adicionales_estudiante: this.nombres_adicionales_estudiante,
+        primer_apellido_estudiante: this.primer_apellido_estudiante,
+        apellidos_adicionales_estudiante: this.apellidos_adicionales_estudiante,
+        estado_matricula: this.estado_matricula,
+        fecha_matricula: this.fecha_matricula,
+        repitente: this.repitente,
+        eps: this.eps,
+        sisben: this.sisben,
+        estrato: this.estrato,
+        discapacidad: this.discapacidad,
+        jornada: this.jornada,
+        direccion_residencia: this.direccion_residencia,
+        id_tipo_documento_estudiante: this.id_tipo_documento_estudiante,
+        documento_estudiante: this.documento_estudiante,
+        observaciones: this.observaciones,
 
-                nombre_acudiente1 = ?,
-                apellido_acudiente1 = ?,
-                id_tipo_documento_acudiente1 = ?,
-                numero_documento_acudiente1 = ?,
-                tel_contacto_acudiente1 = ?,
-                correo_acudiente1 = ?,
+        nombre_acudiente1: this.nombre_acudiente1,
+        apellido_acudiente1: this.apellido_acudiente1,
+        id_tipo_documento_acudiente1: this.id_tipo_documento_acudiente1,
+        numero_documento_acudiente1: this.numero_documento_acudiente1,
+        tel_contacto_acudiente1: this.tel_contacto_acudiente1,
+        correo_acudiente1: this.correo_acudiente1,
 
-                nombre_acudiente2 = ?,
-                apellido_acudiente2 = ?,
-                id_tipo_documento_acudiente2 = ?,
-                numero_documento_acudiente2 = ?,
-                tel_contacto_acudiente2 = ?,
-                correo_acudiente2 = ?,
+        nombre_acudiente2: this.nombre_acudiente2,
+        apellido_acudiente2: this.apellido_acudiente2,
+        id_tipo_documento_acudiente2: this.id_tipo_documento_acudiente2,
+        numero_documento_acudiente2: this.numero_documento_acudiente2,
+        tel_contacto_acudiente2: this.tel_contacto_acudiente2,
+        correo_acudiente2: this.correo_acudiente2,
 
-                nombre_acudiente3 = ?,
-                apellido_acudiente3 = ?,
-                id_tipo_documento_acudiente3 = ?,
-                numero_documento_acudiente3 = ?,
-                tel_contacto_acudiente3 = ?,
-                correo_acudiente3 = ?
-            WHERE id_matricula = ?
-        `;
-        const values = [
-            this.primer_nombre_estudiante,
-            this.nombres_adicionales_estudiante,
-            this.primer_apellido_estudiante,
-            this.apellidos_adicionales_estudiante,
-            this.estado_matricula,
-            this.fecha_matricula,
-            this.repitente,
-            this.eps,
-            this.sisben,
-            this.estrato,
-            this.discapacidad,
-            this.jornada,
-            this.direccion_residencia,
-            this.id_tipo_documento_estudiante,
-            this.documento_estudiante,
-            this.observaciones,
+        nombre_acudiente3: this.nombre_acudiente3,
+        apellido_acudiente3: this.apellido_acudiente3,
+        id_tipo_documento_acudiente3: this.id_tipo_documento_acudiente3,
+        numero_documento_acudiente3: this.numero_documento_acudiente3,
+        tel_contacto_acudiente3: this.tel_contacto_acudiente3,
+        correo_acudiente3: this.correo_acudiente3,
+    };
+    
+    Object.keys(data).forEach(key => {
+    if (data[key] === undefined) data[key] = null;
+    });
 
-            this.nombre_acudiente1,
-            this.apellido_acudiente1,
-            this.id_tipo_documento_acudiente1,
-            this.numero_documento_acudiente1,
-            this.tel_contacto_acudiente1,
-            this.correo_acudiente1,
+    const condition = `id_matricula = ${this.id_matricula}`;
 
-            this.nombre_acudiente2,
-            this.apellido_acudiente2,
-            this.id_tipo_documento_acudiente2,
-            this.numero_documento_acudiente2,
-            this.tel_contacto_acudiente2,
-            this.correo_acudiente2,
-
-            this.nombre_acudiente3,
-            this.apellido_acudiente3,
-            this.id_tipo_documento_acudiente3,
-            this.numero_documento_acudiente3,
-            this.tel_contacto_acudiente3,
-            this.correo_acudiente3,
-
-            this.id_matricula
-        ].map(v => v === undefined ? null : v);
-        
-        await this.db.consultar(query, values);
-        await this.db.cerrar();
-        return this.db.getData();
+    const crud = new Crud();
+    console.log("DATA: ",data)
+    return await crud.updateOne('t_matricula', data, condition);
     }
 
     async delete_matricula(doc) {
