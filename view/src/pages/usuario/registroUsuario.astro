@@ -67,7 +67,7 @@ try {
                                 <label for="nombres_usuario" class="block">Nombres:</label>
                                 <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
                             </div>
-                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100" required>
+                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100"  required>
                         </div>
 
                         <div class="mx-auto w-fit">
@@ -136,7 +136,7 @@ try {
                                         <option value={d.id_identificacion}>{d.tipo_identificacion}</option>
                                     ))}
                                 </select>
-                                <input id="numero_documento" name="numero_documento" type="text" required placeholder="1000009" class="rounded-r-sm w-190">
+                                <input id="numero_documento" name="numero_documento" type="text" required placeholder="1000009" class="rounded-r-sm w-100">
                             </div>
                         </div>
                     </div>
@@ -244,4 +244,57 @@ try {
             console.error('Error de red o de solicitud:', error);
         }
     });
+    // INPUTS
+
+    let nombres = document.getElementById('nombres_usuario');
+    let apellidos = document.getElementById('apellidos_usuario');
+    let correo = document.getElementById('correo_usuario');
+    let contraseña = document.getElementById('contraseña_usuario');
+    let telefono = document.getElementById('telefono_usuario');
+    let numeroDocumento = document.getElementById('numero_documento');
+
+
+    // Validación de campos
+    nombres.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9\s]*$/.test(nombres.value)) {
+            nombres.setCustomValidity('Solo se permiten letras, numeros y espacios en blanco.');
+        } else {
+            nombres.setCustomValidity('');
+        }
+    });
+    apellidos.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9\s]*$/.test(apellidos.value)) {
+            apellidos.setCustomValidity('Solo se permiten letras, numeros y espacios en blanco.');
+        } else {
+            apellidos.setCustomValidity('');
+        }
+    });
+    correo.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo.value)) {
+            correo.setCustomValidity('Ingrese un correo electrónico válido.');
+        } else {
+            correo.setCustomValidity('');
+        }
+    });
+    contraseña.addEventListener('input', () => {
+        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&/*])[a-zA-Z\d!@#$%^&*]{6,}$/.test(contraseña.value)) {
+            contraseña.setCustomValidity('La contraseña debe tener al menos 6 caracteres, incluyendo una letra mayúscula, un número y un carácter especial.');
+        } else {
+            contraseña.setCustomValidity('');
+        }
+    });
+    telefono.addEventListener('input', () => {
+        if (!/^\d{10}$/.test(telefono.value)) {
+            telefono.setCustomValidity('El teléfono debe tener 10 dígitos.');
+        } else {
+            telefono.setCustomValidity('');
+        }
+    });
+    numeroDocumento.addEventListener('input', () => {
+        if (!/^\d{10}$/.test(numeroDocumento.value)) {
+            numeroDocumento.setCustomValidity('El número de documento debe tener 10 dígitos.');
+        } else {
+            numeroDocumento.setCustomValidity('');
+        }
+    });
 </script>
