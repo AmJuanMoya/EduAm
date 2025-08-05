@@ -40,6 +40,7 @@ router.get("/datos/matricula/:doc", async (req, res) => {
   router.put("/datos/matricula/:id_matricula", async (req, res) => {
    try {
     const datos = req.body;
+    console.log(datos)
     const id_matricula = req.params.id_matricula;
   
     const instancia = new matricula();

@@ -129,7 +129,7 @@
       if (!confirmar) return;
 
       try {
-        const response = await fetch(`http://localhost:3000/api/datos/matricula/actualizar`, {
+        const response = await fetch(`http://localhost:3000/api/datos/matricula/${doc}`, {
           method: "DELETE"
         });
 
@@ -227,20 +227,20 @@
             <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
             ${crearSelect("estado_matricula", "Estado", [
               { id: 1, nombre: "Activa" },
-              { id: 2, nombre: "Pendiente" },
-              { id: 3, nombre: "Cancela" },
-              { id: 4, nombre: "Retirada" },
-              { id: 5, nombre: "Condicional" }
+              { id: 2, nombre: "Cancela" },
+              { id: 3, nombre: "Retirada" },
+              { id: 4, nombre: "Condicional" },
+              { id: 5, nombre: "Pendiente" }
             ])}
             ${crearSelect("jornada", "Jornada", [
-              { id: 1, nombre: "Mañana" },
-              { id: 2, nombre: "Tarde" },
+              { id: 'Mañana', nombre: "Mañana" },
+              { id: 'Tarde', nombre: "Tarde" },
             ])}
             ${crearInput("fecha_matricula", "Fecha de matrícula", "date", true)}
           </div>
 
           <div>
-            <h3 class="font-bold text-lg mb-2">👤 Acudiente 1</h3>
+            <h3 class="font-bold text-lg mb-2">👤 Acudiente del estudiante</h3>
             ${crearInput("nombre_acudiente1", "Nombres")}
             ${crearInput("apellido_acudiente1", "Apellidos")}
             ${crearInput("numero_documento_acudiente1", "Documento")}
@@ -266,7 +266,8 @@
     }
 
     function crearSelect(campo, label, opciones) {
-      const valorActual = matriculaActual[campo];
+      const valorActual = (matriculaActual[campo] || "");
+
       let opcionesHTML = opciones.map(opcion => {
         const selected = opcion.id == valorActual ? "selected" : "";
         return `<option value="${opcion.id}" ${selected}>${opcion.nombre}</option>`;
