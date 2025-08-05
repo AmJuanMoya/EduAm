@@ -88,3 +88,5 @@ tabla.delete_rol(5).then(dato=>{
 //tabla.insert_rol("consejero").then(dato=>{
    //console.log(dato)
 //})
+
+export default t_roles;

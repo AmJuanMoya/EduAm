@@ -8,6 +8,10 @@ import actividadesRouter from "./routes/r_actividades.js";
 import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
 import crearActividadRouter from './routes/r_creacion_actividad.js';
 import categoriasRouter from './routes/r_categorias.js';
+import rolesRouter from './routes/r_roles.js';
+import estadoUsuarioRouter from './routes/r_estado_usuario.js';
+import registroUsuarioRouter from './routes/r_registro_usuario.js';
+
 
 
 const app = express()
@@ -21,6 +25,9 @@ app.use("/api", actividadesRouter);
 app.use("/api", actividadDetalleRouter);
 app.use("/api", crearActividadRouter);
 app.use("/api", categoriasRouter);
+app.use("/api", rolesRouter);
+app.use("/api", estadoUsuarioRouter);
+app.use("/api", registroUsuarioRouter);
 
 
 
