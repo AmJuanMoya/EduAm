@@ -1,14 +1,14 @@
-// model/t_usuario.js
-import Database from "./database/conectionDB.js"; // Asegúrate de que la ruta a Database.js sea correcta
-import bcrypt from 'bcryptjs'; // Importa bcryptjs para hashear contraseñas
+
+import Database from "./database/conectionDB.js"; 
+import bcrypt from 'bcryptjs'; 
 
 class t_usuario {
     constructor() {
-        this.id_usuario = null; // Inicializar con null o 0 si es autoincremental
+        this.id_usuario = null; 
         this.nombres_usuario = "";
         this.apellidos_usuario = "";
         this.correo_usuario = "";
-        this.contraseña_usuario = ""; // Aquí se almacenará la contraseña hasheada
+        this.contraseña_usuario = ""; 
         this.telefono_usuario = null;
         this.avatar_url_usuario = null;
         this.id_rol = null;
@@ -24,7 +24,7 @@ class t_usuario {
         await this.db.connect(); // Conecta a la base de datos
 
         // Hashear la contraseña antes de insertarla
-        const hashedPassword = await bcrypt.hash(this.contraseña_usuario, 10); // 10 es el costo de salado
+        const hashedPassword = await bcrypt.hash(this.contraseña_usuario, 10); 
 
         const query = `
             INSERT INTO t_usuarios (

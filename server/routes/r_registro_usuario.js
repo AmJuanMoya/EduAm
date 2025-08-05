@@ -1,8 +1,10 @@
 // routes/r_registro_usuario.js
 import { Router } from "express";
 import Usuario from "../../model/t_usuario.js"; // Importa tu clase t_usuario
+import Crud from "../../model/database/crudsql.js"
 
 const router = Router();
+const crud = new Crud();
 
 router.post("/registroUsuario", async (req, res) => { // La ruta completa será /api/registroUsuario
     try {
@@ -21,6 +23,13 @@ router.post("/registroUsuario", async (req, res) => { // La ruta completa será 
             }
         }
 
+        // crud.getByCondition("t_usuarios", `correo_usuario = "${userData.correo_usuario}"`).then((data)=>{
+        //     console.log("la informacion es: ", data)
+        // })
+        // console.log( "se muestra la meta ", crud.db.getMetadata())
+       
+        
+
         // Instancia tu modelo de usuario
         let usuarioModel = new Usuario();
 
@@ -37,14 +46,23 @@ router.post("/registroUsuario", async (req, res) => { // La ruta completa será 
         usuarioModel.set_numero_documento(userData.numero_documento);
 
         // Llama al método insert_usuario del modelo (ahora sin argumentos)
+        
+        crud.getByCondition("t_usuarios", `correo_usuario = "${userData.correo_usuario}"`).then((data)=>{
+            console.log("la informacion es: ", data)
+            console.log( "se muestra la meta ", crud.db.getMetadata())
+        })
+        
+
         const result = await usuarioModel.insert_usuario();
 
         // Envía una respuesta de éxito
         res.status(200).json({ message: 'Usuario registrado con éxito', id_usuario: result?.insertId || 'N/A' });
 
     } catch (error) {
-        console.error('Error en la ruta /registroUsuario:', error);
-        // Envía una respuesta de error
+        console.error('------------Error en la ruta /registroUsuario:', error);
+        console.error('Error al registrar usuario:', error);
+
+
         res.status(500).json({ message: 'Error interno del servidor al registrar usuario', error: error.message });
     }
 });

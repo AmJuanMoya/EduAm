@@ -106,6 +106,9 @@ class Database {
             throw new Error(`Error en la consulta: ${err.message}`);
         }
     }
+    getAfectedRows() {
+        return this.afectedRows || 0;
+    }
 
     getConnection() {
         return this.connection;

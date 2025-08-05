@@ -67,7 +67,7 @@ try {
                                 <label for="nombres_usuario" class="block">Nombres:</label>
                                 <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
                             </div>
-                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="m-5 rounded-sm w-200" required>
+                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
@@ -75,28 +75,28 @@ try {
                                 <label for="apellidos_usuario" class="block">Apellidos:</label>
                                 <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
                             </div>
-                            <input id="apellidos_usuario" name="apellidos_usuario" type="text" placeholder="Pérez Rodríguez" class="m-5 rounded-sm w-200" required>
+                            <input id="apellidos_usuario" name="apellidos_usuario" type="text" placeholder="Pérez Rodríguez" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
                                 <label for="correo_usuario" class="block">Correo Electrónico:</label>
                             </div>
-                            <input id="correo_usuario" name="correo_usuario" type="email" placeholder="usuario@example.com" class="m-5 rounded-sm w-200" required>
+                            <input id="correo_usuario" name="correo_usuario" type="email" placeholder="usuario@example.com" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
                                 <label for="contraseña_usuario" class="block">Contraseña:</label>
                             </div>
-                            <input id="contraseña_usuario" name="contraseña_usuario" type="password" placeholder="********" class="m-5 rounded-sm w-200" required>
+                            <input id="contraseña_usuario" name="contraseña_usuario" type="password" placeholder="********" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
                                 <label for="telefono_usuario" class="block">Teléfono:</label>
                             </div>
-                            <input id="telefono_usuario" name="telefono_usuario" type="text" placeholder="3001234567" class="m-5 rounded-sm w-200">
+                            <input id="telefono_usuario" name="telefono_usuario" type="text" placeholder="3001234567" class="m-5 rounded-sm w-100">
                         </div>
                         
                         <!-- Campo avatar_url_usuario OMITIDO por ahora -->
@@ -105,7 +105,7 @@ try {
                             <div class="flex">
                                 <label for="id_rol" class="block">Rol:</label>
                             </div>
-                            <select name="id_rol" id="id_rol" class="m-5 rounded-sm w-200" required>
+                            <select name="id_rol" id="id_rol" class="m-5 rounded-sm w-100" required>
                                 <option selected disabled value="">Seleccione un rol</option>
                                 {roles.map((rol) => (
                                     <option value={rol.id_rol}>{rol.nombre_rol}</option>
@@ -117,7 +117,7 @@ try {
                             <div class="flex">
                                 <label for="id_estado_usuario" class="block">Estado de Usuario:</label>
                             </div>
-                            <select name="id_estado_usuario" id="id_estado_usuario" class="m-5 rounded-sm w-200" required>
+                            <select name="id_estado_usuario" id="id_estado_usuario" class="m-5 rounded-sm w-100" required>
                                 <option selected disabled value="">Seleccione un estado</option>
                                 {estadosUsuario.map((estado) => (
                                     <option value={estado.id_estado_usuario}>{estado.nombre_estado_usuario}</option>
