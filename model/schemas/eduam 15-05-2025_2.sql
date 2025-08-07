@@ -267,9 +267,9 @@ CREATE TABLE t_actividad (
   calificacion_nota DECIMAL(2,1) NOT NULL,
   id_categoria_actividad INT(11) NOT NULL,
   id_docente INT(11) NOT NULL,
-  estado ENUM('Asignado', 'Pendiente', 'Entregado', 'Calificado', 'No entregado') NOT NULL DEFAULT 'Asignado',
-  FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad),
-  FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente)
+  id_curso INT(11) NOT NULL,
+  id_asignatura INT(11) NOT NULL,
+  estado ENUM('Asignado', 'Pendiente', 'Entregado', 'Calificado', 'No entregado') NOT NULL DEFAULT 'Asignado'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -551,4 +551,11 @@ FOREIGN KEY (id_tipo_archivo) REFERENCES t_tipo_archivo(id_tipo_archivo);
 -- Relaciones para t_actividad
 ALTER TABLE t_actividad
 ADD CONSTRAINT fk_actividad_categoria
-FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad);
+FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad),
+ADD CONSTRAINT fk_actividad_asignatura
+FOREIGN KEY (id_asignatura) REFERENCES t_asignaturas(id_asignatura),
+ADD CONSTRAINT fk_actividad_curso
+FOREIGN KEY (id_curso) REFERENCES t_curso(id_curso),
+ADD CONSTRAINT fk_actividad_docente
+FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente);
+

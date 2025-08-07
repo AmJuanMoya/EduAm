@@ -216,13 +216,13 @@ INSERT INTO t_curso (id_curso, id_director_curso, id_grado, nombre_curso) VALUES
 (9, 5, 9, '9E'), -- Dirigido por Docente Hector
 (10, 5, 10, '10E');
 
-INSERT INTO t_actividad (id_actividad, titulo_actividad , descripcion_actividad, fecha_publicacion, fecha_entrega, calificacion_nota, id_categoria_actividad, id_docente, estado) VALUES
-(1, 'Análisis de Cuentos Clásicos', 'Análisis literario de "Cien años de soledad".', '2024-03-01 08:00:00', '2024-03-15 23:59:59', 5.0, 1, 2, 'Calificado'),
-(2, 'Experimento de Química', 'Práctica de laboratorio sobre reacciones ácido-base.', '2024-03-05 09:00:00', '2024-03-19 17:00:00', 4.5, 3, 3, 'Calificado'),
-(3, 'Resolución de Problemas de Álgebra', 'Conjunto de ejercicios sobre ecuaciones lineales.', '2024-03-10 10:00:00', '2024-03-24 23:59:59', 4.0, 1, 4, 'Calificado'),
-(4, 'Presentación de Historia', 'Exposición sobre la Revolución Francesa.', '2024-03-15 11:00:00', '2024-03-29 17:00:00', 5.0, 3, 5, 'Calificado'),
-(5, 'Ensayo sobre Ética', 'Redacción de un ensayo argumentativo sobre la ética en la IA.', '2024-03-20 12:00:00', '2024-04-03 23:59:59', 3.8, 1, 5, 'Calificado'), -- Corrected: id_docente changed from 6 to 5
-(6, 'Debate de Geografía', 'Debate grupal sobre el cambio climático y sus efectos.', '2024-04-01 13:00:00', '2024-04-10 17:00:00', 4.2, 4, 2, 'Calificado');
+INSERT INTO t_actividad (id_actividad, titulo_actividad, descripcion_actividad, fecha_publicacion, fecha_entrega, calificacion_nota, id_categoria_actividad, id_docente, id_curso, id_asignatura, estado) VALUES
+(1, 'Análisis de Cuentos Clásicos', 'Análisis literario de "Cien años de soledad".', '2024-03-01 08:00:00', '2024-03-15 23:59:59', 5.0, 1, 2, 1, 1, 'Calificado'),
+(2, 'Experimento de Química', 'Práctica de laboratorio sobre reacciones ácido-base.', '2024-03-05 09:00:00', '2024-03-19 17:00:00', 4.5, 3, 3, 2, 3, 'Calificado'),
+(3, 'Resolución de Problemas de Álgebra', 'Conjunto de ejercicios sobre ecuaciones lineales.', '2024-03-10 10:00:00', '2024-03-24 23:59:59', 4.0, 1, 4, 3, 2, 'Calificado'),
+(4, 'Presentación de Historia', 'Exposición sobre la Revolución Francesa.', '2024-03-15 11:00:00', '2024-03-29 17:00:00', 5.0, 3, 5, 4, 4, 'Calificado'),
+(5, 'Ensayo sobre Ética', 'Redacción de un ensayo argumentativo sobre la ética en la IA.', '2024-03-20 12:00:00', '2024-04-03 23:59:59', 3.8, 1, 5, 4, 5, 'Calificado'),
+(6, 'Debate de Geografía', 'Debate grupal sobre el cambio climático y sus efectos.', '2024-04-01 13:00:00', '2024-04-10 17:00:00', 4.2, 4, 2, 1, 6, 'Calificado');
 
 INSERT INTO t_matricula (id_matricula, primer_nombre_estudiante, nombres_adicionales_estudiante, primer_apellido_estudiante, apellidos_adicionales_estudiante, estado_matricula, fecha_matricula, repitente, eps, sisben, estrato, discapacidad, jornada, direccion_residencia, id_tipo_documento_estudiante, documento_estudiante, observaciones, nombre_acudiente1, apellido_acudiente1, id_tipo_documento_acudiente1, numero_documento_acudiente1, tel_contacto_acudiente1, correo_acudiente1, nombre_acudiente2, apellido_acudiente2, id_tipo_documento_acudiente2, numero_documento_acudiente2, tel_contacto_acudiente2, correo_acudiente2, nombre_acudiente3, apellido_acudiente3, id_tipo_documento_acudiente3, numero_documento_acudiente3, tel_contacto_acudiente3, correo_acudiente3) VALUES
 (1, 'Alejandro', NULL, 'Lopez', '', 'Activa', '2024-01-10', FALSE, 'SURA', 'Nivel 3', 3, NULL, 'Mañana', 'Calle 10 # 20-30', 2, 1020304007, NULL, 'Laura', 'Lopez', 1, 1000100022, '3301004001', 'laura.lopez@eduam.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
