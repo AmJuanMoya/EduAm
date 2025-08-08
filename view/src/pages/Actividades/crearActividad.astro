@@ -3,22 +3,19 @@ import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import Panelnav from "../../components/navigation/panelnav.astro";
 
-// ID del docente (puedes hacerlo dinámico)
 const idDocente = 1;
 
 let asignaciones = [];
 let categorias = [];
+let recursos = [];
 
-// Obtener asignaciones por docente
+// Obtener asignaciones
 try {
   const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/crear/${idDocente}`);
   const contentType = resAsignaciones.headers.get("content-type");
-
-  if (contentType && contentType.includes("application/json")) {
+  if (contentType?.includes("application/json")) {
     const data = await resAsignaciones.json();
     asignaciones = Array.isArray(data) ? data : [];
-  } else {
-    console.error("⚠️ Respuesta de asignaciones no es JSON:", await resAsignaciones.text());
   }
 } catch (err) {
   console.error("❌ Error al obtener asignaciones:", err);
@@ -28,15 +25,24 @@ try {
 try {
   const resCategorias = await fetch("http://localhost:3000/api/categorias");
   const contentType = resCategorias.headers.get("content-type");
-
-  if (contentType && contentType.includes("application/json")) {
+  if (contentType?.includes("application/json")) {
     const data = await resCategorias.json();
     categorias = Array.isArray(data) ? data : [];
-  } else {
-    console.error("⚠️ Respuesta de categorías no es JSON:", await resCategorias.text());
   }
 } catch (err) {
   console.error("❌ Error al obtener categorías:", err);
+}
+
+// Obtener recursos
+try {
+  const resRecursos = await fetch("http://localhost:3000/api/recursos");
+  const contentType = resRecursos.headers.get("content-type");
+  if (contentType?.includes("application/json")) {
+    const data = await resRecursos.json();
+    recursos = Array.isArray(data) ? data : [];
+  }
+} catch (err) {
+  console.error("❌ Error al obtener recursos:", err);
 }
 ---
 
@@ -90,6 +96,19 @@ try {
           <input id="fecha_entrega" type="date" class="w-full p-2 rounded text-black" required />
         </div>
 
+        <!-- Reemplazado: ahora se selecciona recurso existente -->
+        <div>
+          <label for="recurso" class="block mb-1">Recurso (opcional)</label>
+          <select id="recurso" class="w-full p-2 rounded text-black">
+            <option value="">Sin recurso</option>
+            {
+              recursos.map((r) => (
+                <option value={r.id_recurso}>{r.nombre_recurso}</option>
+              ))
+            }
+          </select>
+        </div>
+
         <button
           type="submit"
           class="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold"
@@ -104,9 +123,7 @@ try {
 
   <!-- Script de envío -->
   <script type="module">
-    window.docenteActual = {
-      id: 1
-    };
+    window.docenteActual = { id: 1 };
 
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("formActividad");
@@ -115,6 +132,7 @@ try {
       const titulo = document.getElementById("titulo");
       const descripcion = document.getElementById("descripcion");
       const fechaEntrega = document.getElementById("fecha_entrega");
+      const recurso = document.getElementById("recurso");
       const mensaje = document.getElementById("mensaje");
 
       form.addEventListener("submit", async (e) => {
@@ -136,15 +154,25 @@ try {
           return;
         }
 
+        const fecha_entrega = fechaEntrega.value;
+        const hoy = new Date().toISOString().slice(0, 10);
+        if (fecha_entrega < hoy) {
+          mensaje.textContent = "La fecha de entrega no puede ser anterior al día actual.";
+          mensaje.className = "text-yellow-400 text-center";
+          return;
+        }
+
         const payload = {
-          id_docente: window.docenteActual.id,
-          id_curso: parseInt(ids.id_curso),
-          id_asignatura: parseInt(ids.id_asignatura),
-          id_categoria_actividad: parseInt(categoria.value),
-          titulo_actividad: titulo.value,
-          descripcion_actividad: descripcion.value,
-          fecha_entrega: fechaEntrega.value
+        id_docente: window.docenteActual.id,
+        id_curso: parseInt(ids.id_curso),
+        id_asignatura: parseInt(ids.id_asignatura),
+        id_categoria_actividad: parseInt(categoria.value),
+        titulo_actividad: titulo.value,
+        descripcion_actividad: descripcion.value,
+        fecha_entrega,
+        id_recurso: recurso.value ? parseInt(recurso.value) : null 
         };
+
 
         try {
           const res = await fetch("http://localhost:3000/api/actividad/crear", {

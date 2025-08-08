@@ -559,3 +559,10 @@ FOREIGN KEY (id_curso) REFERENCES t_curso(id_curso),
 ADD CONSTRAINT fk_actividad_docente
 FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente);
 
+ALTER TABLE t_informe_calificaciones
+ADD COLUMN archivo_entregado VARCHAR(255) NULL,
+ADD COLUMN fecha_entrega_estudiante DATETIME NULL,
+ADD COLUMN estado_entrega ENUM('asignado', 'entregado', 'calificado') DEFAULT 'asignado',
+ADD COLUMN calificacion_nota DECIMAL(2,1) NULL,
+ADD COLUMN url_entrega TEXT;
+

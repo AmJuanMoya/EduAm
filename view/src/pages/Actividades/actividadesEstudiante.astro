@@ -4,15 +4,12 @@ import Asidebar from "../../components/asidebar.astro";
 import Panelnav from "../../components/navigation/panelnav.astro";
 import ActividadCard from "../../components/ActividadCard.astro";
 
-// Documento del estudiante
-const documentoEstudiante = "1020304007";
+const idEstudiante = 1;
 
-// Consulta de actividades
-const response = await fetch(`http://localhost:3000/api/datos/actividades/estudiante/detalle/${documentoEstudiante}`);
+const response = await fetch(`http://localhost:3000/api/datos/actividades/estudiante/detalle/${idEstudiante}`);
 const resultado = await response.json();
 const actividades = Array.isArray(resultado) ? resultado : [];
 
-// Extraer asignaturas únicas para el filtro
 const asignaturasUnicas = Array.from(new Set(
   actividades.map((a: any) => a.nombre_asignatura)
 ));
@@ -26,14 +23,10 @@ const asignaturasUnicas = Array.from(new Set(
     <div class="flex-1 p-6 text-white">
       <h1 class="text-2xl font-bold mb-4 text-center">Actividades</h1>
 
-      <!-- Filtros -->
       <div class="flex flex-wrap gap-4 items-end mb-6">
         <div>
           <label for="filtroAsignatura" class="block text-sm mb-1">Asignatura</label>
-          <select
-            id="filtroAsignatura"
-            class="bg-slate-700 p-2 rounded-md w-48 border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
-          >
+          <select id="filtroAsignatura" class="bg-slate-700 p-2 rounded-md w-48 border border-gray-600">
             <option value="">Todas</option>
             {(asignaturasUnicas as string[]).map((asig) => (
               <option value={asig}>{asig}</option>
@@ -43,27 +36,19 @@ const asignaturasUnicas = Array.from(new Set(
 
         <div>
           <label for="filtroFecha" class="block text-sm mb-1">Fecha entrega</label>
-          <input
-            type="date"
-            id="filtroFecha"
-            class="bg-white text-black p-2 rounded-md w-48 border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <input type="date" id="filtroFecha" class="bg-white text-black p-2 rounded-md w-48 border border-gray-600" />
         </div>
 
-        <button
-          id="filtrarBtn"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-1"
-        >
+        <button id="filtrarBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-1">
           Filtrar
         </button>
       </div>
 
-      <!-- Cards -->
       <div id="actividadesContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {
           actividades.length > 0
             ? actividades.map((actividad) => (
-                <ActividadCard actividad={actividad} client:load />
+                <ActividadCard actividad={actividad} idEstudiante={idEstudiante} />
               ))
             : <p class="text-yellow-300 col-span-full">No hay actividades disponibles.</p>
         }
@@ -71,7 +56,6 @@ const asignaturasUnicas = Array.from(new Set(
     </div>
   </div>
 
-  <!-- Scripts -->
   <script type="module">
     document.addEventListener("DOMContentLoaded", () => {
       const filtroAsignatura = document.getElementById("filtroAsignatura");
@@ -89,38 +73,113 @@ const asignaturasUnicas = Array.from(new Set(
           const asignaturaCard = card.getAttribute("data-asignatura");
           const fechaCard = card.getAttribute("data-fecha");
 
-          const coincideAsignatura =
-            !asignaturaSeleccionada || asignaturaSeleccionada === asignaturaCard;
+          const coincideAsignatura = !asignaturaSeleccionada || asignaturaSeleccionada === asignaturaCard;
+          const coincideFecha = !fechaSeleccionada || fechaSeleccionada === fechaCard;
 
-          const coincideFecha =
-            !fechaSeleccionada || fechaSeleccionada === fechaCard;
+          card.classList.toggle("hidden", !(coincideAsignatura && coincideFecha));
+        });
+      });
 
-          if (coincideAsignatura && coincideFecha) {
-            card.classList.remove("hidden");
-          } else {
-            card.classList.add("hidden");
+      document.querySelectorAll(".subir-entrega").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const modal = document.getElementById(`modal-entrega-${id}`);
+          if (modal) {
+            modal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
           }
         });
       });
 
-      document.addEventListener("click", (e) => {
-        const verBtn = e.target.closest(".ver-detalles");
-        const cerrarBtn = e.target.closest(".cerrarDetalle");
-        const modalContent = e.target.closest(".modal-content");
-        const modalBackdrop = e.target.classList.contains("modal-backdrop");
+      document.querySelectorAll(".modal-entrega").forEach(modal => {
+        modal.addEventListener("click", e => {
+          if (e.target.classList.contains("modal-entrega") || e.target.classList.contains("cerrar-modal-entrega")) {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+        });
 
-        if (verBtn) {
-          const id = verBtn.getAttribute("data-id");
-          const modal = document.querySelector(`#modal-${id}`);
-          modal?.classList.remove("hidden");
-          document.body.classList.add("overflow-hidden");
-        }
+        const form = modal.querySelector("form");
+        if (form) {
+          const inputArchivo = form.querySelector("input[type='url']");
+          const mensaje = form.querySelector(".mensaje-entrega");
+          const vistaPrevia = form.querySelector(".enlace-preview");
+          const fileInput = form.querySelector("input[type='file']");
 
-        if ((cerrarBtn || modalBackdrop) && !modalContent) {
-          const modal = e.target.closest(".modal-backdrop");
-          modal?.classList.add("hidden");
-          document.body.classList.remove("overflow-hidden");
+          inputArchivo?.addEventListener("input", () => {
+            vistaPrevia.innerHTML = inputArchivo.value
+              ? `<a href="${inputArchivo.value}" target="_blank" class="text-black underline break-all">${inputArchivo.value}</a>`
+              : "";
+          });
+
+          fileInput?.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+              const fileName = fileInput.files[0].name;
+              vistaPrevia.innerHTML += `<p class='text-sm text-gray-700 mt-1'>📎 Archivo seleccionado: ${fileName}</p>`;
+            }
+          });
+
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const idActividad = form.dataset.id;
+            if (!inputArchivo || !inputArchivo.value) {
+              mensaje.textContent = "Debes ingresar el enlace de tu entrega.";
+              mensaje.className = "mensaje-entrega text-yellow-400 text-center mt-2";
+              return;
+            }
+
+            const payload = {
+              id_estudiante: 1,
+              id_actividad: idActividad,
+              url_entrega: inputArchivo.value
+            };
+
+            try {
+              const res = await fetch("http://localhost:3000/api/entrega/actividad", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+              });
+
+              const data = await res.json();
+              if (res.ok) {
+                mensaje.textContent = "✅ Entrega realizada correctamente.";
+                mensaje.className = "mensaje-entrega text-green-400 text-center mt-2";
+                inputArchivo.value = "";
+                vistaPrevia.innerHTML = "";
+                setTimeout(() => modal.classList.add("hidden"), 2000);
+              } else {
+                mensaje.textContent = data.error || "❌ Error al subir entrega.";
+                mensaje.className = "mensaje-entrega text-red-400 text-center mt-2";
+              }
+            } catch (error) {
+              console.error("❌ Error en entrega:", error);
+              mensaje.textContent = "❌ No se pudo conectar al servidor.";
+              mensaje.className = "mensaje-entrega text-red-400 text-center mt-2";
+            }
+          });
         }
+      });
+
+      document.querySelectorAll(".ver-detalles").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const modal = document.getElementById(`modal-${id}`);
+          if (modal) {
+            modal.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+          }
+        });
+      });
+
+      document.querySelectorAll(".modal-backdrop").forEach(modal => {
+        modal.addEventListener("click", e => {
+          if (e.target.classList.contains("modal-backdrop") || e.target.classList.contains("cerrarDetalle")) {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+        });
       });
     });
   </script>

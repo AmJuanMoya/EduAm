@@ -16,7 +16,6 @@ const coloresPorAsignatura: Record<string, [string, string]> = {
 const [color, colorClaro] =
   coloresPorAsignatura[actividad.nombre_asignatura] || coloresPorAsignatura.default;
 
-// Manejo robusto de comentarios
 let comentarios: string[] = [];
 
 if (Array.isArray(actividad.comentarios)) {
@@ -27,10 +26,10 @@ if (Array.isArray(actividad.comentarios)) {
     if (Array.isArray(parsed)) {
       comentarios = parsed;
     } else {
-      comentarios = [actividad.comentarios]; // fallback a string plano
+      comentarios = [actividad.comentarios];
     }
   } catch {
-    comentarios = [actividad.comentarios]; // no era JSON válido, usar como string simple
+    comentarios = [actividad.comentarios];
   }
 }
 ---
@@ -42,10 +41,20 @@ if (Array.isArray(actividad.comentarios)) {
 >
   <div>
     <h3 class="text-lg font-semibold mb-10 text-center mt-8">{actividad.titulo_actividad}</h3>
-    <p class="text-sm opacity-90 mb-10 text-center">Asignatura: {actividad.nombre_asignatura}</p>
-    <p class="text-sm opacity-90 text-center">Entrega: {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
+    <p class="text-sm opacity-90 mb-2 text-center">Asignatura: {actividad.nombre_asignatura}</p>
+    <p class="text-sm opacity-90 mb-2 text-center">Entrega: {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
+    {actividad.url_recurso && (
+      <p class="text-sm opacity-90 text-center">
+        📎 <strong>Recurso:</strong> <a href={actividad.url_recurso} target="_blank" class="underline text-blue-300 ml-1">{actividad.nombre_recurso}</a>
+      </p>
+    )}
   </div>
-
+  <button
+    class="bg-white text-green-600 font-semibold mb-2 px-4 py-1 rounded subir-entrega hover:bg-green-600 hover:text-white transition-colors"
+    data-id={actividad.id_actividad}
+  >
+    Entregar actividad
+  </button>
   <button
     class="bg-white text-black mt-4 px-4 py-1 rounded ver-detalles"
     data-id={actividad.id_actividad}
@@ -54,7 +63,7 @@ if (Array.isArray(actividad.comentarios)) {
   </button>
 </div>
 
-<!-- Modal -->
+<!-- Modal de detalles -->
 <div
   id={`modal-${actividad.id_actividad}`}
   class="hidden fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 modal-backdrop"
@@ -66,11 +75,62 @@ if (Array.isArray(actividad.comentarios)) {
     <p class="text-white"><strong>Fecha entrega:</strong> {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
     <p class="text-white"><strong>Descripción:</strong> {actividad.descripcion_actividad}</p>
     <p class="text-white"><strong>Docente:</strong> {actividad.docente || "No registrado"}</p>
-    <p class="text-white"><strong>Comentarios:</strong></p>
+    {actividad.direcion_url_recurso && (
+      <p class="text-white mt-2">
+        <strong>Recurso:</strong>
+        <a class="color-white underline" href={actividad.direcion_url_recurso} target="_blank">
+          {actividad.nombre_recurso}
+        </a>
+      </p>
+    )}
+    <p class="text-white mt-4"><strong>Comentarios:</strong></p>
     <ul class="list-disc list-inside mb-2">
       {comentarios.length > 0
         ? comentarios.map((c: string) => <li class="text-white">{c}</li>)
         : <li class="text-white">Sin comentarios</li>}
     </ul>
+  </div>
+</div>
+
+<!-- Modal entrega -->
+<div id={`modal-entrega-${actividad.id_actividad}`} class="modal-entrega fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+    <button class="cerrar-modal-entrega absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold">&times;</button>
+
+    <h2 class="text-xl font-semibold mb-4 text-center text-slate-800">Subir entrega</h2>
+
+    <form data-id={actividad.id_actividad} class="space-y-4">
+      <!-- Enlace de entrega -->
+      <label class="block text-slate-700 font-medium">
+        Enlace de entrega
+        <input
+          type="url"
+          placeholder="Pega aquí el enlace de tu entrega"
+          class="w-full px-4 py-2 border border-gray-300 rounded !text-black bg-black focus:ring-2 focus:ring-blue-400 enlace-input"
+        />
+      </label>
+
+      <a href="#"target="_blank"class="enlace-preview underline text-black hidden text-sm break-all"></a>
+
+      <!-- Ícono de clip para seleccionar archivo -->
+      <div class="flex items-center gap-2">
+        <label for={`file-upload-${actividad.id_actividad}`} class="cursor-pointer inline-flex items-center gap-2 text-slate-700 hover:text-blue-600 transition">
+          <img src="/clip.png" alt="Adjuntar archivo" class="w-6 h-6" />
+        </label>
+        <input id={`file-upload-${actividad.id_actividad}`} type="file" class="hidden" />
+        <p class="archivo-nombre text-sm text-gray-600"></p>
+      </div>
+
+      <div class="mensaje-entrega text-center text-sm"></div>
+
+      <div class="text-center">
+        <button
+          type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold transition"
+        >
+          Enviar entrega
+        </button>
+      </div>
+    </form>
   </div>
 </div>

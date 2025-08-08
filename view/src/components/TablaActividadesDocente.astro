@@ -1,0 +1,40 @@
+---
+const { actividades } = Astro.props;
+---
+
+<div class="overflow-x-auto">
+  <table class="min-w-full bg-slate-800 text-white text-sm border border-slate-600 rounded-lg">
+    <thead class="bg-slate-700">
+      <tr>
+        <th class="px-4 py-2 text-left">Título</th>
+        <th class="px-4 py-2 text-left">Asignatura</th>
+        <th class="px-4 py-2 text-left">Curso</th>
+        <th class="px-4 py-2 text-left">Entrega</th>
+        <th class="px-4 py-2 text-left">Estado</th>
+        <th class="px-4 py-2 text-left">Acciones</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-600">
+      {actividades.map((act: any) => (
+        <tr class="hover:bg-slate-700 transition-colors">
+          <td class="px-4 py-2">{act.titulo_actividad}</td>
+          <td class="px-4 py-2">{act.nombre_asignatura}</td>
+          <td class="px-4 py-2">{act.nombre_curso}</td>
+          <td class="px-4 py-2">{new Date(act.fecha_entrega).toLocaleDateString("es-CO")}</td>
+          <td class="px-4 py-2">
+            <span class={`px-2 py-1 rounded text-xs font-semibold
+              ${act.estado === 'entregado' ? 'bg-green-500' :
+                act.estado === 'calificado' ? 'bg-blue-500' :
+                'bg-yellow-500'}`}>
+              {act.estado}
+            </span>
+          </td>
+          <td class="px-4 py-2 flex gap-2">
+            <button class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-white text-xs">Editar</button>
+            <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-xs">Eliminar</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

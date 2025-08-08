@@ -1,0 +1,31 @@
+---
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+import Panelnav from "../../components/navigation/panelnav.astro";
+import TablaActividadesDocente from "../../components/TablaActividadesDocente.astro";
+
+// ID del docente (puedes hacerlo dinámico según sesión más adelante)
+const idDocente = 3;
+
+// Obtener actividades del docente
+const response = await fetch(`http://localhost:3000/api/actividad/docente/${idDocente}`);
+const resultado = await response.json();
+const actividades = Array.isArray(resultado) ? resultado : [];
+console.log("🟡 Actividades recibidas:", actividades);
+---
+
+<General>
+  <Panelnav />
+  <div class="bg-slate-900 flex min-h-screen">
+    <Asidebar />
+    <div class="flex-1 p-6 text-white">
+      <h1 class="text-2xl font-bold mb-6 text-center">Actividades creadas</h1>
+
+      {
+        actividades.length > 0
+          ? <TablaActividadesDocente actividades={actividades} />
+          : <p class="text-center text-yellow-300">No hay actividades registradas aún.</p>
+      }
+    </div>
+  </div>
+</General>

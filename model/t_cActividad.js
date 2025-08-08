@@ -1,3 +1,4 @@
+// cActividad.js
 import Crud from "../model/database/crudsql.js";
 import conectionDB from "./database/conectionDB.js";
 
@@ -15,27 +16,23 @@ class cActividad {
     id_categoria_actividad,
     titulo_actividad,
     descripcion_actividad,
-    fecha_entrega
+    fecha_entrega,
+    id_recurso
   }) {
     const fecha_publicacion = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const hoy = new Date().toISOString().slice(0, 10);
+
+    if (fecha_entrega < hoy) {
+      throw new Error("La fecha de entrega no puede ser anterior al día actual.");
+    }
 
     try {
-      // Validación previa
-      if (
-        !id_docente ||
-        !id_curso ||
-        !id_asignatura ||
-        !id_categoria_actividad ||
-        !titulo_actividad ||
-        !descripcion_actividad ||
-        !fecha_entrega
-      ) {
+      if (!id_docente || !id_curso || !id_asignatura || !id_categoria_actividad || !titulo_actividad || !descripcion_actividad || !fecha_entrega) {
         throw new Error("Faltan campos obligatorios para crear la actividad.");
       }
 
       await this.db.connect();
 
-      // INSERT en t_actividad
       const insertActividadQuery = `
         INSERT INTO t_actividad (
           titulo_actividad,
@@ -43,9 +40,11 @@ class cActividad {
           fecha_publicacion,
           fecha_entrega,
           id_docente,
-          id_categoria_actividad
-        )
-        VALUES (?, ?, ?, ?, ?, ?)
+          id_categoria_actividad,
+          id_asignatura,
+          id_curso,
+          estado
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const actividadValues = [
@@ -54,10 +53,11 @@ class cActividad {
         fecha_publicacion,
         fecha_entrega,
         id_docente,
-        id_categoria_actividad
+        id_categoria_actividad,
+        id_asignatura,
+        id_curso,
+        'Asignado'
       ];
-
-      console.log("📦 Valores INSERT actividad:", actividadValues);
 
       const result = await this.db.consultar(insertActividadQuery, actividadValues);
       const id_actividad = result.rows.insertId;
@@ -66,33 +66,25 @@ class cActividad {
         throw new Error("No se pudo obtener el ID de la actividad insertada.");
       }
 
-      // Obtener estudiantes del curso
-      const estudiantesQuery = `
-        SELECT id_estudiante FROM t_estudiantes WHERE id_curso = ?
-      `;
+      if (id_recurso) {
+        const insertRelacion = `
+          INSERT INTO t_recurso_actividad (id_recurso, id_actividad)
+          VALUES (?, ?)
+        `;
+        await this.db.consultar(insertRelacion, [id_recurso, id_actividad]);
+      }
+
+      const estudiantesQuery = `SELECT id_estudiante FROM t_estudiantes WHERE id_curso = ?`;
       await this.db.consultar(estudiantesQuery, [id_curso]);
       const estudiantes = this.db.getData();
 
-      // INSERT en t_informe_calificaciones para cada estudiante
       for (const est of estudiantes) {
         const insertInformeQuery = `
           INSERT INTO t_informe_calificaciones (
-            id_actividad,
-            id_periodo,
-            id_docente,
-            id_estudiante,
-            id_asignatura,
-            id_curso
-          )
-          VALUES (?, 1, ?, ?, ?, ?)
+            id_actividad, id_periodo, id_docente, id_estudiante, id_asignatura, id_curso
+          ) VALUES (?, 1, ?, ?, ?, ?)
         `;
-        const informeValues = [
-          id_actividad,
-          id_docente,
-          est.id_estudiante,
-          id_asignatura,
-          id_curso
-        ];
+        const informeValues = [id_actividad, id_docente, est.id_estudiante, id_asignatura, id_curso];
         await this.db.consultar(insertInformeQuery, informeValues);
       }
 
@@ -102,6 +94,43 @@ class cActividad {
     } catch (error) {
       await this.db.cerrar();
       throw new Error(`Error al crear la actividad: ${error.message}`);
+    }
+  }
+
+  async obtenerActividadesPorDocente(id_docente) {
+    try {
+      if (!id_docente) throw new Error("ID del docente es requerido.");
+
+      await this.db.connect();
+
+      const query = ` 
+        SELECT 
+          a.id_actividad,
+          a.titulo_actividad,
+          a.descripcion_actividad,
+          a.fecha_publicacion,
+          a.fecha_entrega,
+          a.estado,
+          asi.nombre_asignatura,
+          c.nombre_curso,
+          r.id_recurso,
+          rec.nombre_recurso,
+          rec.direcion_url_recurso
+        FROM t_actividad a
+        JOIN t_asignaturas asi ON a.id_asignatura = asi.id_asignatura
+        JOIN t_curso c ON a.id_curso = c.id_curso
+        LEFT JOIN t_recurso_actividad r ON a.id_actividad = r.id_actividad
+        LEFT JOIN t_recursos rec ON r.id_recurso = rec.id_recurso
+        WHERE a.id_docente = ?
+      `;
+
+      await this.db.consultar(query, [id_docente]);
+      const data = this.db.getData();
+      await this.db.cerrar();
+      return data;
+    } catch (error) {
+      console.error("❌ Error al obtener actividades del docente:", error.message);
+      throw error;
     }
   }
 
