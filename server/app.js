@@ -11,6 +11,7 @@ import categoriasRouter from './routes/r_categorias.js';
 import rolesRouter from './routes/r_roles.js';
 import estadoUsuarioRouter from './routes/r_estado_usuario.js';
 import registroUsuarioRouter from './routes/r_registro_usuario.js';
+import loginRouter from './routes/r_login.js';
 
 
 
@@ -28,6 +29,7 @@ app.use("/api", categoriasRouter);
 app.use("/api", rolesRouter);
 app.use("/api", estadoUsuarioRouter);
 app.use("/api", registroUsuarioRouter);
+app.use("/api", loginRouter);
 
 
 

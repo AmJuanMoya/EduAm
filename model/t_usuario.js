@@ -60,6 +60,49 @@ class t_usuario {
         }
     }
 
+     // NUEVO MÉTODO: Buscar un usuario por correo electrónico y obtener su rol
+    async getUsuarioByEmail(correo) {
+        let connection; // Declarar connection fuera del try para que esté disponible en finally
+        try {
+            connection = await this.db.connect(); // Conectar a la base de datos
+            // Realizar un JOIN para obtener el nombre del rol directamente
+            const query = `
+                SELECT 
+                    u.id_usuario, 
+                    u.nombres_usuario, 
+                    u.apellidos_usuario, 
+                    u.correo_usuario, 
+                    u.contraseña_usuario, 
+                    u.telefono_usuario, 
+                    u.avatar_url_usuario, 
+                    u.id_rol, 
+                    r.nombre_rol AS nombre_rol, 
+                    u.id_estado_usuario, 
+                    u.id_tipo_documento, 
+                    u.numero_documento
+                FROM t_usuarios u
+                JOIN t_roles r ON u.id_rol = r.id_rol
+                WHERE u.correo_usuario = ?;
+            `;
+            // Usar execute para consultas preparadas con valores
+            const [rows] = await connection.execute(query, [correo]); 
+            return rows[0] || null; // Devuelve el primer usuario encontrado o null si no hay
+        } catch (error) {
+            console.error('Error al buscar usuario por correo:', error);
+            throw error; // Propagar el error
+        } finally {
+            if (connection) {
+                await this.db.cerrar(); // Cerrar la conexión
+            }
+        }
+
+    }
+
+    // NUEVO MÉTODO: Comparar una contraseña plana con una contraseña hasheada
+    async comparePassword(plainPassword, hashedPassword) {
+        return await bcrypt.compare(plainPassword, hashedPassword);
+    }
+
     // Puedes añadir otros métodos CRUD aquí si los necesitas para t_usuario
     // async getUsuarioById(id) { ... }
     // async updateUsuario(id, data) { ... }

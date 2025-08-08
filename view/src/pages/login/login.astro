@@ -1,7 +1,3 @@
----
-
----
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,6 +9,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- CDN de Flowbite CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    <style>
+        /* Estilos personalizados si son necesarios (más allá de Tailwind/Flowbite) */
+        .error-message {
+            color: #ef4444; /* text-red-500 */
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.25rem; /* mt-1 */
+        }
+    </style>
 </head>
 <body class="min-h-screen w-screen relative bg-blue-50 font-sans">
     <!-- Contenedor del fondo con imagen y superposición de degradado -->
@@ -38,17 +42,19 @@
             <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Iniciar Sesión</h2>
 
             <!-- Formulario de acceso -->
-            <form class="space-y-6">
-                <!-- Campo de entrada para el usuario con etiqueta flotante (Flowbite) -->
+            <form id="loginForm" class="space-y-6">
+                <!-- Campo de entrada para el usuario (correo) con etiqueta flotante (Flowbite) -->
                 <div class="relative">
-                    <input type="text" id="usuario" class="peer block w-full appearance-none border border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" placeholder=" " required />
-                    <label for="usuario" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4">Usuario</label>
+                    <input type="email" id="correo_usuario" name="correo_usuario" class="peer block w-full appearance-none border border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" placeholder=" " required />
+                    <label for="correo_usuario" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4">Correo Electrónico</label>
+                    <p id="error-correo_usuario" class="error-message hidden"></p>
                 </div>
 
                 <!-- Campo de entrada para la contraseña con etiqueta flotante (Flowbite) -->
                 <div class="relative">
-                    <input type="password" id="password" class="peer block w-full appearance-none border border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" placeholder=" " required />
-                    <label for="password" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4">Contraseña</label>
+                    <input type="password" id="contraseña_usuario" name="contraseña_usuario" class="peer block w-full appearance-none border border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-0 focus:border-blue-600" placeholder=" " required />
+                    <label for="contraseña_usuario" class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4">Contraseña</label>
+                    <p id="error-contraseña_usuario" class="error-message hidden"></p>
                 </div>
 
                 <!-- Enlace para recuperar contraseña -->
@@ -82,7 +88,151 @@
         </div>
     </div>
 
-    <!-- CDN de Flowbite JS (debe ir al final del body para un mejor rendimiento)
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script> -->
+    <!-- Modal para mensajes de estado -->
+    <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-95 duration-300">
+            <div class="text-center">
+                <div id="modalIcon" class="text-6xl mb-4"></div>
+                <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gray-900 dark:text-white"></h3>
+                <p id="modalMessage" class="text-gray-700 dark:text-gray-300 mb-6"></p>
+                <button id="closeModalBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CDN de Flowbite JS (debe ir al final del body para un mejor rendimiento) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const correoInput = document.getElementById('correo_usuario');
+        const passwordInput = document.getElementById('contraseña_usuario');
+
+        const statusModal = document.getElementById('statusModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // --- Funciones de Modal ---
+        function showModal(icon, title, message) {
+            modalIcon.textContent = icon;
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message; // Usar innerHTML para permitir etiquetas como <strong>
+            statusModal.classList.remove('hidden');
+            statusModal.querySelector('div').classList.remove('scale-95');
+            statusModal.querySelector('div').classList.add('scale-100');
+        }
+
+        function hideModal() {
+            statusModal.querySelector('div').classList.remove('scale-100');
+            statusModal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                statusModal.classList.add('hidden');
+            }, 300);
+        }
+
+        closeModalBtn.addEventListener('click', hideModal);
+        statusModal.addEventListener('click', (event) => {
+            if (event.target === statusModal) {
+                hideModal();
+            }
+        });
+
+        // --- Funciones de Validación y Errores en Campo ---
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(`error-${fieldId}`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
+                document.getElementById(fieldId).classList.add('border-red-500'); // Resaltar el campo con error
+            }
+        }
+
+        function hideError(fieldId) {
+            const errorElement = document.getElementById(`error-${fieldId}`);
+            if (errorElement) {
+                errorElement.classList.add('hidden');
+                errorElement.textContent = '';
+                document.getElementById(fieldId).classList.remove('border-red-500'); // Quitar resaltado de error
+            }
+        }
+
+        function validateLoginForm() {
+            let isValid = true;
+
+            // Limpiar errores previos
+            hideError('correo_usuario');
+            hideError('contraseña_usuario');
+
+            const correo = correoInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Validación de Correo
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (correo === '') {
+                showError('correo_usuario', 'El correo electrónico es requerido.');
+                isValid = false;
+            } else if (!emailRegex.test(correo)) {
+                showError('correo_usuario', 'Ingrese un correo electrónico válido.');
+                isValid = false;
+            }
+
+            // Validación de Contraseña
+            if (password === '') {
+                showError('contraseña_usuario', 'La contraseña es requerida.');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // --- Event Listener para el envío del formulario ---
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevenir el envío por defecto
+
+            if (!validateLoginForm()) {
+                console.log('Validación de formulario fallida.');
+                return; // Detener si la validación falla
+            }
+
+            const loginData = {
+                correo_usuario: correoInput.value.trim(),
+                contraseña_usuario: passwordInput.value.trim()
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/login', { // Endpoint de tu API de login
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Login exitoso
+                    const userRole = result.user.rol;
+                    const userName = result.user.nombres;
+                    const userLastName = result.user.apellidos;
+
+                    showModal('✅', '¡Inicio de Sesión Exitoso!', `Bienvenido, <strong>${userName} ${userLastName}</strong>. Tu rol es: <strong>${userRole}</strong>.`);
+                    loginForm.reset(); // Limpiar el formulario
+                    // Aquí podrías redirigir al usuario o cargar contenido dinámico
+                    // Por ejemplo: window.location.href = '/dashboard';
+                } else {
+                    // Login fallido (ej. credenciales inválidas, errores del servidor)
+                    showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
+                }
+            } catch (error) {
+                console.error('Error de red o de solicitud:', error);
+                showModal('⚠️', 'Error de Conexión', 'No se pudo conectar con el servidor. Por favor, intente de nuevo más tarde.');
+            }
+        });
+    </script>
 </body>
 </html>
