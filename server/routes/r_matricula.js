@@ -63,34 +63,6 @@ router.get("/datos/matricula/:doc", async (req, res) => {
   }
 });
 
-// router.post("/datos/matricula", async (req, res) => {
-//   try {
-//     const datos = req.body;
-//     const instancia = new matricula();
-
-//     // Asignar los campos recibidos del body al objeto
-//     for (let campo in datos) {
-//       if (instancia.hasOwnProperty(campo)) {
-//         instancia[campo] = datos[campo];
-//       }
-//     }
-
-//     // Aquí es donde haces debug de los tipos de documento
-//     console.log("Insertando matrícula con tipo documento:", instancia.id_tipo_documento_estudiante);
-//     console.log("Tipo doc acudiente 1:", instancia.id_tipo_documento_acudiente1);
-//     console.log("Tipo doc acudiente 2:", instancia.id_tipo_documento_acudiente2);
-//     console.log("Tipo doc acudiente 3:", instancia.id_tipo_documento_acudiente3);
-
-//     const resultado = await instancia.insert_matricula();
-//     res.status(200).json({ mensaje: "Matrícula insertada correctamente", resultado });
-//   } catch (err) {
-//     console.error('Error al insertar matrícula:', err);
-//     res.status(500).json({ error: 'Error al insertar matrícula' });
-//   }
-// });
-
-
-
 router.delete("/datos/matricula/:doc", async (req, res) => {
     try {
         const doc = req.params.doc;

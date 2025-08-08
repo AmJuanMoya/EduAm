@@ -15,274 +15,281 @@
   </div>
 
   <script type="module">
-    let modoEdicion = false;
-    let matriculaActual = null;
-    let opciones = [];
+let modoEdicion = false;
+let matriculaActual = null;
+let opciones = [];
 
-    const editarBtn = document.getElementById("editarBtn");
-    const guardarBtn = document.getElementById("guardarBtn");
-    const contenido = document.getElementById("contenidoModal");
-    const eliminarBtn = document.getElementById("eliminarBtn");
+const editarBtn = document.getElementById("editarBtn");
+const guardarBtn = document.getElementById("guardarBtn");
+const contenido = document.getElementById("contenidoModal");
 
-    window.mostrarModalMatricula = async function(matricula) {
-      matriculaActual = matricula;
-      modoEdicion = false;
+window.mostrarModalMatricula = async function (matricula) {
+  matriculaActual = matricula;
+  modoEdicion = false;
 
   if (opciones.length === 0) {
-  try {
-    const response = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
-    const data = await response.json();
-    console.log(data)
+    try {
+      const response = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+      const data = await response.json();
 
-    if (!Array.isArray(data)) {
-      throw new Error("La respuesta no es un array");
+      if (!Array.isArray(data)) {
+        throw new Error("La respuesta no es un array");
+      }
+
+      opciones = data.map(item => ({
+        id: item.id || item.id_identificacion,
+        nombre: item.nombre || item.tipo_identificacion
+      }));
+
+    } catch (error) {
+      console.error("Error al cargar tipos de documento:", error);
+      opciones = [
+        { id: 1, nombre: "Cédula de Ciudadanía" },
+        { id: 2, nombre: "Tarjeta de Identidad" },
+        { id: 3, nombre: "Registro Civil" },
+        { id: 4, nombre: "Pasaporte" }
+      ];
+    }
+  }
+
+  const eliminarBtn = document.getElementById("eliminarBtn");
+  eliminarBtn.addEventListener("click", async () => {
+    if (!matriculaActual) return;
+
+    console.log("Contenido de matriculaActual:", matriculaActual);
+
+    const confirmar = confirm("¿Estás seguro de que deseas eliminar esta matrícula?");
+    if (!confirmar) return;
+
+    const doc = matriculaActual.documento_estudiante; // propiedad correcta
+    console.log("Documento a eliminar:", doc);
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
+        method: "DELETE"
+      });
+
+      if (response.ok) {
+        alert("✅ Matrícula eliminada correctamente.");
+        document.getElementById("modalMatricula").classList.add("hidden");
+        editarBtn.classList.remove("hidden");
+        guardarBtn.classList.add("hidden");
+        modoEdicion = false;
+
+        if (typeof window.actualizarTablaMatriculas === "function") {
+          window.actualizarTablaMatriculas();
+        }
+
+      } else {
+        const result = await response.json();
+        alert("❌ Error al eliminar la matrícula: " + (result.message || result.error));
+      }
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert("❌ Error de conexión al servidor");
+    }
+  });
+
+  renderModal();
+  document.getElementById("modalMatricula").classList.remove("hidden");
+};
+
+editarBtn.addEventListener("click", () => {
+  modoEdicion = true;
+  renderModal();
+  editarBtn.classList.add("hidden");
+  guardarBtn.classList.remove("hidden");
+});
+
+guardarBtn.addEventListener("click", async () => {
+  const inputs = contenido.querySelectorAll("[data-campo]");
+  let datosValidos = true;
+
+  const requiredFields = ["id_tipo_documento_estudiante", "estado_matricula", "jornada"];
+  const numericFields = ["estrato", "documento_estudiante", "numero_documento_acudiente1", "id_tipo_documento_estudiante", "repitente"];
+
+  inputs.forEach(input => {
+    const campo = input.dataset.campo;
+    let valor = input.value;
+
+    if (valor === "" || typeof valor === "undefined") {
+      if (requiredFields.includes(campo)) {
+        datosValidos = false;
+        input.classList.add("border-red-500");
+      }
+      valor = (typeof matriculaActual[campo] !== "undefined" && matriculaActual[campo] !== null)
+        ? matriculaActual[campo]
+        : null;
+    } else {
+      if (numericFields.includes(campo)) {
+        const v = parseInt(valor, 10);
+        valor = isNaN(v) ? null : v;
+      } else {
+        valor = String(valor).trim();
+      }
     }
 
-    opciones = data.map(item => ({
-      id: item.id || item.id_identificacion,
-      nombre: item.nombre || item.tipo_identificacion
-    }));
+    matriculaActual[campo] = valor;
+  });
+
+  if (!datosValidos) {
+    alert("⚠️ Por favor completa los campos obligatorios.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(matriculaActual)
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("✅ Matrícula actualizada correctamente");
+      if (typeof window.actualizarTablaMatriculas === "function") {
+        window.actualizarTablaMatriculas();
+      }
+    } else {
+      alert("❌ Error al guardar cambios: " + (result.message || result.error));
+    }
 
   } catch (error) {
-    console.error("Error al cargar tipos de documento:", error);
-    opciones = [
-      { id: 1, nombre: "Cédula de Ciudadanía" },
-      { id: 2, nombre: "Tarjeta de Identidad" },
-      { id: 3, nombre: "Registro Civil" },
-      { id: 4, nombre: "Pasaporte" }
-    ];
+    console.error("Error al actualizar:", error);
+    alert("❌ Error de conexión al servidor");
+  }
+
+  modoEdicion = false;
+  renderModal();
+  editarBtn.classList.remove("hidden");
+  guardarBtn.classList.add("hidden");
+});
+
+function obtenerNombreTipoDocumento(id) {
+  const tipo = opciones.find(o => o.id == id);
+  return tipo ? tipo.nombre : "Desconocido";
+}
+
+function renderModal() {
+  if (!matriculaActual) return;
+
+  if (!modoEdicion) {
+    contenido.innerHTML = `
+      <div class="grid gap-6 text-[1rem]">
+        <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
+          <h3 class="text-xl font-semibold mb-3 text-blue-700 dark:text-blue-400">📘 Datos del Estudiante</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
+            <div><strong>Nombre:</strong> ${matriculaActual.primer_nombre_estudiante} ${matriculaActual.primer_apellido_estudiante}</div>
+            <div><strong>Tipo Documento:</strong> ${obtenerNombreTipoDocumento(matriculaActual.id_tipo_documento_estudiante)}</div>
+            <div><strong>Documento:</strong> ${matriculaActual.documento_estudiante}</div>
+            <div><strong>EPS:</strong> ${matriculaActual.eps || "No registrado"}</div>
+            <div><strong>SISBEN:</strong> ${matriculaActual.sisben}</div>
+            <div><strong>Estrato:</strong> ${matriculaActual.estrato}</div>
+            <div><strong>Discapacidad:</strong> ${matriculaActual.discapacidad || "Ninguna"}</div>
+            <div class="md:col-span-2"><strong>Dirección:</strong> ${matriculaActual.direccion_residencia}</div>
+            <div><strong>Repitente:</strong> ${matriculaActual.repitente ? "Sí" : "No"}</div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
+          <h3 class="text-xl font-semibold mb-3 text-green-700 dark:text-green-400">📝 Datos de la Matrícula</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div><strong>Estado:</strong> ${matriculaActual.estado_matricula}</div>
+            <div><strong>Jornada:</strong> ${matriculaActual.jornada}</div>
+            <div class="md:col-span-2"><strong>Fecha de matrícula:</strong> ${matriculaActual.fecha_matricula}</div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
+          <h3 class="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-400">👤 Acudiente del estudiante</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div><strong>Nombre:</strong> ${matriculaActual.nombre_acudiente1} ${matriculaActual.apellido_acudiente1}</div>
+            <div><strong>Documento:</strong> ${matriculaActual.numero_documento_acudiente1}</div>
+            <div><strong>Teléfono:</strong> ${matriculaActual.tel_contacto_acudiente1}</div>
+            <div><strong>Correo:</strong> ${matriculaActual.correo_acudiente1}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    contenido.innerHTML = `
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📘 Datos del Estudiante</h3>
+        <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
+        ${crearInput("primer_nombre_estudiante", "Nombres")}
+        ${crearInput("primer_apellido_estudiante", "Apellidos")}
+        ${crearSelect("id_tipo_documento_estudiante", "Tipo Documento", opciones)}
+        ${crearInput("documento_estudiante", "Documento")}
+        ${crearInput("eps", "EPS")}
+        ${crearInput("sisben", "SISBEN")}
+        ${crearInput("estrato", "Estrato")}
+        ${crearInput("discapacidad", "Discapacidad")}
+        ${crearInput("direccion_residencia", "Dirección")}
+        ${crearSelect("repitente", "Repitente", [
+          { id: 0, nombre: "No" },
+          { id: 1, nombre: "Sí" }
+        ])}
+      </div>
+      <div class="mb-4">
+        <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
+        ${crearSelect("estado_matricula", "Estado", [
+          { id: 1, nombre: "Activa" },
+          { id: 2, nombre: "Cancela" },
+          { id: 3, nombre: "Retirada" },
+          { id: 4, nombre: "Condicional" },
+          { id: 5, nombre: "Pendiente" }
+        ])}
+        ${crearSelect("jornada", "Jornada", [
+          { id: 'Mañana', nombre: "Mañana" },
+          { id: 'Tarde', nombre: "Tarde" },
+        ])}
+        ${crearInput("fecha_matricula", "Fecha de matrícula", "date", true)}
+      </div>
+      <div>
+        <h3 class="font-bold text-lg mb-2">👤 Acudiente del estudiante</h3>
+        ${crearInput("nombre_acudiente1", "Nombres")}
+        ${crearInput("apellido_acudiente1", "Apellidos")}
+        ${crearInput("numero_documento_acudiente1", "Documento")}
+        ${crearInput("tel_contacto_acudiente1", "Teléfono")}
+        ${crearInput("correo_acudiente1", "Correo", "email")}
+      </div>
+    `;
   }
 }
 
-      renderModal();
-      document.getElementById("modalMatricula").classList.remove("hidden");
-    };
+function crearInput(campo, label, tipo = "text", formatearFecha = false) {
+  let valor = matriculaActual[campo] || "";
+  if (formatearFecha && valor) {
+    valor = new Date(valor).toISOString().split("T")[0];
+  }
+  return `
+    <div class="mb-2">
+      <label class="block text-sm mb-1">${label}:</label>
+      <input type="${tipo}" value="${valor}" data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded" />
+    </div>
+  `;
+}
 
-    editarBtn.addEventListener("click", () => {
-      modoEdicion = true;
-      renderModal();
-      editarBtn.classList.add("hidden");
-      guardarBtn.classList.remove("hidden");
-    });
-
-    guardarBtn.addEventListener("click", async () => {
-    const inputs = contenido.querySelectorAll("[data-campo]");
-    let datosValidos = true;
-
-    inputs.forEach(input => {
-      const campo = input.dataset.campo;
-      let valor = input.value;
-
-      if (valor === "" || typeof valor === "undefined") {
-        if (["id_tipo_documento_estudiante", "estado_matricula", "jornada"].includes(campo)) {
-          datosValidos = false;
-          input.classList.add("border-red-500");
-        }
-        valor = null;
-      } else if (["estrato", "documento_estudiante", "numero_documento_acudiente1", "id_tipo_documento_estudiante", "estado_matricula", "jornada", "repitente"].includes(campo)) {
-        valor = parseInt(valor);
-        if (isNaN(valor)) valor = null;
-      }
-
-      matriculaActual[campo] = valor;
-    });
-
-    if (!datosValidos) {
-      alert("⚠️ Por favor completa los campos obligatorios.");
-      return;
-    }
-
-      try {
-        const response = await fetch(`http://localhost:3000/api/datos/matricula/${matriculaActual.id_matricula}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(matriculaActual)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          alert("✅ Matrícula actualizada correctamente");
-          if (typeof window.actualizarTablaMatriculas === "function") {
-            window.actualizarTablaMatriculas();
-          }
-        } else {
-          alert("❌ Error al guardar cambios: " + (result.message || result.error));
-        }
-
-      } catch (error) {
-        console.error("Error al actualizar:", error);
-        alert("❌ Error de conexión al servidor");
-      }
-
-      modoEdicion = false;
-      renderModal();
-      editarBtn.classList.remove("hidden");
-      guardarBtn.classList.add("hidden");
-    });
-    
-
-    eliminarBtn.addEventListener("click", async () => {
-      if (!matriculaActual) return;
-
-      const confirmar = confirm("¿Estás seguro de que deseas eliminar esta matrícula?");
-      if (!confirmar) return;
-
-      try {
-        const response = await fetch(`http://localhost:3000/api/datos/matricula/${doc}`, {
-          method: "DELETE"
-        });
-
-        if (response.ok) {
-          alert("✅ Matrícula eliminada correctamente.");
-          document.getElementById("modalMatricula").classList.add("hidden");
-          editarBtn.classList.remove("hidden");
-          guardarBtn.classList.add("hidden");
-          modoEdicion = false;
-
-          if (typeof window.actualizarTablaMatriculas === "function") {
-            window.actualizarTablaMatriculas();
-          }
-
-        } else {
-          const result = await response.json();
-          alert("❌ Error al eliminar la matrícula: " + (result.message || result.error));
-        }
-      } catch (error) {
-        console.error("Error al eliminar:", error);
-        alert("❌ Error de conexión al servidor");
-      }
-    });
-
-    function obtenerNombreTipoDocumento(id) {
-        const tipo = opciones.find(o => o.id == id);
-        return tipo ? tipo.nombre : "Desconocido";
-    }
-
-    function renderModal() {
-      if (!matriculaActual) return;
-
-      if (!modoEdicion) {
-        contenido.innerHTML = `
-          <div class="grid gap-6 text-[1rem]">
-
-            <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
-              <h3 class="text-xl font-semibold mb-3 text-blue-700 dark:text-blue-400">📘 Datos del Estudiante</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
-                <div><strong>Nombre:</strong> ${matriculaActual.primer_nombre_estudiante} ${matriculaActual.primer_apellido_estudiante}</div>
-                <div><strong>Tipo Documento:</strong> ${obtenerNombreTipoDocumento(matriculaActual.id_tipo_documento_estudiante)}</div>
-                <div><strong>Documento:</strong> ${matriculaActual.documento_estudiante}</div>
-                <div><strong>EPS:</strong> ${matriculaActual.eps || "No registrado"}</div>
-                <div><strong>SISBEN:</strong> ${matriculaActual.sisben}</div>
-                <div><strong>Estrato:</strong> ${matriculaActual.estrato}</div>
-                <div><strong>Discapacidad:</strong> ${matriculaActual.discapacidad || "Ninguna"}</div>
-                <div class="md:col-span-2"><strong>Dirección:</strong> ${matriculaActual.direccion_residencia}</div>
-                <div><strong>Repitente:</strong> ${matriculaActual.repitente ? "Sí" : "No"}</div>
-              </div>
-            </div>
-
-            <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
-              <h3 class="text-xl font-semibold mb-3 text-green-700 dark:text-green-400">📝 Datos de la Matrícula</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div><strong>Estado:</strong> ${matriculaActual.estado_matricula}</div>
-                <div><strong>Jornada:</strong> ${matriculaActual.jornada}</div>
-                <div class="md:col-span-2"><strong>Fecha de matrícula:</strong> ${matriculaActual.fecha_matricula}</div>
-              </div>
-            </div>
-
-            <div class="bg-white dark:bg-[#2B2F47] border border-gray-300 dark:border-gray-600 px-3 py-2 rounded">
-              <h3 class="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-400">👤 Acudiente del estudiante</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div><strong>Nombre:</strong> ${matriculaActual.nombre_acudiente1} ${matriculaActual.apellido_acudiente1}</div>
-                <div><strong>Documento:</strong> ${matriculaActual.numero_documento_acudiente1}</div>
-                <div><strong>Teléfono:</strong> ${matriculaActual.tel_contacto_acudiente1}</div>
-                <div><strong>Correo:</strong> ${matriculaActual.correo_acudiente1}</div>
-              </div>
-            </div>
-
-          </div>
-        `;
-      } else {
-        contenido.innerHTML = `
-          <div class="mb-4">
-            <h3 class="font-bold text-lg mb-2">📘 Datos del Estudiante</h3>
-            <div><strong>ID Matrícula:</strong> ${matriculaActual.id_matricula}</div>
-            ${crearInput("primer_nombre_estudiante", "Nombres")}
-            ${crearInput("primer_apellido_estudiante", "Apellidos")}
-            ${crearSelect("id_tipo_documento_estudiante", "Tipo Documento", opciones)}
-            ${crearInput("documento_estudiante", "Documento")}
-            ${crearInput("eps", "EPS")}
-            ${crearInput("sisben", "SISBEN")}
-            ${crearInput("estrato", "Estrato")}
-            ${crearInput("discapacidad", "Discapacidad")}
-            ${crearInput("direccion_residencia", "Dirección")}
-            ${crearSelect("repitente", "Repitente", [
-              { id: 0, nombre: "No" },
-              { id: 1, nombre: "Sí" }
-            ])}
-          </div>
-
-          <div class="mb-4">
-            <h3 class="font-bold text-lg mb-2">📝 Datos de la Matrícula</h3>
-            ${crearSelect("estado_matricula", "Estado", [
-              { id: 1, nombre: "Activa" },
-              { id: 2, nombre: "Cancela" },
-              { id: 3, nombre: "Retirada" },
-              { id: 4, nombre: "Condicional" },
-              { id: 5, nombre: "Pendiente" }
-            ])}
-            ${crearSelect("jornada", "Jornada", [
-              { id: 'Mañana', nombre: "Mañana" },
-              { id: 'Tarde', nombre: "Tarde" },
-            ])}
-            ${crearInput("fecha_matricula", "Fecha de matrícula", "date", true)}
-          </div>
-
-          <div>
-            <h3 class="font-bold text-lg mb-2">👤 Acudiente del estudiante</h3>
-            ${crearInput("nombre_acudiente1", "Nombres")}
-            ${crearInput("apellido_acudiente1", "Apellidos")}
-            ${crearInput("numero_documento_acudiente1", "Documento")}
-            ${crearInput("tel_contacto_acudiente1", "Teléfono")}
-            ${crearInput("correo_acudiente1", "Correo", "email")}
-          </div>
-        `;
-      }
-    }
-
-    function crearInput(campo, label, tipo = "text", formatearFecha = false) {
-      let valor = matriculaActual[campo] || "";
-      if (formatearFecha && valor) {
-        valor = new Date(valor).toISOString().split("T")[0];
-      }
-
-      return `
-        <div class="mb-2">
-          <label class="block text-sm mb-1">${label}:</label>
-          <input type="${tipo}" value="${valor}" data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded" />
-        </div>
-      `;
-    }
-
-    function crearSelect(campo, label, opciones) {
-      const valorActual = (matriculaActual[campo] || "");
-
-      let opcionesHTML = opciones.map(opcion => {
-        const selected = opcion.id == valorActual ? "selected" : "";
-        return `<option value="${opcion.id}" ${selected}>${opcion.nombre}</option>`;
-      }).join("");
-
-      return `
-        <div class="mb-2">
-          <label class="block text-sm mb-1">${label}:</label>
-          <select data-campo="${campo}" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded">
-            <option value="">Seleccione...</option>
-            ${opcionesHTML}
-          </select>
-        </div>
-      `;
-    }
-
-  </script>
-</div>
+function crearSelect(campo, label, opciones) {
+  const valorActual = (matriculaActual[campo] || "");
+  let opcionesHTML = opciones.map(opcion => {
+    const selected = opcion.id == valorActual ? "selected" : "";
+    return `<option value="${opcion.id}" ${selected}>${opcion.nombre}</option>`;
+  }).join("");
+  return `
+    <div class="mb-2">
+      <label class="block text-sm mb-1">${label}:</label>
+      <select 
+        name="${campo}" 
+        id="${campo}" 
+        data-campo="${campo}" 
+        class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border rounded"
+        required
+      >
+        <option value="">Seleccione...</option>
+        ${opcionesHTML}
+      </select>
+    </div>
+  `;
+}
+</script>
