@@ -1,0 +1,50 @@
+---
+import General from "../layouts/general.astro";
+import Panelnav from "../components/navigation/panelnav.astro";
+import Asidebar from "../components/asidebar.astro";
+
+
+// Se usa un valor por defecto 'guest' si no se encuentra el rol
+let userRole = 'guest'; 
+let userName = 'Usuario';
+
+if (Astro.request.headers.get('accept').includes('text/html')) {
+  userRole = 'user';
+  userName = 'Usuario';
+}
+
+
+---
+
+<General>
+    <Panelnav />
+    <main class="flex">
+        <!-- El Asidebar ahora leerá el rol directamente de localStorage en el cliente -->
+        <Asidebar /> 
+        <div class="flex-1 p-8">
+            <h1 class="text-4xl font-bold mb-6 text-gray-800 dark:text-white">Bienvenido a tu Perfil</h1>
+            <p id="user-info" class="text-xl text-gray-700 dark:text-gray-300">Cargando información del usuario...</p>
+            
+            <div class="mt-8 p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Panel de Control Rápido</h2>
+                <p class="text-gray-700 dark:text-gray-300">Aquí podrás ver opciones y accesos rápidos según tu rol en la plataforma. Tu menú lateral se ha adaptado a tus permisos.</p>
+                <!-- Aquí podrías añadir más contenido específico del perfil -->
+            </div>
+        </div>
+    </main>
+</General>
+
+<script is:inline>
+    // Este script se ejecuta en el navegador una vez que la página ha cargado
+    const userInfoElement = document.getElementById('user-info');
+    const storedUserRole = localStorage.getItem('userRole');
+    const storedUserName = localStorage.getItem('userName');
+
+    if (storedUserRole && storedUserName) {
+        userInfoElement.innerHTML = `Hola, <strong>${storedUserName}</strong>. Tu rol actual es: <strong>${storedUserRole}</strong>.`;
+    } else {
+        userInfoElement.textContent = 'No se pudo cargar la información del usuario. Por favor, inicie sesión nuevamente.';
+        // Opcionalmente, redirigir a la página de login
+        // setTimeout(() => { window.location.href = '/login.html'; }, 2000); 
+    }
+</script>
