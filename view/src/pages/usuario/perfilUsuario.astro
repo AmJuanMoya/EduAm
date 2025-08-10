@@ -1,18 +1,16 @@
 ---
-import General from "../layouts/general.astro";
-import Panelnav from "../components/navigation/panelnav.astro";
-import Asidebar from "../components/asidebar.astro";
+import General from "../../layouts/general.astro";
+import Panelnav from "../../components/navigation/panelnav.astro";
+import Asidebar from "../../components/asidebar.astro";
 
+// Nota: No decodificamos el JWT aquí en el frontmatter de Astro directamente,
+// ya que esta parte se ejecuta en el servidor durante la compilación/SSR.
+// La decodificación y el uso de los datos del JWT se hará en el cliente
+// a través de JavaScript, para aprovechar localStorage y la dinámica del Asidebar.
 
-// Se usa un valor por defecto 'guest' si no se encuentra el rol
-let userRole = 'guest'; 
-let userName = 'Usuario';
-
-if (Astro.request.headers.get('accept').includes('text/html')) {
-  userRole = 'user';
-  userName = 'Usuario';
-}
-
+// Valores por defecto para el renderizado inicial de la página
+let initialUserRole = 'guest'; 
+let initialUserName = 'Usuario';
 
 ---
 
@@ -20,7 +18,7 @@ if (Astro.request.headers.get('accept').includes('text/html')) {
     <Panelnav />
     <main class="flex">
         <!-- El Asidebar ahora leerá el rol directamente de localStorage en el cliente -->
-        <Asidebar /> 
+        <Asidebar client:load /> 
         <div class="flex-1 p-8">
             <h1 class="text-4xl font-bold mb-6 text-gray-800 dark:text-white">Bienvenido a tu Perfil</h1>
             <p id="user-info" class="text-xl text-gray-700 dark:text-gray-300">Cargando información del usuario...</p>
@@ -30,6 +28,13 @@ if (Astro.request.headers.get('accept').includes('text/html')) {
                 <p class="text-gray-700 dark:text-gray-300">Aquí podrás ver opciones y accesos rápidos según tu rol en la plataforma. Tu menú lateral se ha adaptado a tus permisos.</p>
                 <!-- Aquí podrías añadir más contenido específico del perfil -->
             </div>
+
+            <!-- Botón de Cerrar Sesión (Logout) -->
+            <div class="mt-8 flex justify-center">
+                <button id="logoutBtn" class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                    Cerrar Sesión
+                </button>
+            </div>
         </div>
     </main>
 </General>
@@ -37,14 +42,61 @@ if (Astro.request.headers.get('accept').includes('text/html')) {
 <script is:inline>
     // Este script se ejecuta en el navegador una vez que la página ha cargado
     const userInfoElement = document.getElementById('user-info');
-    const storedUserRole = localStorage.getItem('userRole');
-    const storedUserName = localStorage.getItem('userName');
+    const logoutButton = document.getElementById('logoutBtn');
 
-    if (storedUserRole && storedUserName) {
-        userInfoElement.innerHTML = `Hola, <strong>${storedUserName}</strong>. Tu rol actual es: <strong>${storedUserRole}</strong>.`;
-    } else {
-        userInfoElement.textContent = 'No se pudo cargar la información del usuario. Por favor, inicie sesión nuevamente.';
-        // Opcionalmente, redirigir a la página de login
-        // setTimeout(() => { window.location.href = '/login.html'; }, 2000); 
+    // Función para decodificar un JWT
+    function decodeJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error("Error al decodificar JWT:", e);
+            return null;
+        }
     }
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    let userRole = 'guest'; // Valor por defecto
+    let userName = 'Usuario'; // Valor por defecto
+
+    if (jwtToken) {
+        const decodedToken = decodeJwt(jwtToken);
+        // Verificar si el token existe y no ha expirado
+        if (decodedToken && decodedToken.exp * 1000 > Date.now()) { 
+            userRole = decodedToken.rol || 'guest';
+            // Usa los datos del token para el nombre (ajusta según cómo los guardaste en el payload)
+            userName = decodedToken.nombres ? `${decodedToken.nombres} ${decodedToken.apellidos || ''}`.trim() : 'Usuario';
+            userInfoElement.innerHTML = `Hola, <strong>${userName}</strong>. Tu rol actual es: <strong>${userRole}</strong>.`;
+            
+            // Asegurarse de que localStorage esté actualizado para el Asidebar (redundante pero seguro)
+            localStorage.setItem('userRole', userRole); 
+            localStorage.setItem('userName', userName);
+        } else {
+            // Token inválido o expirado
+            userInfoElement.textContent = 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.';
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userId');
+            setTimeout(() => { window.location.href = '/login'; }, 2000); // Redirigir a login
+        }
+    } else {
+        // No se encontró token
+        userInfoElement.textContent = 'No se encontró sesión activa. Por favor, inicie sesión.';
+        setTimeout(() => { window.location.href = '/login'; }, 2000); // Redirigir a login
+    }
+
+    // Lógica para cerrar sesión
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userId');
+        alert('Sesión cerrada. Serás redirigido al inicio de sesión.'); // Considera un modal personalizado en lugar de alert en prod
+        window.location.href = '/login/login'; // Redirigir a la página de login
+    });
 </script>

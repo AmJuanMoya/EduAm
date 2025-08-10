@@ -219,11 +219,24 @@
                     const userRole = result.user.rol;
                     const userName = result.user.nombres;
                     const userLastName = result.user.apellidos;
+                    const jwtToken = result.token; // Obtener el JWT del resultado
+
+                    // Almacenar el JWT y los datos del usuario en localStorage
+                    localStorage.setItem('jwtToken', jwtToken); 
+                    localStorage.setItem('userRole', userRole); 
+                    localStorage.setItem('userName', `${userName} ${userLastName}`);
+                    localStorage.setItem('userId', result.user.id); // Guardar el ID del usuario también
+
 
                     showModal('✅', '¡Inicio de Sesión Exitoso!', `Bienvenido, <strong>${userName} ${userLastName}</strong>. Tu rol es: <strong>${userRole}</strong>.`);
                     loginForm.reset(); // Limpiar el formulario
-                    // Aquí podrías redirigir al usuario o cargar contenido dinámico
-                    // Por ejemplo: window.location.href = '/dashboard';
+
+                    // Redirigir al usuario al perfil después de un breve retraso para que vea el modal
+                    setTimeout(() => {
+                        window.location.href = '/usuario/perfilUsuario'; // Ajusta esta URL a la ruta real de tu página de perfil
+                    }, 1500); // Redirige después de 1.5 segundos
+
+                    
                 } else {
                     // Login fallido (ej. credenciales inválidas, errores del servidor)
                     showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');

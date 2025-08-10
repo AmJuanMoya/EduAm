@@ -18,6 +18,7 @@ import loginRouter from './routes/r_login.js';
 const app = express()
 app.use(cors());
 app.use("/api",express.json());
+import dotenv from 'dotenv';
 
 app.use('/api', TablasRouter)
 app.use("/api", matriculasRouter);
