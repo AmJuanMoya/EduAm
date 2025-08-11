@@ -1,59 +1,222 @@
 ---
 let {options} = Astro.props
-let {NameAside = "Menu por defecto"} = Astro.props
+let {NameAside = "Menu por defecto", rol=""} = Astro.props
 export const prerender = false
 
-const optionsDefault = options ?? { inicio: "/", Consultas: "/consultas" };
-const optionNames = [...Object.keys(optionsDefault), ]
+// ===== CONFIGURACIÓN DE ROLES =====
+// ANOTACIÓN IMPORTANTE: Cambiar manualmente este valor para cambiar de rol
+// TODO: Implementar sistema de autenticación real
+let userRol = "admin" // Cambiar a: "admin", "docente", "estudiante", "guest"
+
+// ===== DEFINICIÓN DE TIPOS =====
+interface SubOption {
+  title: string;
+  path: string;
+  roles: string[];
+}
+
+interface MenuOption {
+  title: string;
+  path?: string;
+  icon: string;
+  roles: string[];
+  subOptions?: SubOption[];
+}
+
+// ===== DEFINICIÓN DE OPCIONES DEL MENÚ =====
+const menuOptions: MenuOption[] = [
+  {
+    title: "Inicio",
+    path: "/",
+    icon: "home",
+    roles: ["admin", "docente", "estudiante", "guest"]
+  },
+  {
+    title: "Administración",
+    icon: "admin",
+    roles: ["admin"],
+    subOptions: [
+      { 
+        title: "Panel de Administración", 
+        path: "/admin/adminpanel",
+        roles: ["admin"]
+      },
+      { 
+        title: "Gestión de Usuarios", 
+        path: "/admin/users",
+        roles: ["admin"]
+      }
+    ]
+  },
+  {
+    title: "Matrículas",
+    icon: "matriculas",
+    roles: ["admin"],
+    subOptions: [
+      { 
+        title: "Ver Matrículas", 
+        path: "/matriculas/listarMatriculas",
+        roles: ["admin"]
+      },
+      { 
+        title: "Registrar Matrículas", 
+        path: "/matriculas/registromatriculas",
+        roles: ["admin"]
+      }
+    ]
+  },
+  {
+    title: "Panel Docente",
+    icon: "docente",
+    roles: ["docente"],
+    subOptions: [
+      { 
+        title: "Panel de Docente", 
+        path: "/docente/docentepanel",
+        roles: ["docente"]
+      },
+      { 
+        title: "Ver Cursos", 
+        path: "/cursos/vercursos",
+        roles: ["docente"]
+      }
+    ]
+  },
+  {
+    title: "Actividades",
+    icon: "actividades",
+    roles: ["docente", "estudiante"],
+    subOptions: [
+      { 
+        title: "Consultar Actividades", 
+        path: "/Actividades/consultaActividades",
+        roles: ["docente", "estudiante"]
+      },
+      { 
+        title: "Ver Actividades", 
+        path: "/Actividades/verActividad",
+        roles: ["docente", "estudiante"]
+      }
+    ]
+  },
+  {
+    title: "Cursos",
+    icon: "cursos",
+    roles: ["estudiante", "docente"],
+    subOptions: [
+      { 
+        title: "Mis Cursos", 
+        path: "/Cursos/cursos",
+        roles: ["estudiante"]
+      }
+    ]
+  }
+];
+
+// ===== FUNCIÓN PARA FILTRAR OPCIONES POR ROL =====
+function filterOptionsByRole(options: MenuOption[], role: string): MenuOption[] {
+  return options.filter(option => {
+    // Si la opción no está permitida para el rol, la descartamos
+    if (!option.roles.includes(role)) return false;
+
+    if(userRol === "admin"){
+      menuOptions[0].path = "/admin/adminpanel"
+     }
+    
+    // Si tiene subopciones, las filtramos también
+    if (option.subOptions) {
+      option.subOptions = option.subOptions.filter(subOption => 
+        subOption.roles.includes(role)
+      );
+      // Si después de filtrar no hay subopciones, no mostramos la opción padre
+      if (option.subOptions.length === 0) return false;
+    }
+    return true;
+  });
+}
+
+
+
+
+// ===== APLICAR FILTRO =====
+const filteredOptions = filterOptionsByRole(menuOptions, userRol);
+
+// ===== FUNCIÓN PARA OBTENER ICONO =====
+function getIcon(iconName: string): string {
+  const icons: Record<string, string> = {
+    home: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>`,
+    admin: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+    matriculas: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>`,
+    docente: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path></svg>`,
+    actividades: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>`,
+    cursos: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" clip-rule="evenodd"></path></svg>`
+  };
+  return icons[iconName] || '';
+}
 ---
 
-
 <!-- Menu tipo asidebar -->
+<div id="drawer" class="mx-3 w-65 dark:bg-slate-950/40 rounded-md p-2">
+  <aside class="menu">
+    <div class="flex justify-evenly">
+      <p class="text-center text-slate-500/50 mb-5">{NameAside}</p>
+      <!-- Boton X para cerrar el menu -->
+      <svg id="btnClose" data-drawer-hide="drawer" class="w-5 h-5 text-gray-800 dark:text-white/50 rounded-sm hover:scale-115 hover:text-blue-500 hover:rotate-90 duration-400 hover:cursor-pointer hover:bg-slate-500/50" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+      </svg>
+    </div>
+    
+    <ul class="menu-list">
+      {filteredOptions.map((option: MenuOption) => (
+        <li class="menu-item">
+          {option.subOptions && option.subOptions.length > 0 ? (
+            <!-- Opción con subopciones -->
+            <div class="menu-group">
+              <div class="menu-header flex items-center dark:hover:bg-slate-700/80 pl-4 border-l-2 rounded-r-md hover:border-l-blue-500 p-1 my-2 transition-colors duration-200">
+                <span class="mr-2" set:html={getIcon(option.icon)}></span>
+                <span class="flex-1">{option.title}</span>
+                <svg class="w-4 h-4 transform transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <ul class="submenu pl-6 hidden">
+                {option.subOptions.map((subOption: SubOption) => (
+                  <li class="flex dark:hover:bg-slate-700/80 pl-4 border-l-2 rounded-r-md hover:border-l-blue-500 p-1 my-2 transition-colors duration-200">
+                    <a class="w-full" href={subOption.path}>{subOption.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <!-- Opción simple -->
+            <div class="flex dark:hover:bg-slate-700/80 pl-4 border-l-2 rounded-r-md hover:border-l-blue-500 p-1 my-2 transition-colors duration-200">
+              <span class="mr-2" set:html={getIcon(option.icon)}></span>
+              <a class="w-full" href={option.path}>{option.title}</a>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </aside>
+</div>
+
+<script type="module" src="../../public/scripts/sidebarManager.js">
 
 
-      <div id="drawer" class=" mx-3 w-65 dark:bg-slate-950/40  rounded-md p-2">
+  // Si usas navegación SPA, escucha el evento de navegación y vuelve a inicializar
+  
+</script>
 
-
-        <aside class="menu">
-          <div class="flex justify-evenly">
-            <p class="text-center text-slate-500/50 mb-5"> {NameAside}</p>
-            <!-- Boton X para cerrar el menu -->
-            <svg id="btnClose" data-drawer-hide="drawer"  class="w-5 h-5 text-gray-800 dark:text-white/50 rounded-sm hover:scale-115 hover:text-blue-500 hover:rotate-90 duration-400 hover:cursor-pointer  hover:bg-slate-500/50" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
-            </svg>
-            
-          </div>
-            <ul class="menu-list">
-
-              <!-- <li> <a href="/">Inicio</a></li> -->
-              {optionNames.map((name) => (
-                <li class="flex dark:hover:bg-slate-700/80 pl-4 border-l-2 rounded-r-md hover:border-l-blue-500 p-1 my-2  transition-colors duration-200"><a class=" w-[100%]" href={optionsDefault[name]}>{name}</a></li>
-              ))}
-
-
-
-            </ul>
-        </aside>
-
-      </div>
-
-
-      <script >
-        import { Drawer } from "flowbite";
-
-        document.addEventListener("DOMContentLoaded",()=>{
-          let dawerT = document.getElementById("drawer")
-          let btnClose = document.getElementById("btnClose")
-          const drawer = new Drawer(dawerT);
-
-          // btnClose?.addEventListener("click", ()=>{
-          //   drawer.toggle();
-          // })
-          
-
-        })
-
-
-        // Si usas navegación SPA, escucha el evento de navegación y vuelve a inicializar
-         // Evento de Astro para navegación interna
-      </script>
+<style>
+  .menu-group .menu-header {
+    cursor: pointer;
+  }
+  
+  .submenu {
+    transition: all 0.3s ease;
+  }
+  
+  .submenu.hidden {
+    display: none;
+  }
+</style>

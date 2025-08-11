@@ -28,3 +28,6 @@ Content-Type: 'application/json'
 
 GET http://localhost:3000/api/datos/registros/t_usuarios
 Content-Type: 'application/json'
+
+GET http://localhost:3000/api/datos/tipo_identificacion
+Content-Type: 'application/json'

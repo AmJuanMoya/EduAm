@@ -17,11 +17,10 @@ class t_tipo_identificacion {
         return datos;
     }
 
-    async insertTipoIdentificacion(tipo_identificacion) {
-        console.log("Insertando matrícula con tipo documento:", matricula.id_tipo_documento_estudiante);
+    async insertTipoIdentificacion(nombre_tipo_identificacion) {
         await this.db.connect();
-        const query = 'INSERT INTO t_tipo_identificacion (tipo_identificacion) VALUES (?)';
-        await this.db.consultar(query, [tipo_identificacion]);
+        const query = 'INSERT INTO t_tipo_identificacion (nombre_tipo_identificacion) VALUES (?)';
+        await this.db.consultar(query, [nombre_tipo_identificacion]);
         await this.db.cerrar();
         return this.db.getData();
     }

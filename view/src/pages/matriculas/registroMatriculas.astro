@@ -3,6 +3,21 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 
+let identificacion = [];
+
+try {
+  const res = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+  if (res.ok) {
+    identificacion = await res.json();
+  } else {
+    // Es buena práctica manejar el caso en que la respuesta no es OK
+    console.error(`Error al obtener identificaciones: ${res.status} - ${res.statusText}`);
+  }
+} catch (error) {
+  // Captura cualquier error de red o de la solicitud
+  console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+}
+
 ---
 
 <General>
@@ -12,50 +27,71 @@ import Asidebar from "../../components/asidebar.astro";
     <Asidebar/>
     <div class=" w-full mx-5 ">
         
-        <form action="" class=" dark:bg-slate-950/90 w-[75%]  mx-auto p-5 overflow-auto resize ">
+        <form id="registroMatriculaForm" action="" method="POST" class=" dark:bg-slate-950/90 w-[75%]  mx-auto p-5 overflow-auto resize ">
           <h1 class="text-center text-3xl my-3">Registro de Matriculas</h1>
             <fieldset class="border border-slate-500/50 p-3 rounded-lg "> <legend class="">DATOS DEL ESTUDIANTE</legend>
                 
                 <div class="mx-auto w-fit">
-                 <label for="" class="block  w-50"> Primer Nombre: </label>
-                 <input type="text" placeholder="Juan" class="m-5 rounded-sm w-200" required>
+                  <div class="flex">
+                    <label for="primer_nombre_estudiante" class="block"> Primer Nombre: </label>
+                    <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>
+                  </div> 
+
+                 <input id="primer_nombre_estudiante" name="primer_nombre_estudiante" type="text" placeholder="Juan" class="m-5 rounded-sm w-200" required>
                 </div>
 
                 <div class="mx-auto w-fit">
-                 <label for="" class="block w-50">Nombres Adicionales:</label>
-                 <input type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                  <div class="flex">
+                  <label for="nombres_adicionales_estudiante" class="block ">Nombres Adicionales:</label>
+                  <!-- <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> -->
+                </div>  
+                 <input id="nombres_adicionales_estudiante" name="nombres_adicionales_estudiante" type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
                 </div>
                  
                 <div class="mx-auto w-fit"> 
-                  <label for="" class="block w-50">Primer Apellido: </label>
-                  <input type="text" placeholder="Moya" class="m-5 rounded-sm w-200" required>
+                  <div class="flex">
+                  <label for="primer_apellido_estudiante" class="block ">Primer Apellido: </label>
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>
+                  <input id="primer_apellido_estudiante" name="primer_apellido_estudiante" type="text" placeholder="Moya" class="m-5 rounded-sm w-200" required>
                 </div>
                   
-                <div class="mx-auto w-fit">    
-                  <label for="" class="block w-50">Apellidos adicionales:</label>
-                  <input type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                <div class="mx-auto w-fit">   
+                  <div class="flex"> 
+                  <label id="apellidos_adicionales_estudiante" for="" class="block w-50">Apellidos adicionales:</label>
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>  
+                  <input id="apellidos_adicionales_estudiante" required name="apellidos_adicionales_estudiante" type="text" placeholder="Miguel." class="m-5 rounded-sm w-200">    
+                
                 </div>
 
                 <div class="mx-auto w-fit">    
-                  <label for="" class="block w-50 ">Numero de Documento:</label>
+                  <div class="flex">
+                  <label for="documento_estudiante" class="block ">Numero de Documento:</label>
+                  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> 
+                </div>  
                   <div class="m-5 flex  w-200 ">
-                    <select name="" id="" class="rounded-l-md">
-                      <option value="">T.I</option>
+                    <select name="id_tipo_documento_estudiante" id="id_tipo_documento_estudiante" class="rounded-l-md" required>
+                      <!-- <option value="">T.I</option>
                       <option value="">C.C</option>
-                      <option value="">C.E</option>
+                      <option value="">C.E</option> -->
+
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
                     </select>
-                    <input type="number" placeholder=1000009  pattern="^[1-9]\d{9,}$"  class="rounded-r-sm w-190 ">
+                    <input id="documento_estudiante" name="documento_estudiante" type="text" required placeholder=1000009 class="rounded-r-sm w-190 ">
                   </div>
                 </div>
 
                 <div class="mx-auto w-fit">    
-                  <label for="" class="block w-fit ">EPS: <span class="text-sm text-slate-500">(Si no tiene eps coloque no coloque Nada. Se asumira que tiene Sisben)</span></label>
-                  <input type="text" placeholder="Ej. Compensar" class="m-5 rounded-sm w-200">    
+                  <label for="eps" class="block  ">EPS: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  <span class="text-sm text-slate-500">(Si no tiene eps coloque no coloque Nada. Se asumira que tiene Sisben)</span></label>
+                  <input id="eps" name="eps" type="text" placeholder="Ej. Compensar" class="m-5 rounded-sm w-200">    
                 </div>
 
                 <div class="mx-auto w-fit">    
-                  <label for="" class="block w-50 ">Estrato Socioeconomico </label>
-                  <input type="number"min=1 max=10 placeholder="Ej. 3" class="m-5 rounded-sm w-200">
+                  <label for="estrato" class="block w-50 ">Estrato Socioeconomico:<span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <input id="estrato" name="estrato" type="number"min=1 max=10 placeholder="Ej. 3" class="m-5 rounded-sm w-200">
                 </div>
 
                 <!-- ESTADO MATRICULA Y FECHA MATRICULA SE ASIGNAN DEPENDIENDO DE QUIEN REALIZE
@@ -68,7 +104,7 @@ import Asidebar from "../../components/asidebar.astro";
                 <!-- <label for="">El estudiante es repitente</label>
                 <div></div>-->
                 <div class="mx-auto w-210">   
-                  <label for="" class="text-left block mb-2 ">¿El estudiante es repitente?</label>
+                  <label for="" class="text-left block mb-2 ">¿El estudiante es repitente?  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
                   <div class="w-fit ml-5 p-1 ">
                     <input name="repitente" type="radio" value=true class="mx-3"> Si
                     <input name="repitente" type="radio" value=false class="mx-3">No
@@ -76,36 +112,204 @@ import Asidebar from "../../components/asidebar.astro";
                 </div>
 
                 <div class="mx-auto w-fit mt-5">    
-                  <label for="" class="block w-fit ">¿En que jordanada le gustaria que el estudiante se encontrase?</label>
+                  <label for="jornada" class="block w-fit ">¿En que jordanada le gustaria que el estudiante se encontrase?  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
 
-                  <select name="" id="" class="m-5 rounded-sm w-200">
-                    <option  selected disabled value="0" >Seleccione</option>
+                  <select name="jornada" id="jornada" class="m-5 rounded-sm w-200">
+                    <option  selected disabled value="0" class=""  >Seleccione</option>
                     <option value="Tarde">Tarde</option>
                     <option value="Mañana">Mañana</option>
                   </select>
                 </div>
 
                 <div class="mx-auto w-fit">    
-                  <label for="" class="block w-50 ">Direccion de Residencia</label>
-                  <input type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200">
+                  <label for="direccion_residencia" class="block w-50 ">Direccion de Residencia  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <input id="direccion_residencia" name="direccion_residencia" type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200">
                 </div>
 
                 <div class="mx-auto w-fit mt-5">    
-                  <label for="" class="block w-fit " >¿El estudiante tiene alguna discapacidad que debamos conocer?</label>
-                  <textarea name="" id="" placeholder="Puede dejar este espacio vacio si no la tiene." class="bg-inherit m-5 rounded-sm w-200"></textarea>
+                  <label for="discapacidad" class="block w-fit " >¿El estudiante tiene alguna discapacidad que debamos conocer?</label>
+                  <textarea name="discapacidad" id="discapacidad" placeholder="Puede dejar este espacio vacio si no la tiene." class="bg-inherit m-5 rounded-sm w-200"></textarea>
+                </div>
+
+            </fieldset>
+
+
+
+
+            <fieldset class="border border-slate-500/50 p-3 rounded-lg mt-7 ">  <legend class="">DATOS ACUDIENTE</legend>
+
+                <div class="mx-auto w-fit">
+                 <label for="nombre_acudiente1" class="block  w-50"> Primer Nombre: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
+                 <input id="nombre_acudiente1" name="nombre_acudiente1" type="text" placeholder="Kevin" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                <!-- <div class="mx-auto w-fit">
+                 <label for="" class="block  w-50">Nombres Adicionales: </label>
+                 <input type="text" placeholder="---" class="m-5 rounded-sm w-200" >
+                </div> -->
+
+                 <div class="mx-auto w-fit">
+                 <label for="apellido_acudiente1" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
+                 <input id="apellido_acudiente1" name="apellido_acudiente1" type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
+                </div>
+
+                 <div class="mx-auto w-fit">    
+                  <label for="numero_documento_acudiente1" class="block w-50 ">Numero de Documento:  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                  <div class="m-5 flex  w-200 ">
+                    <select name="id_tipo_documento_acudiente1" id="id_tipo_documento_acudiente1" class="rounded-l-md">
+                      <!-- <option value="cc">C.C</option>
+                      <option value="ti">T.I</option>
+                      <option value="ce">C.E</option> -->
+                      {identificacion.map((d) => {
+                        return <option value={d.id_identificacion}>{d.tipo_identificacion}</option>;
+                        })}
+                    </select>
+                    <input id="numero_documento_acudiente1" name="numero_documento_acudiente1" type="text" placeholder=1000009  class="rounded-r-sm w-190 " required>
+                  </div>
                 </div>
 
 
+                <div class="mx-auto w-fit">
+                 <label for="tel_contacto_acudiente1" class="block  w-50">Telefono de Contacto: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span></label>
+                 <input id="tel_contacto_acudiente1" name="tel_contacto_acudiente1" type="text" placeholder="123456789" class="m-5 rounded-sm w-200" required>
+                </div>
 
-
-
-
-
+                <div class="mx-auto w-fit">
+                 <label for="correo_acudiente1" class="block  w-50">Correo electronico: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
+                 <input id="correo_acudiente1" name="correo_acudiente1" type="email" placeholder="kevinM@gmail.com" class="m-5 rounded-sm w-200" required>
+                </div>
 
             </fieldset>
+
+            <fieldset class="border border-slate-500/50 p-3 rounded-lg mt-7 ">  <legend class="">OTROS</legend>
+
+                  <div class="mx-auto w-fit mt-5">    
+                  <label for="observaciones" class="block w-fit " >Aqui puede dejar una observacion si debamos de tener algo en cuenta.</label>
+                  <textarea name="observaciones" id="observaciones" placeholder="Puede dejar este espacio vacio si no la tiene." class="bg-inherit m-5 rounded-sm w-200"></textarea>
+                </div>
+            </fieldset>
+
+            <div class="flex justify-center mt-8">
+          <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            Registrar Matrícula
+          </button>
+        </div>
+            
 
         </form>
     </div>
 </main>
 
 </General>
+
+<main class="flex border">
+
+<div class=" w-full mx-5 ">
+<!-- <form id="registroMatriculaForm" action="" method="POST" class=" dark:bg-slate-950/90 w-[75%] mx-auto p-5 overflow-auto resize ">
+</form> -->
+</div>
+
+    <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white  dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-95 duration-300">
+            <div class="text-center">
+                <div id="modalIcon" class="text-6xl mb-4"></div>
+                <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gray-900 dark:text-white"></h3>
+                <p id="modalMessage" class="text-gray-700 dark:text-gray-300 mb-6"></p>
+                <button id="closeModalBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+    </main>
+
+
+<script is:inline>
+    const form = document.getElementById('registroMatriculaForm');
+    const statusModal = document.getElementById('statusModal');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Función para mostrar el modal
+    function showModal(icon, title, message) {
+        modalIcon.textContent = icon;
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        statusModal.classList.remove('hidden');
+        // Opcional: añadir una animación de entrada
+        statusModal.querySelector('div').classList.remove('scale-95');
+        statusModal.querySelector('div').classList.add('scale-100');
+    }
+
+    // Función para ocultar el modal
+    function hideModal() {
+        // Opcional: añadir una animación de salida
+        statusModal.querySelector('div').classList.remove('scale-100');
+        statusModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => { // Esperar la animación antes de ocultar completamente
+            statusModal.classList.add('hidden');
+        }, 300); // Coincide con la duración de la transición CSS
+    }
+
+    // Event listener para el botón de cerrar modal
+    closeModalBtn.addEventListener('click', hideModal);
+
+    // Event listener para cerrar el modal haciendo clic fuera de él
+    statusModal.addEventListener('click', (event) => {
+        if (event.target === statusModal) {
+            hideModal();
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Evitar el envío predeterminado del formulario
+
+        const formData = new FormData(form);
+        const data = {};
+
+        // Convertir FormData a un objeto JSON
+        for (const [key, value] of formData.entries()) {
+            if (key === 'repitente') {
+                data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
+            } else if (key === 'estrato') {
+                data[key] = parseInt(value); // Convertir 'estrato' a entero
+            } else if (value === '') { // Para campos de texto opcionales, enviar null en lugar de string vacío
+                data[key] = null; // Esto es útil si tu DB permite NULL para campos opcionales
+                                  // Si tu DB espera string vacío para NOT NULL, cámbialo a data[key] = '';
+            } else {
+                data[key] = value; // Para todos los demás campos, asignar el valor directamente
+            }
+        }
+
+        console.log('Datos a enviar:', data); // Para depuración
+
+        try {
+            const response = await fetch('http://localhost:3000/api/datos/matricula', { // Asegúrate que esta URL sea la correcta
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // Reemplazar alert por showModal para éxito
+                showModal('✅', '¡Registro Exitoso!', result.message);
+                form.reset(); // Limpiar el formulario después del éxito
+            } else {
+                const errorData = await response.json();
+                // Reemplazar alert por showModal para error
+                showModal('❌', 'Error al Registrar', errorData.message || 'Ocurrió un error inesperado.');
+                console.error('Error del servidor:', errorData);
+            }
+        } catch (error) {
+            // Reemplazar alert por showModal para error de conexión
+            showModal('⚠️', 'Error de Conexión', 'Ocurrió un error al conectar con el servidor. Intente de nuevo más tarde.');
+            console.error('Error de red o de solicitud:', error);
+        }
+    });
+</script>
+

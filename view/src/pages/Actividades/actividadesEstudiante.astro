@@ -1,0 +1,127 @@
+---
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+import Panelnav from "../../components/navigation/panelnav.astro";
+import ActividadCard from "../../components/ActividadCard.astro";
+
+// Documento del estudiante
+const documentoEstudiante = "1020304007";
+
+// Consulta de actividades
+const response = await fetch(`http://localhost:3000/api/datos/actividades/estudiante/detalle/${documentoEstudiante}`);
+const resultado = await response.json();
+const actividades = Array.isArray(resultado) ? resultado : [];
+
+// Extraer asignaturas únicas para el filtro
+const asignaturasUnicas = Array.from(new Set(
+  actividades.map((a: any) => a.nombre_asignatura)
+));
+---
+
+<General>
+  <Panelnav />
+  <div class="bg-slate-900 flex min-h-screen">
+    <Asidebar />
+
+    <div class="flex-1 p-6 text-white">
+      <h1 class="text-2xl font-bold mb-4 text-center">Actividades</h1>
+
+      <!-- Filtros -->
+      <div class="flex flex-wrap gap-4 items-end mb-6">
+        <div>
+          <label for="filtroAsignatura" class="block text-sm mb-1">Asignatura</label>
+          <select
+            id="filtroAsignatura"
+            class="bg-slate-700 p-2 rounded-md w-48 border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Todas</option>
+            {(asignaturasUnicas as string[]).map((asig) => (
+              <option value={asig}>{asig}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label for="filtroFecha" class="block text-sm mb-1">Fecha entrega</label>
+          <input
+            type="date"
+            id="filtroFecha"
+            class="bg-white text-black p-2 rounded-md w-48 border border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <button
+          id="filtrarBtn"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-1"
+        >
+          Filtrar
+        </button>
+      </div>
+
+      <!-- Cards -->
+      <div id="actividadesContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        {
+          actividades.length > 0
+            ? actividades.map((actividad) => (
+                <ActividadCard actividad={actividad} client:load />
+              ))
+            : <p class="text-yellow-300 col-span-full">No hay actividades disponibles.</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", () => {
+      const filtroAsignatura = document.getElementById("filtroAsignatura");
+      const filtroFecha = document.getElementById("filtroFecha");
+      const btnFiltrar = document.getElementById("filtrarBtn");
+      const container = document.getElementById("actividadesContainer");
+
+      btnFiltrar?.addEventListener("click", () => {
+        const asignaturaSeleccionada = filtroAsignatura.value;
+        const fechaSeleccionada = filtroFecha.value;
+
+        const cards = container.querySelectorAll("[data-asignatura]");
+
+        cards.forEach(card => {
+          const asignaturaCard = card.getAttribute("data-asignatura");
+          const fechaCard = card.getAttribute("data-fecha");
+
+          const coincideAsignatura =
+            !asignaturaSeleccionada || asignaturaSeleccionada === asignaturaCard;
+
+          const coincideFecha =
+            !fechaSeleccionada || fechaSeleccionada === fechaCard;
+
+          if (coincideAsignatura && coincideFecha) {
+            card.classList.remove("hidden");
+          } else {
+            card.classList.add("hidden");
+          }
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        const verBtn = e.target.closest(".ver-detalles");
+        const cerrarBtn = e.target.closest(".cerrarDetalle");
+        const modalContent = e.target.closest(".modal-content");
+        const modalBackdrop = e.target.classList.contains("modal-backdrop");
+
+        if (verBtn) {
+          const id = verBtn.getAttribute("data-id");
+          const modal = document.querySelector(`#modal-${id}`);
+          modal?.classList.remove("hidden");
+          document.body.classList.add("overflow-hidden");
+        }
+
+        if ((cerrarBtn || modalBackdrop) && !modalContent) {
+          const modal = e.target.closest(".modal-backdrop");
+          modal?.classList.add("hidden");
+          document.body.classList.remove("overflow-hidden");
+        }
+      });
+    });
+  </script>
+</General>

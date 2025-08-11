@@ -67,7 +67,9 @@ contraseña_usuario varchar(100) NOT NULL,
 telefono_usuario varchar(11) DEFAULT NULL,
 avatar_url_usuario text DEFAULT NULL,
 id_rol int(11) NOT NULL,
-id_estado_usuario int(11) NOT NULL
+id_estado_usuario int(11) NOT NULL,
+id_tipo_documento INT(11) NOT NULL,
+numero_documento INT(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- TABLA CURSO
@@ -81,9 +83,9 @@ nombre_curso VARCHAR(200) NOT NULL
 
 -- TABLA ASIGNATURA
 CREATE TABLE t_asignaturas (
-id_asignatura INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-nombre_asignatura VARCHAR(200) NOT NULL     
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+    id_asignatura INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nombre_asignatura VARCHAR(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
 
@@ -102,6 +104,15 @@ CREATE TABLE t_grado(
 id_grado INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 nombre_grado VARCHAR(200) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+-- TABLA DOCENTE_CURSO
+CREATE TABLE t_docente_curso (
+  id_docente_curso INT PRIMARY KEY,
+  id_docente INT NOT NULL,
+  id_curso INT NOT NULL,
+  FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente),
+  FOREIGN KEY (id_curso) REFERENCES t_curso(id_curso)
+);
 
 -- TABLA CATEGORIA_ARCHIVO
 CREATE TABLE t_categoria_archivo(
@@ -124,7 +135,7 @@ id_tipo_archivo INT(11) NOT NULL
 CREATE TABLE t_permisos(
 id_permiso INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 nombre_permiso VARCHAR(200) NOT NULL UNIQUE,
-descripcion_permiso TEXT NULL    
+descripcion_permiso TEXT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -132,7 +143,7 @@ descripcion_permiso TEXT NULL
 CREATE TABLE t_rol_permisos(
 id_rol_permiso INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 id_rol INT(11) NOT NULL,
-id_permisos INT(11) NOT NULL    
+id_permisos INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -148,11 +159,11 @@ CREATE TABLE t_anuncios (
 id_anuncio INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 titulo_anuncio VARCHAR(255) NOT NULL,
 descripcion_anuncio TEXT NOT NULL,
-fecha_creacion  DATETIME DEFAULT CURRENT_TIMESTAMP,
+fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
 fecha_expiracion DATETIME NULL,
 -- id_autor == id_usuario
 id_autor INT(11) NOT NULL,
-estado BOOLEAN DEFAULT FALSE    
+estado BOOLEAN DEFAULT FALSE 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -160,7 +171,7 @@ estado BOOLEAN DEFAULT FALSE
 CREATE TABLE t_comentarios_anuncios(
 id_comentarios_anuncio INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_anuncio INT(11) NOT NULL,
-id_comentario INT(11) NOT NULL    
+id_comentario INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -177,9 +188,9 @@ id_anuncio INT(11) NOT NULL
 CREATE TABLE t_anuncios_contextos (
 id_anuncio_contexto INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
 id_anuncio INT(11) NOT NULL,
-    
--- general == institucional    
-contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado'    
+
+-- general == institucional    
+contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado' 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -188,7 +199,7 @@ contexto ENUM ('privado', 'cursos' , 'general', 'docentes') DEFAULT 'privado'
 CREATE TABLE t_docente_asignatura(
 id_docente_asignatura INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_docente INT(11) NOT NULL,
-id_asignatura INT(11) NOT NULL    
+id_asignatura INT(11) NOT NULL 
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
@@ -215,17 +226,17 @@ id_periodo INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 -- el nombre del periodo es el numero por ejemplo
 nombre_periodo VARCHAR(200) NOT NULL UNIQUE,
 fecha_inicio DATE NOT NULL,
-fecha_fin DATE,  
-año_academico YEAR NOT NULL   
+fecha_fin DATE, 
+año_academico YEAR NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
---  TABLA PERIODO ACTIVIDAD
+--  TABLA PERIODO ACTIVIDAD
 
 CREATE TABLE t_periodo_actividad(
 id_periodo_actividad INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
 id_periodo INT(11) NOT NULL,
-id_actividad INT(11) NOT NULL    
+id_actividad INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -241,21 +252,26 @@ id_actividad INT(11) NOT NULL
 
 CREATE TABLE t_comentario_actividad(
 id_comentario_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-id_comentario INT(11) NOT NULL,   
-id_actividad INT(11) NOT NULL    
+id_comentario INT(11) NOT NULL, 
+id_actividad INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci; 
 
 
 -- TABLA ACTIVIDAD
 CREATE TABLE t_actividad (
-id_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-titulo_actividad VARCHAR(255) NOT NULL,
-descripcion_actividad TEXT,     
-fecha_publicacion  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-fecha_entrega DATETIME,
-calificacion_nota DECIMAL(2,1) NOT NULL,
-id_categoria_actividad INT(11) NOT NULL    
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+  id_actividad INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  titulo_actividad VARCHAR(255) NOT NULL,
+  descripcion_actividad TEXT,
+  fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  fecha_entrega DATETIME,
+  calificacion_nota DECIMAL(2,1) NOT NULL,
+  id_categoria_actividad INT(11) NOT NULL,
+  id_docente INT(11) NOT NULL,
+  estado ENUM('Asignado', 'Pendiente', 'Entregado', 'Calificado', 'No entregado') NOT NULL DEFAULT 'Asignado',
+  FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad),
+  FOREIGN KEY (id_docente) REFERENCES t_docente(id_docente)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
 
 
 -- TABLA ASISTENCIA
@@ -269,7 +285,7 @@ id_curso INT(11) NOT NULL,
 id_periodo INT(11) NOT NULL,
 fecha DATE NOT NULL,
 estado ENUM('Presente', 'Ausente', 'Retardo', 'Justificado', 'Retirado'),
-observaciones TEXT     
+observaciones TEXT 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- TABLA BOLETIN
@@ -281,10 +297,10 @@ id_curso INT(11) NOT NULL,
 id_periodo INT(11) NOT NULL,
 id_asignatura INT(11) NOT NULL,
 id_informe_calificaciones INT(11) NOT NULL,
-desempeño ENUM('Bajo', 'Basico','Alto', 'Superior' ) NOT NULL,    
+desempeño ENUM('Bajo', 'Basico','Alto', 'Superior' ) NOT NULL, 
 area_academica VARCHAR(255),
 fecha_emision DATE NOT NULL,
-observaciones TEXT     
+observaciones TEXT 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -292,11 +308,11 @@ observaciones TEXT
 -- TABLA MATRICULA
 
 CREATE TABLE t_matricula(
-id_matricula INT(11) NOT NULL PRIMARY KEY,
+id_matricula INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 primer_nombre_estudiante VARCHAR(255) NOT NULL,
 nombres_adicionales_estudiante VARCHAR(255),
 primer_apellido_estudiante VARCHAR(255) NOT NULL,
-apellidos_adicionales_estudiante VARCHAR(255) NOT NULL,    
+apellidos_adicionales_estudiante VARCHAR(255) NOT NULL, 
 estado_matricula ENUM('Activa', 'Cancela', 'Retirada', 'Condicional', 'Pendiente') NOT NULL,
 fecha_matricula DATE NOT NULL,
 repitente BOOLEAN NOT NULL,
@@ -307,23 +323,22 @@ discapacidad TEXT,
 jornada ENUM('Tarde', 'Mañana') NOT NULL,
 direccion_residencia TEXT NOT NULL,
 id_tipo_documento_estudiante INT(11) NOT NULL,
-documento_estudiante INT(11) NOT NULL,
-observaciones TEXT,     
-        
+documento_estudiante INT(11) NOT NULL UNIQUE,
+observaciones TEXT,             
 nombre_acudiente1 VARCHAR(255) NOT NULL,
 apellido_acudiente1 VARCHAR(255) NOT NULL,
 id_tipo_documento_acudiente1 INT(11) NOT NULL,
 numero_documento_acudiente1 INT(11) NOT NULL,
 tel_contacto_acudiente1 VARCHAR(15) NOT NULL,
-correo_acudiente1 VARCHAR(255),    
+correo_acudiente1 VARCHAR(255), 
 
 nombre_acudiente2 VARCHAR(255),
 apellido_acudiente2 VARCHAR(255) ,
 id_tipo_documento_acudiente2 INT(11),
 numero_documento_acudiente2 INT(11),
 tel_contacto_acudiente2 VARCHAR(15) ,
-correo_acudiente2 VARCHAR(255),     
-    
+correo_acudiente2 VARCHAR(255), 
+
 nombre_acudiente3 VARCHAR(255),
 apellido_acudiente3 VARCHAR(255) ,
 id_tipo_documento_acudiente3 INT(11),
@@ -335,9 +350,9 @@ correo_acudiente3 VARCHAR(255)
 
 -- TABLA TIPO ARCHIVO
 
-CREATE  TABLE t_tipo_archivo(
+CREATE TABLE t_tipo_archivo(
 id_tipo_archivo INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-tipo_archivo VARCHAR(200) NOT NULL UNIQUE    
+tipo_archivo VARCHAR(200) NOT NULL UNIQUE 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -346,7 +361,7 @@ tipo_archivo VARCHAR(200) NOT NULL UNIQUE
 CREATE TABLE t_anexos_matricula(
 id_anexo_matricula INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 id_archivo INT(11) NOT NULL,
-id_matricula INT(11) NOT NULL    
+id_matricula INT(11) NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 
@@ -354,7 +369,7 @@ id_matricula INT(11) NOT NULL
 CREATE TABLE t_tipo_identificacion(
 id_identificacion INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 tipo_identificacion VARCHAR(200) NOT NULL,
-descripcion_tipo TEXT    
+descripcion_tipo TEXT 
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
@@ -379,7 +394,9 @@ ALTER TABLE t_usuarios
 ADD CONSTRAINT fk_usuario_rol
 FOREIGN KEY (id_rol) REFERENCES t_roles(id_rol),
 ADD CONSTRAINT fk_usuario_estado
-FOREIGN KEY (id_estado_usuario) REFERENCES t_estado_usuario(id_estado_usuario);
+FOREIGN KEY (id_estado_usuario) REFERENCES t_estado_usuario(id_estado_usuario),
+ADD CONSTRAINT fk_usuario_tipo_documento
+FOREIGN KEY (id_tipo_documento) REFERENCES t_tipo_identificacion(id_identificacion);
 
 -- Relaciones para t_curso
 ALTER TABLE t_curso
@@ -534,4 +551,3 @@ FOREIGN KEY (id_tipo_archivo) REFERENCES t_tipo_archivo(id_tipo_archivo);
 ALTER TABLE t_actividad
 ADD CONSTRAINT fk_actividad_categoria
 FOREIGN KEY (id_categoria_actividad) REFERENCES t_categoria_actividad(id_categoria_actividad);
-

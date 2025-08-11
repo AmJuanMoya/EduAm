@@ -1,0 +1,44 @@
+---
+import Panelnav from "../../components/navigation/panelnav.astro";
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+import Cardfun from "../../components/admin/cardfun.astro";
+
+
+// let {usuarioName = "UsuarioAdmin"} = Astro.props
+---
+
+<General>
+<Panelnav/>
+
+<div class=" text-center text-4xl py-5 bg-slate-700/40 mx-3 rounded-md mb-10">
+    <h1>Panel de administrador</h1>
+    <!-- <h2>Bienvenido <span class="text-blue-500"> {usuarioName} </span></h2> -->
+</div>
+
+    <div class="flex mx-2">
+        <Asidebar/>
+        <div class="w-full h-screen border   rounded-md bg-slate-950/40  ">
+            <section class=""> 
+                
+                <div id="graphic-content" class="border rounded-4xl border-purple-950/70 bg-purple-950/20 m-1 w-[99%] h-150 mx-auto "> 
+                    <h2 class=" w-full p-1 ml-3"> <code>Resumen Estadistico</code> </h2>
+                    <div class="border h-[90%]"></div>
+                    
+                    
+                    
+                </div>
+
+                <div class="border rounded-4xl border-green-950/70 bg-green-950/20 m-1 mt-5 w-[99%] h-70 mx-auto"> 
+                    <h2 class=" w-full p-1 ml-3"> <code>informacion adicional</code> </h2>
+
+                </div>
+
+            </section>
+            <!-- <Cardfun title="Consultar registros" direction="/consultas" clases="bg-linear-to-br from-yellow-400/20 to-orange-400/40" />
+            <Cardfun title="Matriculas"/>
+            <Cardfun title="Consultas"/> -->
+        </div>
+
+    </div>
+</General>

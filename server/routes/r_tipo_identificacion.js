@@ -1,7 +1,5 @@
-
 import { Router } from "express";
 import TipoIdentificacion from "../../model/t_tipo_identificacion.js";  
-
 const router = Router();
 
 router.get("/datos/tipo_identificacion", async (req, res) => {
