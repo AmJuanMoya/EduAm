@@ -69,22 +69,24 @@ class t_roles{
 }
 
 // PRUEBA DE DATOS....
-const tabla = new t_roles();
+// const tabla = new t_roles();
 
-tabla.getall_roles().then(datos =>{
+// tabla.getall_roles().then(datos =>{
 
-console.log(datos)
- datos.forEach((dato,) =>{
-console.log(dato.id_rol, dato.nombre_rol, dato.descripcion_rol)
-})
+// console.log(datos)
+//  datos.forEach((dato,) =>{
+// console.log(dato.id_rol, dato.nombre_rol, dato.descripcion_rol)
+// })
 
-})
+// })
 
 
-tabla.delete_rol(5).then(dato=>{
-   console.log(dato)
-})
+// tabla.delete_rol(5).then(dato=>{
+//    console.log(dato)
+// })
 
 //tabla.insert_rol("consejero").then(dato=>{
    //console.log(dato)
 //})
+
+export default t_roles;

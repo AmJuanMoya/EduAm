@@ -1,0 +1,300 @@
+---
+import styles from "../../styles/global.css"; 
+import Panelnav from "../../components/navigation/panelnav.astro";
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+
+let identificacion = [];
+let roles = [];
+let estadosUsuario = [];
+
+try {
+  // Fetch para tipos de identificación
+  const resIdentificacion = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+  if (resIdentificacion.ok) {
+    identificacion = await resIdentificacion.json();
+  } else {
+    console.error(`Error al obtener tipos de identificación: ${resIdentificacion.status} - ${resIdentificacion.statusText}`);
+  }
+} catch (error) {
+  console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+}
+
+try {
+  // Fetch para roles
+  const resRoles = await fetch("http://localhost:3000/api/datos/roles"); 
+  if (resRoles.ok) {
+    roles = await resRoles.json(); 
+  } else {
+    console.error(`Error al obtener roles: ${resRoles.status} - ${resRoles.statusText}`);
+    
+  }
+} catch (error) {
+  console.error("Error al realizar la solicitud de roles:", error);
+ 
+}
+
+try {
+  // Fetch para estados de usuario
+  const resEstados = await fetch("http://localhost:3000/api/datos/estadosUsuario"); 
+  if (resEstados.ok) {
+    estadosUsuario = await resEstados.json(); 
+  } else {
+    console.error(`Error al obtener estados de usuario: ${resEstados.status} - ${resEstados.statusText}`);
+    
+  }
+} catch (error) {
+  console.error("Error al realizar la solicitud de estados de usuario:", error);
+  
+}
+
+
+---
+
+<General>
+    <Panelnav /> 
+    <main class="flex">
+        <Asidebar />
+        <div class="w-full mx-5">
+            <form id="registroUsuarioForm" action="" method="POST" class="dark:bg-slate-950/90 w-[75%] mx-auto p-5 overflow-auto resize">
+                <h1 class="text-center text-3xl my-3">Registro de Usuario</h1>
+                <fieldset class="border border-slate-500/50 p-3 rounded-lg">
+                    <legend class="">DATOS DEL USUARIO</legend>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="nombres_usuario" class="block">Nombres:</label>
+                                <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
+                            </div>
+                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100"  required>
+                        </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="apellidos_usuario" class="block">Apellidos:</label>
+                                <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
+                            </div>
+                            <input id="apellidos_usuario" name="apellidos_usuario" type="text" placeholder="Pérez Rodríguez" class="m-5 rounded-sm w-100" required>
+                        </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="correo_usuario" class="block">Correo Electrónico:</label>
+                            </div>
+                            <input id="correo_usuario" name="correo_usuario" type="email" placeholder="usuario@example.com" class="m-5 rounded-sm w-100" required>
+                        </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="contraseña_usuario" class="block">Contraseña:</label>
+                            </div>
+                            <input id="contraseña_usuario" name="contraseña_usuario" type="password" placeholder="********" class="m-5 rounded-sm w-100" required>
+                        </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="telefono_usuario" class="block">Teléfono:</label>
+                            </div>
+                            <input id="telefono_usuario" name="telefono_usuario" type="text" placeholder="3001234567" class="m-5 rounded-sm w-100">
+                        </div>
+                        
+                        <!-- Campo avatar_url_usuario OMITIDO por ahora -->
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="id_rol" class="block">Rol:</label>
+                            </div>
+                            <select name="id_rol" id="id_rol" class="m-5 rounded-sm w-100" required>
+                                <option selected disabled value="">Seleccione un rol</option>
+                                {roles.map((rol) => (
+                                    <option value={rol.id_rol}>{rol.nombre_rol}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="id_estado_usuario" class="block">Estado de Usuario:</label>
+                            </div>
+                            <select name="id_estado_usuario" id="id_estado_usuario" class="m-5 rounded-sm w-100" required>
+                                <option selected disabled value="">Seleccione un estado</option>
+                                {estadosUsuario.map((estado) => (
+                                    <option value={estado.id_estado_usuario}>{estado.nombre_estado_usuario}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div class="mx-auto w-fit col-span-1 md:col-span-2">
+                            <div class="flex">
+                                <label for="numero_documento" class="block">Número de Documento:</label>
+                            </div>
+                            <div class="m-5 flex w-200">
+                                <select name="id_tipo_documento" id="id_tipo_documento" class="rounded-l-md" required>
+                                    <option selected disabled value="">Tipo</option>
+                                    {identificacion.map((d) => (
+                                        <option value={d.id_identificacion}>{d.tipo_identificacion}</option>
+                                    ))}
+                                </select>
+                                <input id="numero_documento" name="numero_documento" type="text" required placeholder="1000009" class="rounded-r-sm w-100">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="flex justify-center mt-8">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        Registrar Usuario
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</General>
+
+<div id="statusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white dark:bg-slate-800 p-8 rounded-lg shadow-xl max-w-sm w-full transform transition-all scale-95 duration-300">
+        <div class="text-center">
+            <div id="modalIcon" class="text-6xl mb-4"></div>
+            <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gray-900 dark:text-white"></h3>
+            <p id="modalMessage" class="text-gray-700 dark:text-gray-300 mb-6"></p>
+            <button id="closeModalBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+    const form = document.getElementById('registroUsuarioForm');
+    const statusModal = document.getElementById('statusModal');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Función para mostrar el modal
+    function showModal(icon, title, message) {
+        modalIcon.textContent = icon;
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        statusModal.classList.remove('hidden');
+        statusModal.querySelector('div').classList.remove('scale-95');
+        statusModal.querySelector('div').classList.add('scale-100');
+    }
+
+    // Función para ocultar el modal
+    function hideModal() {
+        statusModal.querySelector('div').classList.remove('scale-100');
+        statusModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => {
+            statusModal.classList.add('hidden');
+        }, 300);
+    }
+
+    // Event listener para el botón de cerrar modal
+    closeModalBtn.addEventListener('click', hideModal);
+
+    // Event listener para cerrar el modal haciendo clic fuera de él
+    statusModal.addEventListener('click', (event) => {
+        if (event.target === statusModal) {
+            hideModal();
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Evitar el envío predeterminado del formulario
+
+        const formData = new FormData(form);
+        const data = {};
+
+        // Convertir FormData a un objeto JSON, adaptado a los campos de t_usuario
+        for (const [key, value] of formData.entries()) { 
+            if (key === 'id_rol' || key === 'id_estado_usuario' || key === 'id_tipo_documento') {
+                data[key] = parseInt(value); // Convertir IDs a entero
+            } else if (key === 'numero_documento') {
+                data[key] = value.trim(); // Asegurarse de que el número de documento sea una cadena sin espacios
+            } else if (key === 'telefono_usuario') { 
+                data[key] = value === '' ? null : value.trim(); // Campo opcional: null si está vacío
+            } else {
+                data[key] = value.trim(); // Para todos los demás campos, asignar el valor directamente y quitar espacios
+            }
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/api/registroUsuario', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                showModal('✅', '¡Registro Exitoso!', result.message);
+                form.reset(); // Limpiar el formulario después del éxito
+            } else {
+                const errorData = await response.json();
+                showModal('❌', 'Error al Registrar', errorData.message || 'Ocurrió un error inesperado.');
+                console.error('Error del servidor:', errorData);
+            }
+        } catch (error) {
+            showModal('⚠️', 'Error de Conexión', 'Ocurrió un error al conectar con el servidor. Intente de nuevo más tarde.');
+            console.error('Error de red o de solicitud:', error);
+        }
+    });
+    // INPUTS
+
+    let nombres = document.getElementById('nombres_usuario');
+    let apellidos = document.getElementById('apellidos_usuario');
+    let correo = document.getElementById('correo_usuario');
+    let contraseña = document.getElementById('contraseña_usuario');
+    let telefono = document.getElementById('telefono_usuario');
+    let numeroDocumento = document.getElementById('numero_documento');
+
+
+    // Validación de campos
+    nombres.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9\s]*$/.test(nombres.value)) {
+            nombres.setCustomValidity('Solo se permiten letras, numeros y espacios en blanco.');
+        } else {
+            nombres.setCustomValidity('');
+        }
+    });
+    apellidos.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9\s]*$/.test(apellidos.value)) {
+            apellidos.setCustomValidity('Solo se permiten letras, numeros y espacios en blanco.');
+        } else {
+            apellidos.setCustomValidity('');
+        }
+    });
+    correo.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo.value)) {
+            correo.setCustomValidity('Ingrese un correo electrónico válido.');
+        } else {
+            correo.setCustomValidity('');
+        }
+    });
+    contraseña.addEventListener('input', () => {
+        if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&/*])[a-zA-Z\d!@#$%^&*]{6,}$/.test(contraseña.value)) {
+            contraseña.setCustomValidity('La contraseña debe tener al menos 6 caracteres, incluyendo una letra mayúscula, un número y un carácter especial.');
+        } else {
+            contraseña.setCustomValidity('');
+        }
+    });
+    telefono.addEventListener('input', () => {
+        if (!/^\d{10}$/.test(telefono.value)) {
+            telefono.setCustomValidity('El teléfono debe tener 10 dígitos.');
+        } else {
+            telefono.setCustomValidity('');
+        }
+    });
+    numeroDocumento.addEventListener('input', () => {
+        if (!/^\d{10}$/.test(numeroDocumento.value)) {
+            numeroDocumento.setCustomValidity('El número de documento debe tener 10 dígitos.');
+        } else {
+            numeroDocumento.setCustomValidity('');
+        }
+    });
+</script>

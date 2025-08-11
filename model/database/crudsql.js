@@ -119,6 +119,13 @@ export default Crud;
 
 // let crud = new Crud();
 
+// // ------EJEMPLO DE TRAER POR CONDICION
+// console.log("Ejemplo de traer por condicion")
+// let correo_usuario = "yolanda.torres@eduam.com"
+// crud.getByCondition('t_usuarios',  `correo_usuario = "${correo_usuario}"`).then(data => {
+//     console.log(data);
+// })
+
 //------EJEMPLO DE TRAER
 // crud.getAll('t_actividad').then(data => {
 //     console.log(data);
@@ -164,3 +171,4 @@ export default Crud;
 // crud.deleteOne("t_actividad", "id_actividad = 7").then(data =>{
 //     console.log(data);
 // });
+

@@ -65,12 +65,15 @@ class t_estado_usuario{
 }
 
 // PRUEBA DE DATOS....
-const tabla = new t_estado_usuario();
+// const tabla = new t_estado_usuario();
 
-tabla.getall_estado_usuario().then(datos =>{
+// tabla.getall_estado_usuario().then(datos =>{
 
-console.log(datos)
- datos.forEach((dato,) =>{
-console.log(dato.id_estado_usuario, dato.nombre_estado_usuario)
-})
-})
+// console.log(datos)
+//  datos.forEach((dato,) =>{
+// console.log(dato.id_estado_usuario, dato.nombre_estado_usuario)
+// })
+// })
+
+
+export default t_estado_usuario;
