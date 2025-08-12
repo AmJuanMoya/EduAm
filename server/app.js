@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 import TablasRouter from './routes/r_tablas.js';
 import matriculasRouter from "./routes/r_matricula.js";
 import TipoIdentificacionRouter from './routes/r_tipo_identificacion.js';
-import identificacionRouter from "./routes/r_tipo_identificacion.js";
+//import identificacionRouter from "./routes/r_tipo_identificacion.js";
 import actividadesRouter from "./routes/r_actividades.js";
 import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
 import crearActividadRouter from './routes/r_creacion_actividad.js';
@@ -19,12 +20,11 @@ import loginRouter from './routes/r_login.js';
 const app = express()
 app.use(cors());
 app.use("/api",express.json());
-import dotenv from 'dotenv';
+
 
 app.use('/api', TablasRouter)
 app.use("/api", matriculasRouter);
 app.use("/api", TipoIdentificacionRouter)
-app.use("/api", identificacionRouter);
 app.use("/api", actividadesRouter);
 app.use("/api", actividadDetalleRouter);
 app.use("/api", crearActividadRouter);

@@ -1,0 +1,211 @@
+INCONSISTENCIAS DEL PROYECTO EDUAM
+=====================================
+
+1. CONFIGURACIÓN DE VARIABLES DE ENTORNO
+----------------------------------------
+Descripción de la falla/problema:
+- No existe archivo .env en el proyecto raíz, pero el código lo busca en model/database/conectionDB.js
+- El archivo .env está en .gitignore pero no se proporciona un .env.example para referencia
+- Variables de entorno críticas como JWT_SECRET no están documentadas
+
+Plan o alternativa de resolución:
+- Crear archivo .env.example con todas las variables necesarias
+- Documentar las variables requeridas en el README
+- Implementar validación de variables de entorno al inicio de la aplicación
+- Considerar usar un archivo de configuración por defecto
+
+Consideraciones adicionales:
+- Las variables críticas son: DB_HOST, DB_USER, DB_NAME, DB_PORT, DB_PASSWORD, JWT_SECRET
+- El JWT_SECRET debe ser una cadena segura y única
+- Considerar usar diferentes configuraciones para desarrollo/producción
+
+2. DUPLICACIÓN DE RUTAS EN app.js
+---------------------------------
+Descripción de la falla/problema:
+- En server/app.js líneas 25-26 hay dos rutas idénticas:
+  app.use("/api", TipoIdentificacionRouter)
+  app.use("/api", identificacionRouter);
+- Ambas apuntan al mismo router: './routes/r_tipo_identificacion.js'
+
+Plan o alternativa de resolución:
+- Eliminar la línea duplicada (línea 26)
+- Mantener solo una ruta para el router de tipo de identificación
+- Verificar que no haya conflictos de nombres en las rutas
+
+Consideraciones adicionales:
+- Revisar si hay otras rutas duplicadas en el proyecto
+- Considerar usar un sistema de prefijos para organizar mejor las rutas
+
+3. CONFIGURACIÓN DE ASTRO Y TAILWIND
+------------------------------------
+Descripción de la falla/problema:
+- En view/astro.config.mjs se usa '@tailwindcss/vite' pero en package.json está 'tailwindcss'
+- Posible conflicto entre versiones de Tailwind CSS
+- No hay configuración explícita de Tailwind en el proyecto
+
+Plan o alternativa de resolución:
+- Actualizar astro.config.mjs para usar la configuración correcta de Tailwind
+- Crear archivo tailwind.config.js si es necesario
+- Verificar compatibilidad entre versiones de Astro y Tailwind
+
+Consideraciones adicionales:
+- Tailwind CSS v4 tiene cambios significativos en la configuración
+- Considerar migrar a la configuración estándar de Tailwind si es necesario
+
+4. GESTIÓN DE ROLES EN SIDEBAR
+-------------------------------
+Descripción de la falla/problema:
+- En view/src/components/asidebar.astro línea 8, el rol está hardcodeado como "admin"
+- No hay integración real con el sistema de autenticación
+- El comentario indica que es temporal pero no hay implementación real
+
+Plan o alternativa de resolución:
+- Implementar lectura del rol desde localStorage en el cliente
+- Crear un sistema de autenticación real que integre con el JWT
+- Eliminar el hardcoding del rol
+
+Consideraciones adicionales:
+- El JWT ya contiene información del rol del usuario
+- Considerar usar un store de estado (como nanostores) para manejar la autenticación
+- Implementar middleware de autenticación en el frontend
+
+5. EXPIRACIÓN DE JWT MUY CORTA
+-------------------------------
+Descripción de la falla/problema:
+- En server/routes/r_login.js línea 42, el JWT expira en 1 minuto
+- Esto es muy poco tiempo para una aplicación real
+- El comentario indica que es para pruebas pero no hay configuración para producción
+
+Plan o alternativa de resolución:
+- Aumentar el tiempo de expiración del JWT (ej: 24 horas para desarrollo, 1 hora para producción)
+- Implementar refresh tokens para renovar automáticamente el JWT
+- Configurar diferentes tiempos según el entorno
+
+Consideraciones adicionales:
+- Considerar implementar logout automático cuando expire el token
+- Implementar notificación al usuario cuando la sesión esté por expirar
+- Usar variables de entorno para configurar el tiempo de expiración
+
+6. FALTA DE VALIDACIÓN DE TOKEN EN RUTAS
+----------------------------------------
+Descripción de la falla/problema:
+- No hay middleware de autenticación en las rutas del servidor
+- Cualquier usuario puede acceder a las rutas sin verificar el token
+- No hay verificación de roles en el backend
+
+Plan o alternativa de resolución:
+- Implementar middleware de autenticación JWT
+- Crear middleware de autorización por roles
+- Proteger rutas sensibles con autenticación
+
+Consideraciones adicionales:
+- Usar el middleware en server/middlwre/mainmid.js
+- Considerar diferentes niveles de autorización según el rol
+- Implementar logging de accesos no autorizados
+
+7. INCONSISTENCIA EN NOMBRES DE ARCHIVOS
+----------------------------------------
+Descripción de la falla/problema:
+- El directorio se llama "middlwre" en lugar de "middleware" (error de ortografía)
+- Inconsistencia en el uso de mayúsculas/minúsculas en nombres de archivos
+- Algunos archivos usan camelCase, otros snake_case
+
+Plan o alternativa de resolución:
+- Renombrar el directorio "middlwre" a "middleware"
+- Establecer convenciones de nomenclatura consistentes
+- Refactorizar nombres de archivos para seguir las convenciones
+
+Consideraciones adicionales:
+- Actualizar todas las referencias a los archivos renombrados
+- Documentar las convenciones de nomenclatura para el equipo
+- Considerar usar herramientas de linting para mantener consistencia
+
+8. FALTA DE MANEJO DE ERRORES EN FRONTEND
+-----------------------------------------
+Descripción de la falla/problema:
+- En view/src/pages/login/login.astro, el manejo de errores es básico
+- No hay manejo de errores de red específicos
+- Los mensajes de error no son muy informativos
+
+Plan o alternativa de resolución:
+- Implementar manejo de errores más robusto
+- Crear componentes de error reutilizables
+- Mejorar los mensajes de error para el usuario
+
+Consideraciones adicionales:
+- Considerar implementar un sistema de notificaciones
+- Agregar logging de errores en el frontend
+- Implementar retry automático para errores de red
+
+9. DEPENDENCIAS DUPLICADAS
+---------------------------
+Descripción de la falla/problema:
+- bcryptjs y jsonwebtoken están en ambos package.json (raíz y view/)
+- Esto puede causar conflictos de versiones
+- No hay un manejo centralizado de dependencias
+
+Plan o alternativa de resolución:
+- Mover las dependencias del servidor al package.json raíz
+- Mover las dependencias del frontend al package.json de view/
+- Eliminar duplicaciones innecesarias
+
+Consideraciones adicionales:
+- Verificar que las versiones sean compatibles
+- Considerar usar workspaces de npm si es necesario
+- Documentar qué dependencias van en cada package.json
+
+10. FALTA DE DOCUMENTACIÓN
+---------------------------
+Descripción de la falla/problema:
+- No hay README detallado del proyecto
+- Falta documentación de la API
+- No hay guías de instalación y configuración
+
+Plan o alternativa de resolución:
+- Crear README.md completo con instrucciones de instalación
+- Documentar la API con ejemplos
+- Crear guías de desarrollo y despliegue
+
+Consideraciones adicionales:
+- Incluir diagramas de la arquitectura del sistema
+- Documentar el flujo de autenticación
+- Crear guías de troubleshooting comunes
+
+11. CONFIGURACIÓN DE CORS
+-------------------------
+Descripción de la falla/problema:
+- En server/app.js línea 20, CORS está configurado sin opciones específicas
+- Esto permite todas las origenes, lo cual no es seguro para producción
+- No hay configuración específica para el frontend
+
+Plan o alternativa de resolución:
+- Configurar CORS con origenes específicos
+- Usar variables de entorno para configurar origenes permitidos
+- Implementar configuración diferente para desarrollo y producción
+
+Consideraciones adicionales:
+- El frontend corre en localhost:4321 y el backend en localhost:3000
+- Considerar usar proxy en desarrollo para evitar problemas de CORS
+- Implementar validación de origenes en producción
+
+12. FALTA DE VALIDACIÓN DE DATOS
+---------------------------------
+Descripción de la falla/problema:
+- En las rutas del servidor no hay validación robusta de datos de entrada
+- No se valida el formato de correo electrónico en el backend
+- Falta sanitización de datos
+
+Plan o alternativa de resolución:
+- Implementar middleware de validación (ej: express-validator)
+- Validar todos los datos de entrada en el servidor
+- Implementar sanitización de datos
+
+Consideraciones adicionales:
+- Considerar usar esquemas de validación (Joi, Yup)
+- Implementar validación tanto en frontend como backend
+- Agregar logging de intentos de entrada de datos inválidos
+
+PRIORIDAD DE RESOLUCIÓN:
+- ALTA: 1, 2, 4, 5, 6 (Seguridad y funcionalidad crítica)
+- MEDIA: 3, 7, 9, 11 (Configuración y estructura)
+- BAJA: 8, 10, 12 (Mejoras y documentación)
