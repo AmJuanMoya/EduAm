@@ -540,7 +540,7 @@ ALTER TABLE t_anexos_matricula
 ADD CONSTRAINT fk_anexo_matricula_archivo
 FOREIGN KEY (id_archivo) REFERENCES t_archivo_documento(id_archivo_documento),
 ADD CONSTRAINT fk_anexo_matricula_matricula
-FOREIGN KEY (id_matricula) REFERENCES t_matricula(id_matricula);
+FOREIGN KEY (id_matricula) REFERENCES t_matricula(id_matricula) ON DELETE CASCADE;
 
 -- Relaciones para t_recursos
 ALTER TABLE t_recursos

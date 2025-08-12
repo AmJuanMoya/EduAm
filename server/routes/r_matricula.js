@@ -72,7 +72,7 @@ router.get("/datos/matricula", async(req, res )=>{
     try{
         console.log("Se traen matriculas...")
         let m = new matricula
-        let datos = await m.getall_matriculas()
+        let datos = await m.getMatricula()
         if(datos.length <= 0){ 
             res.json({error: "No hay matriculas para mostrar"})
         }else{
