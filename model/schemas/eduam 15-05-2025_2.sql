@@ -97,6 +97,7 @@ CREATE TABLE `t_actividad` (
 
 CREATE TABLE `t_informe_calificaciones` (
   `id_informe_calificacion` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id_actividad` int(11),
   `infoc_estado` ENUM ('Aprobada', 'Desaprobada', 'Pendiente'),
   `infoc_fecha_entrega` datetime,
   `infoc_nota` decimal(2,1),
@@ -160,6 +161,8 @@ ALTER TABLE `t_acudientes` ADD FOREIGN KEY (`acud_rol`) REFERENCES `t_rol` (`id_
 ALTER TABLE `t_estudiantes` ADD FOREIGN KEY (`estu_acudiente`) REFERENCES `t_acudientes` (`id_documento_acudiente`);
 
 ALTER TABLE `t_estudiantes` ADD FOREIGN KEY (`estu_rol`) REFERENCES `t_rol` (`id_rol`);
+
+ALTER TABLE `t_informe_calificaciones` ADD FOREIGN KEY (`id_actividad`) REFERENCES `t_actividad` (`id_actividad`);
 
 ALTER TABLE `t_informe_calificaciones` ADD FOREIGN KEY (`infoc_id_documento_estudiante`) REFERENCES `t_estudiantes` (`id_docuestudiante`);
 
