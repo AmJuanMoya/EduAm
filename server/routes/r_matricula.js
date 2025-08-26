@@ -89,30 +89,85 @@ router.get("/datos/matricula", async(req, res )=>{
 
 
 // --- RUTA POST PARA CREAR MATRÍCULAS ---
+
 router.post("/datos/matricula", async (req, res) => {
-    if(!req.body.id_matricula){
-        req.body.id_matricula = null
+    const data = req.body;
+
+    // ✅ Validaciones mínimas para acudiente
+    if (!data.id_documento_acudiente || !data.acud_nombres || !data.acud_apellidos) {
+        return res.status(400).json({ 
+            message: "Error: faltan campos requeridos del acudiente." 
+        });
     }
-    const matriculaData = req.body;
-    if (!matriculaData.primer_nombre_estudiante || !matriculaData.documento_estudiante || !matriculaData.primer_apellido_estudiante) {
-        return res.status(400).json({ message: 'Error: Faltan campos requeridos del estudiante.' });
+
+    // ✅ Validaciones mínimas para estudiante
+    if (!data.id_docuestudiante || !data.estu_nombre || !data.estu_apellido) {
+        return res.status(400).json({ 
+            message: "Error: faltan campos requeridos del estudiante." 
+        });
     }
-    if (!matriculaData.nombre_acudiente1 || !matriculaData.numero_documento_acudiente1 || !matriculaData.correo_acudiente1) {
-        return res.status(400).json({ message: 'Error: Faltan campos requeridos del acudiente.' });
+
+    // ✅ Validaciones mínimas para matrícula
+    if (!data.matr_anio || !data.matr_grado || !data.matr_jornada ) {
+        return res.status(400).json({ 
+            message: "Error: faltan campos requeridos de la matrícula." 
+        });
     }
 
     try {
-        console.log(req.body)
-        const newMatriculaId = await new matricula().createMatricula(matriculaData);
+        console.log("📥 Datos recibidos:", data);
+
+        // 👇 llamada a tu método que inserta acudiente, estudiante y matrícula
+        const result = await new matricula().createMatricula(data);
+
         res.status(201).json({
-            message: ' 😀​ Matrícula registrada exitosamente ✅​.',
-            matriculaId: newMatriculaId
+            message: "😀 Matrícula registrada exitosamente ✅",
+            result
         });
-        console.log('👉​ Matrícula registrada con ID:', newMatriculaId);
+
+        console.log("👉 Matrícula creada con éxito:", result);
+
     } catch (error) {
-        console.error(' 😓​ Error al registrar matrícula ​❌​:', error);
-        res.status(500).json({ message: 'Error interno del servidor al registrar matrícula.', error: error.message });
+        console.error("😓 Error al registrar matrícula ❌:", error);
+        res.status(500).json({ 
+            message: "Error interno del servidor al registrar matrícula.", 
+            error: error.message 
+        });
     }
 });
+
+router.get("/datos/grado", async (req,res) =>{
+    try{
+        console.log("Se traen matriculas...")
+        let m = new matricula
+        let datos = await m.getGrado()
+        if(datos.length <= 0){ 
+            res.json({error: "No hay grados para mostrar"})
+        }else{
+            res.json(datos)
+            console.log("Se envia lista de Grados")
+        }
+    }catch(err){
+        res.status(500).json({error: "error al traer los datos"})
+        console.log("error al enviar las matriculas, vease...: ", err)
+    }
+})
+
+router.get("/datos/curso", async (req,res) =>{
+    try{
+        console.log("Se traen matriculas...")
+        let m = new matricula
+        let datos = await m.getCurso()
+        if(datos.length <= 0){ 
+            res.json({error: "No hay cursos para mostrar"})
+        }else{
+            res.json(datos)
+            console.log("Se envia lista de Cursos")
+        }
+    }catch(err){
+        res.status(500).json({error: "error al traer los datos"})
+        console.log("error al enviar las cursos, vease...: ", err)
+    }
+})
 
 export default router;

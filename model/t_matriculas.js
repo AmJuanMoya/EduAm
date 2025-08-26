@@ -4,44 +4,15 @@ import Crud from "../model/database/crudsql.js";
 class t_matriculas{
 
     constructor(){
-        this.id_matricula = "";
-        this.primer_nombre_estudiante = "";
-        this.nombres_adicionales_estudiante = "";
-        this.primer_apellido_estudiante = "";
-        this.apellidos_adicionales_estudiante = "";
-        this.estado_matricula = "";
-        this.fecha_matricula = "";
-        this.repitente = "";
-        this.eps = "";
-        this.sisben = "";
-        this.estrato = "";
-        this.discapacidad ="";
-        this.jornada = "";
-        this.direccion_residencia ="";
-        this.id_tipo_documento_estudiante = "";
-        this.documento_estudiante = "";
-        this.observaciones = "";
-
-        this.nombre_acudiente1 ="";
-        this.apellido_acudiente1 ="";
-        this.id_tipo_documento_acudiente1 = "";
-        this.numero_documento_acudiente1="";
-        this.tel_contacto_acudiente1="";
-        this.correo_acudiente1="";
-
-        this.nombre_acudiente2="";
-        this.apellido_acudiente2="";
-        this.id_tipo_documento_acudiente2="";
-        this.numero_documento_acudiente2="";
-        this.tel_contacto_acudiente2="";
-        this.correo_acudiente2="";
-
-        this.nombre_acudiente3="";
-        this.apellido_acudiente3="";
-        this.id_tipo_documento_acudiente3="";
-        this.numero_documento_acudiente3="";
-        this.tel_contacto_acudiente3="";
-        this.correo_acudiente3="";
+        this.id_documento = "";
+        this.matr_anio = "";
+        this.matr_grado = "";
+        this.matr_repite = "";
+        this.matr_traslado = "";
+        this.matr_estado = "";
+        this.matr_observaciones = "";
+        this.matr_jornada = "";
+        this.matr_curso = "";
         
         this.db = new Database();
         this.crud = new Crud;
@@ -53,7 +24,39 @@ class t_matriculas{
     }
 
     async getMatricula() {
-        return await this.crud.getAll("t_matricula");
+    const sql = `
+        SELECT m.id_documento,
+               m.matr_anio,
+               m.matr_grado,
+               m.matr_repite,
+               m.matr_traslado,
+               m.matr_estado,
+               m.matr_observaciones,
+               m.matr_jornada,
+               e.estu_nombre,
+               e.estu_apellido
+        FROM t_matricula m
+        JOIN t_estudiantes e 
+             ON m.id_documento = e.id_docuestudiante
+    `;
+    return await this.crud.query(sql);  // tu crud debe tener algo como query(sql)
+}
+    async getGrado() {
+    const sql = `
+        SELECT id_grado,
+               grad_nombre
+        FROM t_grado
+    `;
+    return await this.crud.query(sql);
+
+}
+    async getCurso() {
+    const sql = `
+        SELECT id_curso,
+               curso_jornada
+        FROM t_curso
+    `;
+    return await this.crud.query(sql);
     }
 
 
@@ -61,83 +64,30 @@ class t_matriculas{
         await this.db.connect();
         const query = `
             INSERT INTO t_matricula (
-                primer_nombre_estudiante,
-                nombres_adicionales_estudiante,
-                primer_apellido_estudiante,
-                apellidos_adicionales_estudiante,
-                estado_matricula,
-                fecha_matricula,
-                repitente,
-                eps,
-                sisben,
-                estrato,
-                discapacidad,
-                jornada,
-                direccion_residencia,
-                id_tipo_documento_estudiante,
-                documento_estudiante,
-                observaciones,
+                id_documento,
+                matr_anio,
+                matr_grado,
+                matr_repite,
+                matr_traslado,
+                matr_estado,
+                matr_observaciones,
+                matr_jornada,
+                matr_curso
 
-                nombre_acudiente1,
-                apellido_acudiente1,
-                id_tipo_documento_acudiente1,
-                numero_documento_acudiente1,
-                tel_contacto_acudiente1,
-                correo_acudiente1,
 
-                nombre_acudiente2,
-                apellido_acudiente2,
-                id_tipo_documento_acudiente2,
-                numero_documento_acudiente2,
-                tel_contacto_acudiente2,
-                correo_acudiente2,
-
-                nombre_acudiente3,
-                apellido_acudiente3,
-                id_tipo_documento_acudiente3,
-                numero_documento_acudiente3,
-                tel_contacto_acudiente3,
-                correo_acudiente3
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const values = [
-            this.primer_nombre_estudiante,
-            this.nombres_adicionales_estudiante,
-            this.primer_apellido_estudiante,
-            this.apellidos_adicionales_estudiante,
-            this.estado_matricula,
-            this.fecha_matricula,
-            this.repitente,
-            this.eps,
-            this.sisben,
-            this.estrato,
-            this.discapacidad,
-            this.jornada,
-            this.direccion_residencia,
-            this.id_tipo_documento_estudiante,
-            this.documento_estudiante,
-            this.observaciones,
+            this.id_documento,
+            this.matr_anio,
+            this.matr_grado,
+            this.matr_repite,
+            this.matr_traslado,
+            this.matr_estado,
+            this.matr_observaciones,
+            this.matr_jornada,
+            this.matr_curso
 
-            this.nombre_acudiente1,
-            this.apellido_acudiente1,
-            this.id_tipo_documento_acudiente1,
-            this.numero_documento_acudiente1,
-            this.tel_contacto_acudiente1,
-            this.correo_acudiente1,
-
-            this.nombre_acudiente2,
-            this.apellido_acudiente2,
-            this.id_tipo_documento_acudiente2,
-            this.numero_documento_acudiente2,
-            this.tel_contacto_acudiente2,
-            this.correo_acudiente2,
-
-            this.nombre_acudiente3,
-            this.apellido_acudiente3,
-            this.id_tipo_documento_acudiente3,
-            this.numero_documento_acudiente3,
-            this.tel_contacto_acudiente3,
-            this.correo_acudiente3
         ];
         await this.db.consultar(query, values);
         await this.db.cerrar();
@@ -147,43 +97,16 @@ class t_matriculas{
     
     async update_matricula() {
     const data = {
-        primer_nombre_estudiante: this.primer_nombre_estudiante,
-        nombres_adicionales_estudiante: this.nombres_adicionales_estudiante,
-        primer_apellido_estudiante: this.primer_apellido_estudiante,
-        apellidos_adicionales_estudiante: this.apellidos_adicionales_estudiante,
-        estado_matricula: this.estado_matricula,
-        fecha_matricula: this.fecha_matricula,
-        repitente: this.repitente,
-        eps: this.eps,
-        sisben: this.sisben,
-        estrato: this.estrato,
-        discapacidad: this.discapacidad,
-        jornada: this.jornada,
-        direccion_residencia: this.direccion_residencia,
-        id_tipo_documento_estudiante: this.id_tipo_documento_estudiante,
-        documento_estudiante: this.documento_estudiante,
-        observaciones: this.observaciones,
-
-        nombre_acudiente1: this.nombre_acudiente1,
-        apellido_acudiente1: this.apellido_acudiente1,
-        id_tipo_documento_acudiente1: this.id_tipo_documento_acudiente1,
-        numero_documento_acudiente1: this.numero_documento_acudiente1,
-        tel_contacto_acudiente1: this.tel_contacto_acudiente1,
-        correo_acudiente1: this.correo_acudiente1,
-
-        nombre_acudiente2: this.nombre_acudiente2,
-        apellido_acudiente2: this.apellido_acudiente2,
-        id_tipo_documento_acudiente2: this.id_tipo_documento_acudiente2,
-        numero_documento_acudiente2: this.numero_documento_acudiente2,
-        tel_contacto_acudiente2: this.tel_contacto_acudiente2,
-        correo_acudiente2: this.correo_acudiente2,
-
-        nombre_acudiente3: this.nombre_acudiente3,
-        apellido_acudiente3: this.apellido_acudiente3,
-        id_tipo_documento_acudiente3: this.id_tipo_documento_acudiente3,
-        numero_documento_acudiente3: this.numero_documento_acudiente3,
-        tel_contacto_acudiente3: this.tel_contacto_acudiente3,
-        correo_acudiente3: this.correo_acudiente3,
+        id_documento: this.id_documento,
+        matr_anio: this.matr_anio,
+        matr_grado: this.matr_grado,
+        matr_repite: this.matr_repite,
+        matr_traslado: this. matr_traslado,
+        matr_estado: this.matr_estado,
+        matr_observaciones: this.matr_observaciones,
+        matr_jornada: this.matr_jornada,
+        matr_curso: this.matr_curso
+       
     };
     
     Object.keys(data).forEach(key => {
@@ -199,79 +122,95 @@ class t_matriculas{
 
     async delete_matricula(doc) {
     await this.db.connect();
-    const query = "DELETE FROM t_matricula WHERE id_matricula = ?";
+    const query = "DELETE FROM t_matricula WHERE id_documento = ?";
     await this.db.consultar(query, [doc]);
     await this.db.cerrar();
     return this.db.getData();
 }
 
-    async createMatricula(matriculaData) {
-        let connection;
-        try {
-            connection = await this.db.connect(); // Obtiene una conexión del pool
+    async createMatricula(data) {
+    let connection;
+    try {
+        connection = await this.db.connect();
+        await connection.beginTransaction();
 
-            // Define la consulta SQL para insertar los datos
-            // **¡IMPORTANTE!** Los nombres de las columnas en esta consulta (ej. `primer_nombre_estudiante`)
-            // DEBEN coincidir *exactamente* con los nombres de las columnas en tu tabla `t_matricula` en MySQL.
-            // Si tu tabla usa nombres diferentes (ej. `primerNombreEstudiante` o `primer_nombre_est`),
-            // DEBES cambiarlos aquí.
-            const query = `
-                INSERT INTO t_matricula (
-                    primer_nombre_estudiante, nombres_adicionales_estudiante,
-                    primer_apellido_estudiante, apellidos_adicionales_estudiante,
-                    id_tipo_documento_estudiante, documento_estudiante,
-                    eps, estrato, repitente,
-                    jornada, direccion_residencia,
-                    discapacidad, observaciones,
-                    nombre_acudiente1, apellido_acudiente1,
-                    id_tipo_documento_acudiente1, numero_documento_acudiente1,
-                    tel_contacto_acudiente1, correo_acudiente1,
-                    estado_matricula, fecha_matricula
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
+        // 1. Insertar acudiente
+        const queryAcudiente = `
+            INSERT INTO t_acudientes (
+                id_documento_acudiente, acud_nombres, acud_apellidos,
+                acud_parentesco, acud_telefono, acud_correo, acud_direccion,
+                acud_tipo_documento, acud_rol
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const valuesAcudiente = [
+            data.id_documento_acudiente || null,
+            data.acud_nombres || null,
+            data.acud_apellidos || null,
+            data.acud_parentesco || null,
+            data.acud_telefono || null,
+            data.acud_correo || null,
+            data.acud_direccion || null,
+            data.acud_tipo_documento || null,
+            data.acud_rol || 4   // default rol
+        ];
+        await connection.execute(queryAcudiente, valuesAcudiente);
 
-            // Mapea los datos del objeto matriculaData a un array en el ORDEN correcto para la consulta SQL
-            const values = [
-                matriculaData.primer_nombre_estudiante || null,
-                matriculaData.nombres_adicionales_estudiante || null,
-                matriculaData.primer_apellido_estudiante || null,
-                matriculaData.apellidos_adicionales_estudiante || null,
-                matriculaData.id_tipo_documento_estudiante || null, // Del frontend: id_tipo_identificacion
-                matriculaData.documento_estudiante || null,
-                matriculaData.eps || null, // Del frontend: eps_estudiante
-                matriculaData.estrato || null, // Del frontend: estrato_estudiante
-                matriculaData.repitente, // Ya es booleano
-                matriculaData.jornada || null, // Del frontend: jornada_estudiante
-                matriculaData.direccion_residencia || null,
-                matriculaData.discapacidad || null, // Del frontend: discapacidad_estudiante
-                matriculaData.observaciones || null,
+         const queryMatricula = `
+            INSERT INTO t_matricula (
+                id_documento, matr_anio, matr_grado,
+                matr_repite, matr_traslado, matr_estado,
+                matr_observaciones, matr_jornada, matr_curso
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const valuesMatricula = [
+            data.id_docuestudiante || null,
+            (data.matr_anio ? data.matr_anio + " 00:00:00" : new Date().toISOString().slice(0,19).replace("T"," ")),
+            data.matr_grado || 1,
+            data.matr_repite === "true" ? true : false,
+            data.matr_traslado === "true" ? true : false,
+            data.matr_estado || "Pendiente",
+            data.matr_observaciones || null,
+            data.matr_jornada || "Jornada Mañana",
+            data.matr_curso || 1
+        ];
+        await connection.execute(queryMatricula, valuesMatricula);
 
-                matriculaData.nombre_acudiente1 || null, // Del frontend: primer_nombre_acudiente
-                matriculaData.apellido_acudiente1 || null,
-                matriculaData.id_tipo_documento_acudiente1 || null,
-                matriculaData.numero_documento_acudiente1 || null,
-                matriculaData.tel_contacto_acudiente1 || null,
-                matriculaData.correo_acudiente1 || null,
+        // 2. Insertar estudiante
+        const queryEstudiante = `
+            INSERT INTO t_estudiantes (
+                id_docuestudiante, estu_nombre, estu_apellido, estu_edad,
+                estu_genero, estu_tipo_documento, estu_estado, estu_observaciones,
+                est_correo, est_contrasena, estu_rol, estu_acudiente
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const valuesEstudiante = [
+            data.id_docuestudiante || null,
+            data.estu_nombre || null,
+            data.estu_apellido || null,
+            data.estu_edad || null,
+            data.estu_genero || null,
+            data.estu_tipo_documento || null,
+            data.estu_estado || null,
+            data.estu_observaciones || null,
+            data.est_correo || null,
+            data.est_contrasena || "123456",
+            data.estu_rol || 3,
+            data.id_documento_acudiente || null
+        ];
+        await connection.execute(queryEstudiante, valuesEstudiante);       
 
-                // Campos que se asignan en el backend
-                'Pendiente', // Valor por defecto para estado_matricula
-                new Date().toISOString().slice(0, 19).replace('T', ' ') // Formato 'YYYY-MM-DD HH:MM:SS' para fecha_matricula
-            ];
+        await connection.commit();
+        return { success: true, message: "Matrícula completa creada con éxito" };
 
-            // console.log("Executing query with values:", values); // Debugging
-            const [result] = await connection.execute(query, values);
-            return result.insertId; // Devuelve el ID de la fila insertada
-        } catch (error) {
-            console.error('Error en createMatricula:', error);
-            throw error; // Lanza el error para que sea capturado en la ruta
-        } finally {
-            if (connection) {
-               await connection.end(); // cierra la conexion
-
-            }
-            // Con `mysql2/promise` pool, la conexión se libera automáticamente, no necesitas `connection.end()` aquí.
-        }
+    } catch (error) {
+        if (connection) await connection.rollback();
+        console.error("Error en createMatricula:", error);
+        throw error;
+    } finally {
+        if (connection) await connection.end();
     }
+}
+
 
     get id_matricula() {
         return this._id_matricula;
@@ -392,134 +331,7 @@ class t_matriculas{
         this._observaciones = value;
     }
 
-    // --- Acudiente 1 ---
-    get nombre_acudiente1() {
-        return this._nombre_acudiente1;
-    }
-    set nombre_acudiente1(value) {
-        this._nombre_acudiente1 = value;
-    }
-
-    get apellido_acudiente1() {
-        return this._apellido_acudiante1;
-    }
-    set apellido_acudiente1(value) {
-        this._apellido_acudiante1 = value;
-    }
-
-    get id_tipo_documento_acudiente1() {
-        return this._id_tipo_documento_acudiente1;
-    }
-    set id_tipo_documento_acudiente1(value) {
-        this._id_tipo_documento_acudiente1 = value;
-    }
-
-    get numero_documento_acudiente1() {
-        return this._numero_documento_acudiente1;
-    }
-    set numero_documento_acudiente1(value) {
-        this._numero_documento_acudiente1 = value;
-    }
-
-    get tel_contacto_acudiente1() {
-        return this._tel_contacto_acudiente1;
-    }
-    set tel_contacto_acudiente1(value) {
-        this._tel_contacto_acudiente1 = value;
-    }
-
-    get correo_acudiente1() {
-        return this._correo_acudiente1;
-    }
-    set correo_acudiente1(value) {
-        this._correo_acudiente1 = value;
-    }
-
-    // --- Acudiente 2 ---
-    get nombre_acudiente2() {
-        return this._nombre_acudiente2;
-    }
-    set nombre_acudiente2(value) {
-        this._nombre_acudiente2 = value;
-    }
-
-    get apellido_acudiente2() {
-        return this._apellido_acudiante2;
-    }
-    set apellido_acudiente2(value) {
-        this._apellido_acudiante2 = value;
-    }
-
-    get id_tipo_documento_acudiente2() {
-        return this._id_tipo_documento_acudiente2;
-    }
-    set id_tipo_documento_acudiente2(value) {
-        this._id_tipo_documento_acudiente2 = value;
-    }
-
-    get numero_documento_acudiente2() {
-        return this._numero_documento_acudiente2;
-    }
-    set numero_documento_acudiente2(value) {
-        this._numero_documento_acudiente2 = value;
-    }
-
-    get tel_contacto_acudiente2() {
-        return this._tel_contacto_acudiente2;
-    }
-    set tel_contacto_acudiente2(value) {
-        this._tel_contacto_acudiente2 = value;
-    }
-
-    get correo_acudiente2() {
-        return this._correo_acudiente2;
-    }
-    set correo_acudiente2(value) {
-        this._correo_acudiente2 = value;
-    }
-
-    // --- Acudiente 3 ---
-    get nombre_acudiente3() {
-        return this._nombre_acudiente3;
-    }
-    set nombre_acudiente3(value) {
-        this._nombre_acudiente3 = value;
-    }
-
-    get apellido_acudiente3() {
-        return this._apellido_acudiante3;
-    }
-    set apellido_acudiente3(value) {
-        this._apellido_acudiante3 = value;
-    }
-
-    get id_tipo_documento_acudiente3() {
-        return this._id_tipo_documento_acudiente3;
-    }
-    set id_tipo_documento_acudiente3(value) {
-        this._id_tipo_documento_acudiente3 = value;
-    }
-
-    get numero_documento_acudiente3() {
-        return this._numero_documento_acudiente3;
-    }
-    set numero_documento_acudiente3(value) {
-        this._numero_documento_acudiente3 = value;
-    }
-
-    get tel_contacto_acudiente3() {
-        return this._tel_contacto_acudiente3;
-    }
-    set tel_contacto_acudiente3(value) {
-        this._tel_contacto_acudiente3 = value;
-    }
-
-    get correo_acudiente3() {
-        return this._correo_acudiente3;
-    }
-    set correo_acudiente3(value) {
-        this._correo_acudiente3 = value;
-    }
+ 
 }
 
 // const tabla = new t_matriculas();

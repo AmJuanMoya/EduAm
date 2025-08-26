@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import TablasRouter from './routes/r_tablas.js';
 import matriculasRouter from "./routes/r_matricula.js";
 import TipoIdentificacionRouter from './routes/r_tipo_identificacion.js';
-//import identificacionRouter from "./routes/r_tipo_identificacion.js";
+
 import actividadesRouter from "./routes/r_actividades.js";
 import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
 import crearActividadRouter from './routes/r_creacion_actividad.js';
