@@ -15,6 +15,7 @@ import estadoUsuarioRouter from './routes/r_estado_usuario.js';
 import registroUsuarioRouter from './routes/r_registro_usuario.js';
 import loginRouter from './routes/r_login.js';
 
+import acudientes from '../model/t_acudientes.js';
 
 
 const app = express()
@@ -33,6 +34,7 @@ app.use("/api", rolesRouter);
 app.use("/api", estadoUsuarioRouter);
 app.use("/api", registroUsuarioRouter);
 app.use("/api", loginRouter);
+app.use("/api", acudientes);
 
 
 
