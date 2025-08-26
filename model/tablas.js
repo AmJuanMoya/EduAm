@@ -7,8 +7,6 @@ class tablas{
         this.db = new Database();
     }
 
-
-
    async getTablas(){
         await this.db.connect()
         const query = `
