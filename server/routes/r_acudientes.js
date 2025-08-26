@@ -1,5 +1,5 @@
 import { Router } from "express";
-import matricula from "../../model/t_matriculas.js";
+import Acudiente from "../../model/t_acudientes.js";
 import Crud from "../../model/database/crudsql.js";
 
 const router = Router() 
@@ -15,10 +15,10 @@ router.post("/datos/acudiente", async (req, res) => {
     }
 
     try {
-        console.log("📥 Datos recibidos para acudiente:", data);
+        console.log("📥 Datos recibidos de acudiente:", data);
 
         // 👇 llamada a tu método simplificado
-        const result = await new matricula().createAcudiente(data);
+        const result = await new Acudiente().createAcudiente(data);
 
         res.status(201).json({
             message: "😀 Acudiente registrado exitosamente ✅",
@@ -35,3 +35,5 @@ router.post("/datos/acudiente", async (req, res) => {
         });
     }
 });
+
+export default router;

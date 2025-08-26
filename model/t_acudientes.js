@@ -65,3 +65,4 @@ class t_acudientes{
 
 }
 
+export default t_acudientes;

@@ -51,7 +51,7 @@ import Asidebar from "../../components/asidebar.astro";
                     <option value="Padre">Padre</option>
                     <option value="Madre">Madre</option>
                     <option value="Abuelo">Abuela</option>
-                    <option value="Otros">Otros</option>
+                    <option value="Otro">Otro</option>
                   </select>
                 </div>
 
@@ -105,3 +105,91 @@ import Asidebar from "../../components/asidebar.astro";
         </div>
     </div>
 </main>
+
+<script is:inline>
+    const form = document.getElementById('registroAcudienteForm');
+    const statusModal = document.getElementById('statusModal');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Función para mostrar el modal
+    function showModal(icon, title, message) {
+        modalIcon.textContent = icon;
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        statusModal.classList.remove('hidden');
+        // Opcional: añadir una animación de entrada
+        statusModal.querySelector('div').classList.remove('scale-95');
+        statusModal.querySelector('div').classList.add('scale-100');
+    }
+
+    // Función para ocultar el modal
+    function hideModal() {
+        // Opcional: añadir una animación de salida
+        statusModal.querySelector('div').classList.remove('scale-100');
+        statusModal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => { // Esperar la animación antes de ocultar completamente
+            statusModal.classList.add('hidden');
+        }, 300); // Coincide con la duración de la transición CSS
+    }
+
+    // Event listener para el botón de cerrar modal
+    closeModalBtn.addEventListener('click', hideModal);
+
+    // Event listener para cerrar el modal haciendo clic fuera de él
+    statusModal.addEventListener('click', (event) => {
+        if (event.target === statusModal) {
+            hideModal();
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Evitar el envío predeterminado del formulario
+
+        const formData = new FormData(form);
+        const data = {};
+
+        // // Convertir FormData a un objeto JSON
+        // for (const [key, value] of formData.entries()) {
+        //     if (key === 'repitente') {
+        //         data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
+        //     } else if (key === 'estrato') {
+        //         data[key] = parseInt(value); // Convertir 'estrato' a entero
+        //     } else if (value === '') { // Para campos de texto opcionales, enviar null en lugar de string vacío
+        //         data[key] = null; // Esto es útil si tu DB permite NULL para campos opcionales
+        //                           // Si tu DB espera string vacío para NOT NULL, cámbialo a data[key] = '';
+        //     } else {
+        //         data[key] = value; // Para todos los demás campos, asignar el valor directamente
+        //     }
+        // }
+        console.log('Datos a enviar:', data); // Para depuración
+
+        try {
+            const response = await fetch('http://localhost:3000/api/datos/acudiente', { // Asegúrate que esta URL sea la correcta
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // Reemplazar alert por showModal para éxito
+                showModal('✅', '¡Registro Exitoso!', result.message);
+                form.reset(); // Limpiar el formulario después del éxito
+            } else {
+                const errorData = await response.json();
+                // Reemplazar alert por showModal para error
+                showModal('❌', 'Error al Registrar', errorData.message || 'Ocurrió un error inesperado.');
+                console.error('Error del servidor:', errorData);
+            }
+        } catch (error) {
+            // Reemplazar alert por showModal para error de conexión
+            showModal('⚠️', 'Error de Conexión', 'Ocurrió un error al conectar con el servidor. Intente de nuevo más tarde.');
+            console.error('Error de red o de solicitud:', error);
+        }
+    });
+</script>
