@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import exampleRouter from './routes/r_example.js';
 // import TablasRouter from './routes/r_tablas.js';
+import matriculaRouter from './routes/r_matricula.js';
 
 
 
@@ -12,8 +13,8 @@ app.use(cors());
 app.use("/api",express.json());
 
 app.use('/api/example', exampleRouter);
+app.use('/api', matriculaRouter);
 // app.use('/api', TablasRouter)
-
 
 
 
