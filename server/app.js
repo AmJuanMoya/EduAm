@@ -6,6 +6,7 @@ import exampleRouter from './routes/r_example.js';
 // import TablasRouter from './routes/r_tablas.js';
 import perfilRouter from "./routes/r_perfil.js"; 
 import rolesRouter from './routes/r_roles.js';
+import especialidadRouter from './routes/r_especialidad.js';
 
 
 
@@ -17,6 +18,7 @@ app.use('/api/example', exampleRouter);
 // app.use('/api', TablasRouter)
 app.use("/api", perfilRouter);
 app.use("/api", rolesRouter);
+app.use("/api", especialidadRouter);
 
 
 

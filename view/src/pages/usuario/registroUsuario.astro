@@ -22,6 +22,22 @@ try{
 }
 
 console.log("Los roles de cristian son:", roles);
+
+
+
+try{
+    especialidades = await fetch("http://localhost:3000/api/especialidad").then(res => {
+        if (res.ok) {
+            return res.json();
+            
+        } else {
+            throw new Error(`Error al obtener especialidades: ${res.status} - ${res.statusText}`);
+        }
+    });
+
+} catch (error) {
+    console.error("Error al realizar la solicitud de especialidades:", error);
+}
 // try {
 //   // Fetch para tipos de identificación
 //   const resIdentificacion = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
@@ -138,9 +154,13 @@ console.log("Los roles de cristian son:", roles);
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="" class="block">Especialidad</label>
+                                <label for="" class="block">Especialidad:</label>
                             </div>
                             <select name="" id="" class="m-5 rounded-sm w-100" required>
+                                <option value="">Selecione una Especialidad</option>
+                                {especialidades.map((especialidad) => (
+                                    <option value={especialidad.id_especialidad}>{especialidad.esp_descripcion}</option>
+                                ))}
 
                             </select>
                         </div>
