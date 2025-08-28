@@ -21,11 +21,6 @@ import Asidebar from "../../components/asidebar.astro";
                  <input id="acud_nombres" name="acud_nombres" type="text" placeholder="Kevin" class="m-5 rounded-sm w-200" required>
                 </div>
 
-                <!-- <div class="mx-auto w-fit">
-                 <label for="" class="block  w-50">Nombres Adicionales: </label>
-                 <input type="text" placeholder="---" class="m-5 rounded-sm w-200" >
-                </div> -->
-
                  <div class="mx-auto w-fit">
                  <label for="acud_apellidos" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
                  <input id="acud_apellidos" name="acud_apellidos" type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
@@ -40,7 +35,7 @@ import Asidebar from "../../components/asidebar.astro";
                       <option value="CE">C.E</option>
                       
                     </select>
-                    <input id="id_documento_acudiente" name="id_documento_acudiente" type="text" placeholder=1000009  class="rounded-r-sm w-190 " required>
+                    <input id="id_documento_acudiente" name="id_documento_acudiente" type="text" placeholder=1000009  class="rounded-r-sm w-190 " required maxlength="10">
                   </div>
                 </div>
 
@@ -152,18 +147,18 @@ import Asidebar from "../../components/asidebar.astro";
         const data = {};
 
         // // Convertir FormData a un objeto JSON
-        // for (const [key, value] of formData.entries()) {
-        //     if (key === 'repitente') {
-        //         data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
-        //     } else if (key === 'estrato') {
-        //         data[key] = parseInt(value); // Convertir 'estrato' a entero
-        //     } else if (value === '') { // Para campos de texto opcionales, enviar null en lugar de string vacío
-        //         data[key] = null; // Esto es útil si tu DB permite NULL para campos opcionales
-        //                           // Si tu DB espera string vacío para NOT NULL, cámbialo a data[key] = '';
-        //     } else {
-        //         data[key] = value; // Para todos los demás campos, asignar el valor directamente
-        //     }
-        // }
+        for (const [key, value] of formData.entries()) {
+            if (key === 'repitente') {
+                data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
+            } else if (key === 'estrato') {
+                data[key] = parseInt(value); // Convertir 'estrato' a entero
+            } else if (value === '') { // Para campos de texto opcionales, enviar null en lugar de string vacío
+                data[key] = null; // Esto es útil si tu DB permite NULL para campos opcionales
+                                  // Si tu DB espera string vacío para NOT NULL, cámbialo a data[key] = '';
+            } else {
+                data[key] = value; // Para todos los demás campos, asignar el valor directamente
+            }
+        }
         console.log('Datos a enviar:', data); // Para depuración
 
         try {

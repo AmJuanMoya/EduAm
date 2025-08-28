@@ -36,4 +36,16 @@ router.post("/datos/acudiente", async (req, res) => {
     }
 });
 
+router.get("/datos/acudientes", async (req, res) => {
+  try {
+    const acudientes = await new Acudiente().getAcudientes();
+    console.log("Acudientes recibidos:", acudientes);
+    res.json(acudientes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener acudientes" });
+  }
+});
+
+
 export default router;
