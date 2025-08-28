@@ -31,3 +31,9 @@ Content-Type: 'application/json'
 
 GET http://localhost:3000/api/datos/tipo_identificacion
 Content-Type: 'application/json'
+
+GET http://localhost:3000/api/perfil/1/estudiante
+Content-Type: 'application/json'
+
+GET  http://localhost:3000/api/roles
+Content-Type: 'application/json'

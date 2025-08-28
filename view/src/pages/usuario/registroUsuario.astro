@@ -4,49 +4,63 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 
-let identificacion = [];
 let roles = [];
-let estadosUsuario = [];
+let especialidades = [];
 
-try {
-  // Fetch para tipos de identificación
-  const resIdentificacion = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
-  if (resIdentificacion.ok) {
-    identificacion = await resIdentificacion.json();
-  } else {
-    console.error(`Error al obtener tipos de identificación: ${resIdentificacion.status} - ${resIdentificacion.statusText}`);
-  }
+try{
+    roles = await fetch("http://localhost:3000/api/roles").then(res => {
+        if (res.ok) {
+            return res.json();
+            
+        } else {
+            throw new Error(`Error al obtener roles: ${res.status} - ${res.statusText}`);
+        }
+    });
+
 } catch (error) {
-  console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+    console.error("Error al realizar la solicitud de roles:", error);
 }
 
-try {
-  // Fetch para roles
-  const resRoles = await fetch("http://localhost:3000/api/datos/roles"); 
-  if (resRoles.ok) {
-    roles = await resRoles.json(); 
-  } else {
-    console.error(`Error al obtener roles: ${resRoles.status} - ${resRoles.statusText}`);
-    
-  }
-} catch (error) {
-  console.error("Error al realizar la solicitud de roles:", error);
- 
-}
+console.log("Los roles de cristian son:", roles);
+// try {
+//   // Fetch para tipos de identificación
+//   const resIdentificacion = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
+//   if (resIdentificacion.ok) {
+//     identificacion = await resIdentificacion.json();
+//   } else {
+//     console.error(`Error al obtener tipos de identificación: ${resIdentificacion.status} - ${resIdentificacion.statusText}`);
+//   }
+// } catch (error) {
+//   console.error("Error al realizar la solicitud de tipo_identificacion:", error);
+// }
 
-try {
-  // Fetch para estados de usuario
-  const resEstados = await fetch("http://localhost:3000/api/datos/estadosUsuario"); 
-  if (resEstados.ok) {
-    estadosUsuario = await resEstados.json(); 
-  } else {
-    console.error(`Error al obtener estados de usuario: ${resEstados.status} - ${resEstados.statusText}`);
-    
-  }
-} catch (error) {
-  console.error("Error al realizar la solicitud de estados de usuario:", error);
-  
-}
+// try {
+//   // Fetch para roles
+//   const resRoles = await fetch("http://localhost:3000/api/datos/roles"); 
+//   if (resRoles.ok) {
+//     roles = await resRoles.json(); 
+//   } else {
+//     console.error(`Error al obtener roles: ${resRoles.status} - ${resRoles.statusText}`);
+//     
+//   }
+// } catch (error) {
+//   console.error("Error al realizar la solicitud de roles:", error);
+//  
+// }
+
+// try {
+//   // Fetch para estados de usuario
+//   const resEstados = await fetch("http://localhost:3000/api/datos/estadosUsuario"); 
+//   if (resEstados.ok) {
+//     estadosUsuario = await resEstados.json(); 
+//   } else {
+//     console.error(`Error al obtener estados de usuario: ${resEstados.status} - ${resEstados.statusText}`);
+//     
+//   }
+// } catch (error) {
+//   console.error("Error al realizar la solicitud de estados de usuario:", error);
+//   
+// }
 
 
 ---
@@ -105,24 +119,52 @@ try {
                             <div class="flex">
                                 <label for="id_rol" class="block">Rol:</label>
                             </div>
-                            <select name="id_rol" id="id_rol" class="m-5 rounded-sm w-100" required>
+                                <select name="" id="" class="m-5 rounded-sm w-100" required>
+<!-- ------------------------------------------------------- -->
+                                    <option value="" disabled selected>Selecione un Rol</option> 
+                                    {roles.map((rol) => (
+                                        <option value={rol.id_rol}>{rol.rol_descripcion}</option>
+                                    ))}
+
+                                </select> 
+ 
+<!--                             <select name="id_rol" id="id_rol" class="m-5 rounded-sm w-100" required>
                                 <option selected disabled value="">Seleccione un rol</option>
                                 {roles.map((rol) => (
                                     <option value={rol.id_rol}>{rol.nombre_rol}</option>
                                 ))}
-                            </select>
+                            </select> -->
                         </div>
+
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="" class="block">Especialidad</label>
+                            </div>
+                            <select name="" id="" class="m-5 rounded-sm w-100" required>
+
+                            </select>
+                        </div>
+
+
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
                                 <label for="id_estado_usuario" class="block">Estado de Usuario:</label>
                             </div>
-                            <select name="id_estado_usuario" id="id_estado_usuario" class="m-5 rounded-sm w-100" required>
+                                <select name="empl_estado" id="empl_estado" class="m-5 rounded-sm w-100" required>
+                                    <option value="Activo">Activo</option>
+                                    <option value="Bloqueado">Bloqueado</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Inactivo">Inactivo</option>
+
+                                </select>
+
+<!--                             <select name="id_estado_usuario" id="id_estado_usuario" class="m-5 rounded-sm w-100" required>
                                 <option selected disabled value="">Seleccione un estado</option>
                                 {estadosUsuario.map((estado) => (
                                     <option value={estado.id_estado_usuario}>{estado.nombre_estado_usuario}</option>
                                 ))}
-                            </select>
+                            </select> -->
                         </div>
 
                         <div class="mx-auto w-fit col-span-1 md:col-span-2">
@@ -130,12 +172,12 @@ try {
                                 <label for="numero_documento" class="block">Número de Documento:</label>
                             </div>
                             <div class="m-5 flex w-200">
-                                <select name="id_tipo_documento" id="id_tipo_documento" class="rounded-l-md" required>
+<!--                                 <select name="id_tipo_documento" id="id_tipo_documento" class="rounded-l-md" required>
                                     <option selected disabled value="">Tipo</option>
                                     {identificacion.map((d) => (
                                         <option value={d.id_identificacion}>{d.tipo_identificacion}</option>
                                     ))}
-                                </select>
+                                </select> -->
                                 <input id="numero_documento" name="numero_documento" type="text" required placeholder="1000009" class="rounded-r-sm w-100">
                             </div>
                         </div>
