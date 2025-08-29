@@ -82,25 +82,4 @@ INSERT INTO t_rel_empleado_asignatura_curso (
   (2, 2, 1, 1002345678),
   (3, 1, 2, 1001234567);
 
-/* 8) Actividades */
-INSERT INTO t_actividad (
-  id_actividad, act_estado, act_fecha_asignacion, act_fecha_entrega, act_nombre,
-  act_descripcion, act_id_recurso, act_categoria, url_actividad, id_rel_empleado_asignatura_curso
-) VALUES
-  (1,'Asignada','2025-02-01 08:00:00','2025-02-05 23:59:59','Taller de fracciones',
-   'Resolver guía de fracciones básicas', 1, 'Taller', 'https://aula/actividad/1', 1),
-  (2,'Asignada','2025-02-02 08:00:00','2025-02-06 23:59:59','Lectura: cuento breve',
-   'Leer y responder preguntas', 2, 'Tarea', 'https://aula/actividad/2', 2);
 
-/* 9) Informes / entregas */
-INSERT INTO t_informe_calificaciones (
-  id_informe_calificacion, infoc_estado, infoc_fecha_entrega, infoc_nota,
-  infoc_url_entrega, infoc_observaciones_docente, id_rel_empleado_asignatura_curso,
-  infoc_id_documento_estudiante
-) VALUES
-  (1,'Aprobada','2025-02-05 20:30:00',4.5,'https://aula/entrega/1',
-   'Buen manejo de fracciones', 1, 2001234567),
-  (2,'Aprobada','2025-02-06 21:10:00',4.0,'https://aula/entrega/2',
-   'Comprensión adecuada del texto', 2, 2002345678),
-  (3,'Pendiente',NULL,0.0,NULL,
-   'Aún no entrega', 1, 2003456789);

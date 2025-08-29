@@ -3,18 +3,17 @@ import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import Panelnav from "../../components/navigation/panelnav.astro";
 
-// ID del docente (puedes hacerlo dinámico)
-const idDocente = 1;
+// ⬇️ NUEVO: documento del empleado (PK)
+const idDocumentoEmpleado = 1002345678; // <-- pon aquí el real o inyecta desde login
 
 let asignaciones = [];
 let categorias = [];
 
-// Obtener asignaciones por docente
+// ⬇️ Ajusta tu endpoint para que reciba id_documento_empleado
 try {
-  const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/crear/${idDocente}`);
+  const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/crear/${idDocumentoEmpleado}`);
   const contentType = resAsignaciones.headers.get("content-type");
-
-  if (contentType && contentType.includes("application/json")) {
+  if (contentType?.includes("application/json")) {
     const data = await resAsignaciones.json();
     asignaciones = Array.isArray(data) ? data : [];
   } else {
@@ -24,12 +23,10 @@ try {
   console.error("❌ Error al obtener asignaciones:", err);
 }
 
-// Obtener categorías
 try {
   const resCategorias = await fetch("http://localhost:3000/api/categorias");
   const contentType = resCategorias.headers.get("content-type");
-
-  if (contentType && contentType.includes("application/json")) {
+  if (contentType?.includes("application/json")) {
     const data = await resCategorias.json();
     categorias = Array.isArray(data) ? data : [];
   } else {
@@ -38,8 +35,9 @@ try {
 } catch (err) {
   console.error("❌ Error al obtener categorías:", err);
 }
----
 
+const hoyISO = new Date().toISOString().split("T")[0];
+---
 <General>
   <Panelnav />
   <div class="bg-slate-900 flex min-h-screen text-white">
@@ -56,7 +54,7 @@ try {
             {
               asignaciones.map((asig) => (
                 <option value={JSON.stringify({ id_curso: asig.id_curso, id_asignatura: asig.id_asignatura })}>
-                  {asig.nombre_asignatura} - Curso {asig.grado}° {asig.letra}
+                  {asig.nombre_asignatura} — {asig.grado}° {asig.letra}
                 </option>
               ))
             }
@@ -87,13 +85,11 @@ try {
 
         <div>
           <label for="fecha_entrega" class="block mb-1">Fecha de entrega</label>
-          <input id="fecha_entrega" type="date" class="w-full p-2 rounded text-black" required />
+          <input id="fecha_entrega" type="date" min={hoyISO} class="w-full p-2 rounded text-black" required />
+          <p class="text-xs text-slate-400 mt-1">No se permite una fecha anterior a hoy.</p>
         </div>
 
-        <button
-          type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold"
-        >
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold">
           Crear Actividad
         </button>
 
@@ -102,11 +98,11 @@ try {
     </div>
   </div>
 
-  <!-- Script de envío -->
   <script type="module">
-    window.docenteActual = {
-      id: 1
-    };
+    // ⬇️ NUEVO: expone el documento del empleado
+    window.empleadoActual = {
+    id_documento_empleado: {idDocumentoEmpleado}  
+  };
 
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("formActividad");
@@ -120,29 +116,38 @@ try {
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const seleccion = selectAsignacion.value;
-        if (!seleccion) {
+        mensaje.textContent = "";
+        mensaje.className = "text-center";
+
+        if (!selectAsignacion.value) {
           mensaje.textContent = "Seleccione curso y asignatura.";
-          mensaje.className = "text-yellow-400 text-center";
+          mensaje.classList.add("text-yellow-400");
           return;
         }
 
         let ids;
         try {
-          ids = JSON.parse(seleccion);
-        } catch (err) {
+          ids = JSON.parse(selectAsignacion.value);
+        } catch {
           mensaje.textContent = "Error al interpretar la selección.";
-          mensaje.className = "text-red-400 text-center";
+          mensaje.classList.add("text-red-400");
           return;
         }
 
+        if (!fechaEntrega.value) {
+          mensaje.textContent = "Seleccione la fecha de entrega.";
+          mensaje.classList.add("text-yellow-400");
+          return;
+        }
+
+        // ⬇️ NUEVO: payload con id_documento_empleado
         const payload = {
-          id_docente: window.docenteActual.id,
+          id_documento_empleado: window.empleadoActual.id_documento_empleado,
           id_curso: parseInt(ids.id_curso),
           id_asignatura: parseInt(ids.id_asignatura),
           id_categoria_actividad: parseInt(categoria.value),
-          titulo_actividad: titulo.value,
-          descripcion_actividad: descripcion.value,
+          titulo_actividad: titulo.value.trim(),
+          descripcion_actividad: descripcion.value.trim(),
           fecha_entrega: fechaEntrega.value
         };
 
