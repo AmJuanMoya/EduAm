@@ -21,15 +21,14 @@ try {
     <div class="flex-1 p-6">
       <h1 class="text-3xl font-bold mb-6">Listado de Acudientes</h1>
 
-      <!-- Barra de búsqueda y paginación -->
+      <!-- Barra de búsqueda
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <input
           id="buscar"
           type="text"
           placeholder="Buscar por nombre o documento"
           class="px-3 py-2 rounded bg-gray-800 border border-gray-600 w-full sm:w-64 text-sm placeholder:text-gray-400"
-        />
-
+          />
         <div class="text-sm">
           <label for="cantidad" class="mr-2">Registros por página:</label>
           <select
@@ -43,45 +42,242 @@ try {
             <option value="100">100</option>
           </select>
         </div>
-      </div>
+      </div> -->
 
       <!-- Tabla de acudientes -->
       <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-700">
-        <table class="min-w-full text-sm text-left border-collapse">
+        <table id="tableAcudientes" class="min-w-full text-sm text-left border-collapse">
           <thead class="bg-gray-800 text-gray-300">
             <tr>
               <th class="px-4 py-3 border-b border-gray-700">Documento</th>
               <th class="px-4 py-3 border-b border-gray-700">Nombre</th>
               <th class="px-4 py-3 border-b border-gray-700">Teléfono</th>
               <th class="px-4 py-3 border-b border-gray-700">Correo</th>
-              <th class="px-4 py-3 border-b border-gray-700">Direccion</th>
+              <th class="px-4 py-3 border-b border-gray-700">Dirección</th>
               <th class="px-4 py-3 border-b border-gray-700">Parentesco</th>
+              <th class="px-4 py-3 border-b border-gray-700 text-center">Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {acudientes.length > 0 ? (
-                acudientes.map((acudiente: any) => (
-                <tr class="hover:bg-gray-700">
-                    <td class="px-4 py-3 border-b border-gray-700">{acudiente.id_documento_acudiente}</td>
-                    <td class="px-4 py-3 border-b border-gray-700">
-                    {acudiente.acud_nombres} {acudiente.acud_apellidos}
-                    </td>
-                    <td class="px-4 py-3 border-b border-gray-700">{acudiente.acud_telefono}</td>
-                    <td class="px-4 py-3 border-b border-gray-700">{acudiente.acud_correo}</td>
-                    <td class="px-4 py-3 border-b border-gray-700">{acudiente.acud_direccion}</td>
-                    <td class="px-4 py-3 border-b border-gray-700">{acudiente.acud_parentesco}</td>
-                </tr>
-                ))
-            ) : (
-                <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-400">
-                    No hay acudientes registrados
-                </td>
-                </tr>
-            )}
-            </tbody>
-        </table>
+           </thead>
+  <tbody id="tbodyAcudientes">
+    <!-- se rellenará desde JS -->
+  </tbody>
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+  <div id="modalAcudiente" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+  <div class="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+    <h2 id="modalTitulo" class="text-xl font-bold mb-4">Detalle</h2>
+    <div id="modalContenido" class="space-y-2"></div>
+    <div class="flex justify-end gap-2 mt-4">
+      <button id="modalCloseBtn" class="px-3 py-1 bg-gray-700 rounded">Cerrar</button>
+      <button id="btnGuardar" class="px-3 py-1 bg-green-600 rounded hidden">Guardar</button>
+    </div>
+  </div>
+</div>
 </General>
+
+<script is:inline>
+(async function () {
+  // Elementos DOM
+  const table = document.getElementById("tableAcudientes");
+  const tbody = document.getElementById("tbodyAcudientes");
+  const modal = document.getElementById("modalAcudiente");
+  const modalTitulo = document.getElementById("modalTitulo");
+  const modalContenido = document.getElementById("modalContenido");
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+  const btnGuardar = document.getElementById("btnGuardar");
+
+
+  // 1) Cargar datos desde la API y renderizar filas
+  async function cargarAcudientes() {
+    try {
+      const res = await fetch("http://localhost:3000/api/datos/acudientes"); // usa ruta relativa si tu backend está montado en el mismo host
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      acudientes = await res.json();
+      renderRows();
+      console.log("Acudientes cargados:", acudientes);
+    } catch (err) {
+      console.error("Error cargando acudientes:", err);
+      tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-3 text-center text-gray-400">Error cargando acudientes</td></tr>`;
+    }
+  }
+
+  // 2) Render filas en tbody (evita innerHTML con datos sin sanear: usamos textContent)
+  function renderRows() {
+    tbody.innerHTML = ""; // limpio
+    if (!Array.isArray(acudientes) || acudientes.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-3 text-center text-gray-400">No hay acudientes registrados</td></tr>`;
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    acudientes.forEach(a => {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-gray-700";
+
+      const td = (txt, cls = "") => {
+        const cell = document.createElement("td");
+        cell.className = `px-4 py-3 border-b border-gray-700 ${cls}`.trim();
+        cell.textContent = txt ?? "";
+        return cell;
+      };
+
+      tr.appendChild(td(a.id_documento_acudiente));
+      tr.appendChild(td(`${a.acud_nombres ?? ""} ${a.acud_apellidos ?? ""}`));
+      tr.appendChild(td(a.acud_telefono));
+      tr.appendChild(td(a.acud_correo));
+      tr.appendChild(td(a.acud_direccion));
+      tr.appendChild(td(a.acud_parentesco));
+
+      // acciones
+      const actionsTd = document.createElement("td");
+      actionsTd.className = "px-4 py-3 border-b border-gray-700 text-center space-x-2";
+
+      const btnFactory = (action, label, cls) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.dataset.id = a.id_documento_acudiente;
+        b.dataset.action = action;
+        b.className = cls;
+        b.textContent = label;
+        return b;
+      };
+
+      actionsTd.appendChild(btnFactory("ver", "Ver", "px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs"));
+      actionsTd.appendChild(btnFactory("editar", "Editar", "px-2 py-1 rounded bg-yellow-600 hover:bg-yellow-700 text-white text-xs"));
+      actionsTd.appendChild(btnFactory("eliminar", "Eliminar", "px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-xs"));
+
+      tr.appendChild(actionsTd);
+      frag.appendChild(tr);
+    });
+
+    tbody.appendChild(frag);
+  }
+
+
+  // 3) Modal open/close y renderizado de contenido
+  function abrirModal(acudiente, modo = "ver") {
+    if (!acudiente) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    modalTitulo.textContent = modo === "ver" ? "Detalle del Acudiente" : "Editar Acudiente";
+
+    if (modo === "ver") {
+      modalContenido.innerHTML = `
+        <p><strong>Documento:</strong> ${String(acudiente.id_documento_acudiente)}</p>
+        <p><strong>Nombre:</strong> ${acudiente.acud_nombres ?? ""} ${acudiente.acud_apellidos ?? ""}</p>
+        <p><strong>Teléfono:</strong> ${acudiente.acud_telefono ?? ""}</p>
+        <p><strong>Correo:</strong> ${acudiente.acud_correo ?? ""}</p>
+        <p><strong>Dirección:</strong> ${acudiente.acud_direccion ?? ""}</p>
+        <p><strong>Parentesco:</strong> ${acudiente.acud_parentesco ?? ""}</p>
+      `;
+      btnGuardar.classList.add("hidden");
+    } else {
+      // modo editar -> inputs
+      modalContenido.innerHTML = `
+        <label class="block">Nombre:
+          <input type="text" id="editNombres" value="${String(acudiente.acud_nombres ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+        <label class="block">Apellidos:
+          <input type="text" id="editApellidos" value="${String(acudiente.acud_apellidos ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+        <label class="block">Teléfono:
+          <input type="text" id="editTelefono" value="${String(acudiente.acud_telefono ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+        <label class="block">Correo:
+          <input type="email" id="editCorreo" value="${String(acudiente.acud_correo ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+        <label class="block">Dirección:
+          <input type="text" id="editDireccion" value="${String(acudiente.acud_direccion ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+        <label class="block">Parentesco:
+          <input type="text" id="editParentesco" value="${String(acudiente.acud_parentesco ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+        </label>
+      `;
+      btnGuardar.dataset.id = acudiente.id_documento_acudiente;
+      btnGuardar.classList.remove("hidden");
+    }
+  }
+
+  function cerrarModal() {
+    modal.classList.add("hidden");
+  }
+
+  // 4) Event delegation para botones en la tabla
+  table.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button[data-action]");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    const acudiente = acudientes.find(a => String(a.id_documento_acudiente) === String(id));
+
+    if (action === "ver") abrirModal(acudiente, "ver");
+    else if (action === "editar") abrirModal(acudiente, "editar");
+    else if (action === "eliminar") eliminarAcudiente(id);
+  });
+
+  // 5) Guardar edición (PUT)
+  btnGuardar.addEventListener("click", async () => {
+    const id = btnGuardar.dataset.id;
+    const payload = {
+      id_documento_acudiente: id,
+      acud_nombres: document.getElementById("editNombres").value,
+      acud_apellidos: document.getElementById("editApellidos").value,
+      acud_telefono: document.getElementById("editTelefono").value,
+      acud_correo: document.getElementById("editCorreo").value,
+      acud_direccion: document.getElementById("editDireccion").value,
+      acud_parentesco: document.getElementById("editParentesco").value
+    };
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/datos/acudientes/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        // refresca localmente sin recargar si quieres:
+        // actualizar objeto en `acudientes` y volver a renderRows()
+        await cargarAcudientes(); // simple: recarga lista
+        cerrarModal();
+        alert("Actualizado correctamente");
+      } else {
+        const txt = await res.text().catch(()=>null);
+        console.error("Error updating:", res.status, txt);
+        alert("Error al actualizar");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión");
+    }
+  });
+
+  // 6) Eliminar (DELETE)
+  async function eliminarAcudiente(id) {
+    if (!confirm("¿Seguro que quieres eliminar este acudiente?")) return;
+    try {
+      const res = await fetch(`http://localhost:3000/api/datos/acudientes/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        await cargarAcudientes();
+        alert("Acudiente eliminado");
+      } else {
+        alert("Error al eliminar");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión");
+    }
+  }
+
+  // cerrar modal handlers
+  modalCloseBtn.addEventListener("click", cerrarModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); });
+
+
+  // 7) Inicializo todo
+  await cargarAcudientes();
+})();
+</script>

@@ -39,7 +39,7 @@ router.post("/datos/acudiente", async (req, res) => {
 router.get("/datos/acudientes", async (req, res) => {
   try {
     const acudientes = await new Acudiente().getAcudientes();
-    console.log("Acudientes recibidos:", acudientes);
+    // console.log("Acudientes recibidos:", acudientes);
     res.json(acudientes);
   } catch (error) {
     console.error(error);
@@ -47,5 +47,44 @@ router.get("/datos/acudientes", async (req, res) => {
   }
 });
 
+router.get("/datos/acudientes/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) return res.status(400).json({ error: "Falta id" });
+
+    const acudiente = await Acudiente.getAcudienteById(id);
+    if (!acudiente) return res.status(404).json({ error: "Acudiente no encontrado" });
+
+    res.json(acudiente);
+  } catch (err) {
+    console.error("Error en GET /datos/acudientes/:id ->", err);
+    res.status(500).json({ error: "Error del servidor" });
+  }
+});
+
+router.put("/datos/acudientes/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const data = { ...req.body, id_documento_acudiente: id };
+    console.log("ID:", id);
+    console.log("Body recibido:", req.body);
+    await new Acudiente().updateAcudiente(data);
+    res.json({ message: "Acudiente actualizado correctamente" });
+  } catch (error) {
+    console.error("Error al actualizar acudiente:", error);
+    res.status(500).json({ error: "Error al actualizar acudiente" });
+  }
+});
+
+router.delete("/datos/acudientes/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    await new Acudiente().deleteAcudiente(id);
+    res.json({ message: "Acudiente eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar acudiente:", error);
+    res.status(500).json({ error: "Error al eliminar acudiente" });
+  }
+});
 
 export default router;

@@ -39,8 +39,6 @@ router.get("/datos/matricula/:doc", async (req, res) => {
       console.warn("No se pudo asignar el campo:", campo);
     }
   });
-
-
     const result = await instancia.update_matricula();
     res.status(200).json({ mensaje: "Matrícula actualizada correctamente", result });
   } catch (error) {

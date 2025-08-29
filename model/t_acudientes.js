@@ -81,6 +81,58 @@ class t_acudientes {
     return await this.crud.query(sql);
 }
 
+async getAcudienteById(id) {
+  const sql = `
+    SELECT
+      id_documento_acudiente,
+      acud_nombres,
+      acud_apellidos,
+      acud_parentesco,
+      acud_telefono,
+      acud_correo,
+      acud_direccion,
+      acud_tipo_documento
+    FROM t_acudientes
+    WHERE id_documento_acudiente = ?
+    LIMIT 1
+  `;
+  // usa query parametrizada para evitar inyección
+  const result = await this.crud.query(sql, [id]);
+}
+
+async updateAcudiente(data) {
+    const sql = `
+      UPDATE t_acudientes 
+      SET 
+        acud_nombres = ?,
+        acud_apellidos = ?,
+        acud_parentesco = ?,
+        acud_telefono = ?,
+        acud_correo = ?,
+        acud_direccion = ?
+      WHERE id_documento_acudiente = ?
+    `;
+    const params = [
+      data.acud_nombres,
+      data.acud_apellidos,
+      data.acud_parentesco,
+      data.acud_telefono,
+      data.acud_correo,
+      data.acud_direccion,
+      data.id_documento_acudiente
+    ];
+    return await this.crud.query(sql, params);
+    
+  }
+ 
+  async deleteAcudiente(id) {
+  const sql = `
+    DELETE FROM t_acudientes 
+    WHERE id_documento_acudiente = ?
+  `;
+  return await this.crud.query(sql, [id]);
+  }
+  
 }
 
 export default t_acudientes;
