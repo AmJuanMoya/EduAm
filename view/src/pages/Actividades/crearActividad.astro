@@ -11,7 +11,7 @@ let categorias = [];
 
 // ⬇️ Ajusta tu endpoint para que reciba id_documento_empleado
 try {
-  const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/crear/${idDocumentoEmpleado}`);
+  const resAsignaciones = await fetch(`http://localhost:3000/api/actividad/${idDocumentoEmpleado}`);
   const contentType = resAsignaciones.headers.get("content-type");
   if (contentType?.includes("application/json")) {
     const data = await resAsignaciones.json();

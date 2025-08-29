@@ -16,6 +16,7 @@ app.use("/api/actividad", actividadRouter);
 app.use("/api/informes", informesRouter);
 app.use('/api/example', exampleRouter);
 app.use('/api/actividad', crearActividadRouter);
+
 // app.use('/api', TablasRouter)
 
 

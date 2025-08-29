@@ -34,7 +34,7 @@ router.post("/actividad/crear", async (req, res) => {
       id_documento_empleado,
       id_curso,
       id_asignatura,
-      id_categoria_actividad,   // si no usas categoría por FK, ignóralo
+      act_categoria,   // si no usas categoría por FK, ignóralo
       titulo_actividad,
       descripcion_actividad,
       fecha_entrega
@@ -51,7 +51,7 @@ router.post("/actividad/crear", async (req, res) => {
       act_nombre: titulo_actividad,
       act_descripcion: descripcion_actividad ?? null,
       act_id_recurso: null,                 // si luego seleccionas recurso, cámbialo
-      act_categoria: "Tarea",               // o deriva desde id_categoria_actividad si aplica
+      act_categoria: act_categoria,               // o deriva desde id_categoria_actividad si aplica
       url_actividad: null,
       id_rel_empleado_asignatura_curso: idRel
     };
