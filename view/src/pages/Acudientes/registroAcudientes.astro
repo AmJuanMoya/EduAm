@@ -29,19 +29,19 @@ import Asidebar from "../../components/asidebar.astro";
                  <div class="mx-auto w-fit">    
                   <label for="id_documento_acudiente" class="block w-50 ">Numero de Documento:  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
                   <div class="m-5 flex  w-200 ">
-                    <select name="acud_tipo_documento" id="acud_tipo_documento" class="rounded-l-md">
+                    <select name="acud_tipo_documento" id="acud_tipo_documento" class="rounded-l-md" required>
                       <option value="CC">C.C</option>
                       <option value="TI">T.I</option>
                       <option value="CE">C.E</option>
                       
                     </select>
-                    <input id="id_documento_acudiente" name="id_documento_acudiente" type="text" placeholder=1000009  class="rounded-r-sm w-190 " required maxlength="10">
+                    <input id="id_documento_acudiente" name="id_documento_acudiente" type="text" placeholder=1000009  class="rounded-r-sm w-190 " maxlength="10" required >
                   </div>
                 </div>
 
                 <div class="mx-auto w-fit mt-5">    
                   <label for="acud_parentesco" class="block w-fit ">Parentesco: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
-                  <select name="acud_parentesco" id="estu_parentesco" class="m-5 rounded-sm w-200">
+                  <select name="acud_parentesco" id="estu_parentesco" class="m-5 rounded-sm w-200" required>
                     <option  selected disabled value="0" class=""  >Seleccione</option>
                     <option value="Padre">Padre</option>
                     <option value="Madre">Madre</option>
@@ -63,7 +63,7 @@ import Asidebar from "../../components/asidebar.astro";
 
                 <div class="mx-auto w-fit">    
                   <label for="acud_direccion" class="block w-50 ">Direccion de Residencia  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
-                  <input id="acud_direccion" name="acud_direccion" type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200">
+                  <input id="acud_direccion" name="acud_direccion" type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200" required>
                 </div>
 
             </fieldset>
