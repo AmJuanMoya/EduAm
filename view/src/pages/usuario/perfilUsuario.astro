@@ -3,12 +3,15 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 
+let user = {};
+const userId = 1;
+const userType = "estudiante";
 
-const userId = 1; // este lo sacas luego del login/sesión
-const userType = "estudiante"; // o "empleado", según corresponda
-
-const res = await fetch(`http://127.0.0.1:3000/api/perfil/${userId}/${userType}`);
-const user = await res.json();
+async function getUser() {
+  const res = await fetch(`http://127.0.0.1:3000/api/perfil/${userId}/${userType}`);
+  user = await res.json();
+}
+await getUser();
 ---
 
 <General>
@@ -18,16 +21,8 @@ const user = await res.json();
     <div class="perfil">
         <br>
         <img src="https://via.placeholder.com/100" alt="Foto de perfil">
-<h2>{user.nombre} {user.apellido}</h2>
-<p>@{user.usuario}</p>
-<p>Rol: {userType}</p>
-</div>
-
-        
-                    
-                    
-                    
-                
-
+        <h2>{user.nombre} {user.apellido}</h2>
+        <p>@{user.correo}</p>
+        <p>Rol: {user.rol}</p>
     </div>
 </General>

@@ -7,6 +7,7 @@ import Asidebar from "../../components/asidebar.astro";
 let roles = [];
 let especialidades = [];
 
+// fetch para roles
 try{
     roles = await fetch("http://localhost:3000/api/roles").then(res => {
         if (res.ok) {

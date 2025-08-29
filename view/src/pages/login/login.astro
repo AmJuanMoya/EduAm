@@ -335,29 +335,29 @@
 
                 if (response.ok) {
                     // Login exitoso
-                    const userRole = result.user.rol;
-                    const userName = result.user.nombres;
-                    const userLastName = result.user.apellidos;
-                    const jwtToken = result.token;
+                //     const userRole = result.user.rol;
+                //     const userName = result.user.nombres;
+                //     const userLastName = result.user.apellidos;
+                //     const jwtToken = result.token;
 
-                    // Almacenar el JWT y los datos del usuario en localStorage
-                    localStorage.setItem('jwtToken', jwtToken); 
-                    localStorage.setItem('userRole', userRole); 
-                    localStorage.setItem('userName', `${userName} ${userLastName}`);
-                    localStorage.setItem('userId', result.user.id);
+                //     // Almacenar el JWT y los datos del usuario en localStorage
+                //     localStorage.setItem('jwtToken', jwtToken); 
+                //     localStorage.setItem('userRole', userRole); 
+                //     localStorage.setItem('userName', `${userName} ${userLastName}`);
+                //     localStorage.setItem('userId', result.user.id);
 
-                    showModal('✅', '¡Inicio de Sesión Exitoso!', `Bienvenido, <strong>${userName} ${userLastName}</strong>. Tu rol es: <strong>${userRole}</strong>.`);
-                    loginForm.reset();
+                //     showModal('✅', '¡Inicio de Sesión Exitoso!', `Bienvenido, <strong>${userName} ${userLastName}</strong>. Tu rol es: <strong>${userRole}</strong>.`);
+                //     loginForm.reset();
 
-                    // Redirigir al usuario al perfil después de un breve retraso
-                    setTimeout(() => {
-                        window.location.href = '/usuario/perfilUsuario';
-                    }, 1500);
+                //     // Redirigir al usuario al perfil después de un breve retraso
+                //     setTimeout(() => {
+                //         window.location.href = '/usuario/perfilUsuario';
+                //     }, 1500);
                     
-                } else {
-                    // Login fallido
-                    showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
-                }
+                } // else {
+                //     // Login fallido
+                //     showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
+                // }
             } catch (error) {
                 console.error('Error de red o de solicitud:', error);
                 showModal('⚠️', 'Error de Conexión', 'No se pudo conectar con el servidor. Por favor, intente de nuevo más tarde.');
@@ -369,15 +369,15 @@
         });
 
         // Efectos de hover para los campos de entrada
-        document.querySelectorAll('input[type="email"], input[type="password"]').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-20');
-            });
+        // document.querySelectorAll('input[type="email"], input[type="password"]').forEach(input => {
+        //     input.addEventListener('focus', function() {
+        //         this.parentElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-20');
+        //     });
             
-            input.addEventListener('blur', function() {
-                this.parentElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-20');
-            });
-        });
+        //     input.addEventListener('blur', function() {
+        //         this.parentElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-20');
+        //     });
+        // });
     </script>
 </body>
 </html>
