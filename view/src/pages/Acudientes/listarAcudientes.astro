@@ -194,7 +194,12 @@ try {
           <input type="text" id="editDireccion" value="${String(acudiente.acud_direccion ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
         </label>
         <label class="block">Parentesco:
-          <input type="text" id="editParentesco" value="${String(acudiente.acud_parentesco ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
+          <select id="editParentesco" class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+            <option value="Padre"   ${acudiente.acud_parentesco === "Padre" ? "selected" : ""}>Padre</option>
+            <option value="Madre"   ${acudiente.acud_parentesco === "Madre" ? "selected" : ""}>Madre</option>
+            <option value="Abuelo"  ${acudiente.acud_parentesco === "Abuelo" ? "selected" : ""}>Abuelo</option>
+            <option value="Otro"    ${acudiente.acud_parentesco === "Otro" ? "selected" : ""}>Otro</option>
+          </select>
         </label>
       `;
       btnGuardar.dataset.id = acudiente.id_documento_acudiente;
