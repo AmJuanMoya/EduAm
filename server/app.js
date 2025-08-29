@@ -7,6 +7,7 @@ import exampleRouter from './routes/r_example.js';
 import perfilRouter from "./routes/r_perfil.js"; 
 import rolesRouter from './routes/r_roles.js';
 import especialidadRouter from './routes/r_especialidad.js';
+import loginRouter from './routes/r_login.js';
 
 
 
@@ -14,11 +15,15 @@ const app = express()
 app.use(cors());
 app.use("/api",express.json());
 
+
+// rutas
+app.use("/api", loginRouter);
 app.use('/api/example', exampleRouter);
 // app.use('/api', TablasRouter)
 app.use("/api", perfilRouter);
 app.use("/api", rolesRouter);
 app.use("/api", especialidadRouter);
+
 
 
 

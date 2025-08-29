@@ -219,6 +219,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 
     <script>
+// import { effect } from "astro:schema";
+
         const loginForm = document.getElementById('loginForm');
         const correoInput = document.getElementById('correo_usuario');
         const passwordInput = document.getElementById('contraseña_usuario');
@@ -230,110 +232,146 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
 
         // --- Funciones de Modal ---
-        function showModal(icon, title, message) {
-            modalIcon.textContent = icon;
-            modalTitle.textContent = title;
-            modalMessage.innerHTML = message;
-            statusModal.classList.remove('hidden');
-            statusModal.querySelector('div').classList.remove('scale-95');
-            statusModal.querySelector('div').classList.add('scale-100');
-        }
+        // function showModal(icon, title, message) {
+        //     modalIcon.textContent = icon;
+        //     modalTitle.textContent = title;
+        //     modalMessage.innerHTML = message;
+        //     statusModal.classList.remove('hidden');
+        //     statusModal.querySelector('div').classList.remove('scale-95');
+        //     statusModal.querySelector('div').classList.add('scale-100');
+        // }
 
-        function hideModal() {
-            statusModal.querySelector('div').classList.remove('scale-100');
-            statusModal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                statusModal.classList.add('hidden');
-            }, 300);
-        }
+        // function hideModal() {
+        //     statusModal.querySelector('div').classList.remove('scale-100');
+        //     statusModal.querySelector('div').classList.add('scale-95');
+        //     setTimeout(() => {
+        //         statusModal.classList.add('hidden');
+        //     }, 300);
+        // }
 
-        closeModalBtn.addEventListener('click', hideModal);
-        statusModal.addEventListener('click', (event) => {
-            if (event.target === statusModal) {
-                hideModal();
-            }
-        });
+        // closeModalBtn.addEventListener('click', hideModal);
+        // statusModal.addEventListener('click', (event) => {
+        //     if (event.target === statusModal) {
+        //         hideModal();
+        //     }
+        // });
 
         // --- Funciones de Validación y Errores en Campo ---
-        function showError(fieldId, message) {
-            const errorElement = document.getElementById(`error-${fieldId}`);
-            if (errorElement) {
-                errorElement.textContent = message;
-                errorElement.classList.remove('hidden');
-                document.getElementById(fieldId).classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-            }
-        }
+        // function showError(fieldId, message) {
+        //     const errorElement = document.getElementById(`error-${fieldId}`);
+        //     if (errorElement) {
+        //         errorElement.textContent = message;
+        //         errorElement.classList.remove('hidden');
+        //         document.getElementById(fieldId).classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+        //     }
+        // }
 
-        function hideError(fieldId) {
-            const errorElement = document.getElementById(`error-${fieldId}`);
-            if (errorElement) {
-                errorElement.classList.add('hidden');
-                errorElement.textContent = '';
-                document.getElementById(fieldId).classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-            }
-        }
+        // function hideError(fieldId) {
+        //     const errorElement = document.getElementById(`error-${fieldId}`);
+        //     if (errorElement) {
+        //         errorElement.classList.add('hidden');
+        //         errorElement.textContent = '';
+        //         document.getElementById(fieldId).classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+        //     }
+        // }
 
-        function validateLoginForm() {
-            let isValid = true;
+        // function validateLoginForm() {
+        //     let isValid = true;
 
-            // Limpiar errores previos
-            hideError('correo_usuario');
-            hideError('contraseña_usuario');
+        //     // Limpiar errores previos
+        //     hideError('correo_usuario');
+        //     hideError('contraseña_usuario');
 
-            const correo = correoInput.value.trim();
-            const password = passwordInput.value.trim();
+        //     const correo = correoInput.value.trim();
+        //     const password = passwordInput.value.trim();
 
-            // Validación de Correo
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (correo === '') {
-                showError('correo_usuario', 'El correo electrónico es requerido.');
-                isValid = false;
-            } else if (!emailRegex.test(correo)) {
-                showError('correo_usuario', 'Ingrese un correo electrónico válido.');
-                isValid = false;
-            }
+        //     // Validación de Correo
+        //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        //     if (correo === '') {
+        //         showError('correo_usuario', 'El correo electrónico es requerido.');
+        //         isValid = false;
+        //     } else if (!emailRegex.test(correo)) {
+        //         showError('correo_usuario', 'Ingrese un correo electrónico válido.');
+        //         isValid = false;
+        //     }
 
-            // Validación de Contraseña
-            if (password === '') {
-                showError('contraseña_usuario', 'La contraseña es requerida.');
-                isValid = false;
-            }
+        //     // Validación de Contraseña
+        //     if (password === '') {
+        //         showError('contraseña_usuario', 'La contraseña es requerida.');
+        //         isValid = false;
+        //     }
 
-            return isValid;
-        }
+        //     return isValid;
+        // }
 
         // --- Event Listener para el envío del formulario ---
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-
-            if (!validateLoginForm()) {
-                console.log('Validación de formulario fallida.');
-                return;
-            }
-
-            // Mostrar estado de carga
-            const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Iniciando sesión...';
-            submitBtn.disabled = true;
-
-            const loginData = {
+            console.log('Formulario enviado');
+            let loginData = {
                 correo_usuario: correoInput.value.trim(),
                 contraseña_usuario: passwordInput.value.trim()
             };
+            console.log(loginData);
 
-            try {
-                const response = await fetch('http://localhost:3000/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(loginData)
-                });
+            fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json()) 
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                if(data.rol === 3){
+                    // Redirigir a la página de administrador
+                    window.location.href = '/estudiantes/perfilestudiante';
+                }
+                if(data.rol === 2){
+                    // Redirigir a la página de administrador
+                    window.location.href = '/docentes/perfildocente';
+                }
 
-                const result = await response.json();
+            })
+            .catch(error => {
+                console.error('Error al enviar el formulario:', error);
+            });
 
-                if (response.ok) {
+        })
+
+
+
+            // if (!validateLoginForm()) {
+            //     console.log('Validación de formulario fallida.');
+            //     return;
+            // }
+
+            
+
+            // Mostrar estado de carga
+            // const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+            // const originalText = submitBtn.innerHTML;
+            // submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Iniciando sesión...';
+            // submitBtn.disabled = true;
+
+            // const loginData = {
+            //     correo_usuario: correoInput.value.trim(),
+            //     contraseña_usuario: passwordInput.value.trim()
+            // };
+
+            // try {
+            //     const response = await fetch('http://localhost:3000/api/login', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify(loginData)
+            //     });
+
+            //     const result = await response.json();
+
+            //     if (response.ok) {
                     // Login exitoso
                 //     const userRole = result.user.rol;
                 //     const userName = result.user.nombres;
@@ -354,19 +392,19 @@
                 //         window.location.href = '/usuario/perfilUsuario';
                 //     }, 1500);
                     
-                } // else {
+                // else {
                 //     // Login fallido
                 //     showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
                 // }
-            } catch (error) {
-                console.error('Error de red o de solicitud:', error);
-                showModal('⚠️', 'Error de Conexión', 'No se pudo conectar con el servidor. Por favor, intente de nuevo más tarde.');
-            } finally {
-                // Restaurar botón
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
+            // } catch (error) {
+            //     console.error('Error de red o de solicitud:', error);
+            //     showModal('⚠️', 'Error de Conexión', 'No se pudo conectar con el servidor. Por favor, intente de nuevo más tarde.');
+            // } finally {
+            //     // Restaurar botón
+            //     submitBtn.innerHTML = originalText;
+            //     submitBtn.disabled = false;
+            // }
+        // });
 
         // Efectos de hover para los campos de entrada
         // document.querySelectorAll('input[type="email"], input[type="password"]').forEach(input => {
