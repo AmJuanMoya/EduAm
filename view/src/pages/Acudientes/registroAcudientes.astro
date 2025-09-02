@@ -19,11 +19,13 @@ import Asidebar from "../../components/asidebar.astro";
                 <div class="mx-auto w-fit">
                  <label for="acud_nombres" class="block  w-50"> Primer Nombre: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
                  <input id="acud_nombres" name="acud_nombres" type="text" placeholder="Kevin" class="m-5 rounded-sm w-200" required>
+                 <small id="error-acud_nombres" class="text-red-500 ml-5 text-sm hidden block mt-1">Error</small>
                 </div>
 
                  <div class="mx-auto w-fit">
                  <label for="acud_apellidos" class="block  w-50"> Primer Apellido: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span>  </label>
                  <input id="acud_apellidos" name="acud_apellidos" type="text" placeholder="Carrillo" class="m-5 rounded-sm w-200" required>
+                 <small id="error-acud_apellidos" class="text-red-500 ml-5 text-sm hidden block mt-1">Error</small>
                 </div>
 
                  <div class="mx-auto w-fit">    
@@ -37,33 +39,48 @@ import Asidebar from "../../components/asidebar.astro";
                     </select>
                     <input id="id_documento_acudiente" name="id_documento_acudiente" type="text" placeholder=1000009  class="rounded-r-sm w-190 " maxlength="10" required >
                   </div>
-                </div>
-
-                <div class="mx-auto w-fit mt-5">    
-                  <label for="acud_parentesco" class="block w-fit ">Parentesco: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
-                  <select name="acud_parentesco" id="estu_parentesco" class="m-5 rounded-sm w-200" required>
-                    <option  selected disabled value="0" class=""  >Seleccione</option>
-                    <option value="Padre">Padre</option>
-                    <option value="Madre">Madre</option>
-                    <option value="Abuelo">Abuela</option>
-                    <option value="Otro">Otro</option>
-                  </select>
-                </div>
-
-
-                <div class="mx-auto w-fit">
-                 <label for="acud_telefono" class="block  w-50">Telefono de Contacto: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span></label>
-                 <input id="acud_telefono" name="acud_telefono" type="text" placeholder="123456789" class="m-5 rounded-sm w-200" required>
+                    <small id="error-id_documento_acudiente" class="text-red-500 ml-5 text-sm hidden block mt-1">Error</small>
                 </div>
 
                 <div class="mx-auto w-fit">
-                 <label for="acud_correo" class="block  w-50">Correo electronico: <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
-                 <input id="acud_correo" name="acud_correo" type="email" placeholder="kevinM@gmail.com" class="m-5 rounded-sm w-200" required>
+                    <label for="acud_parentesco" class="block">Parentesco: <span class="text-red-600">*</span></label>
+                    <div class="m-5 w-200">
+                        <select name="acud_parentesco" id="acud_parentesco" class="rounded-sm w-full" required>
+                        <option selected disabled value="0">Seleccione</option>
+                        <option value="Padre">Padre</option>
+                        <option value="Madre">Madre</option>
+                        <option value="Abuelo">Abuelo</option>
+                        <option value="Otro">Otro</option>
+                        </select>
+                        <small id="error-acud_parentesco" class="text-red-500 text-sm hidden block mt-1">Error</small>
+                    </div>
                 </div>
 
-                <div class="mx-auto w-fit">    
-                  <label for="acud_direccion" class="block w-50 ">Direccion de Residencia  <span class="text-red-600  text-xl ml-1 -mt-1.5">*</span> </label>
-                  <input id="acud_direccion" name="acud_direccion" type="text"  placeholder="Carrera 19 A # 1-1 Puente aranda" class="m-5 rounded-sm w-200" required>
+                <!-- Teléfono -->
+                <div class="mx-auto w-fit">
+                <label for="acud_telefono" class="block">Teléfono de Contacto: <span class="text-red-600">*</span></label>
+                <div class="m-5 w-200">
+                    <input id="acud_telefono" name="acud_telefono" type="text" placeholder="123456789" class="rounded-sm w-full" required>
+                    <small id="error-acud_telefono" class="text-red-500 text-sm hidden block mt-1">Error</small>
+                </div>
+                </div>
+
+                <!-- Correo -->
+                <div class="mx-auto w-fit">
+                <label for="acud_correo" class="block">Correo Electrónico: <span class="text-red-600">*</span></label>
+                <div class="m-5 w-200">
+                    <input id="acud_correo" name="acud_correo" type="email" placeholder="kevinM@gmail.com" class="rounded-sm w-full" required>
+                    <small id="error-acud_correo" class="text-red-500 text-sm hidden block mt-1">Error</small>
+                </div>
+                </div>
+
+                <!-- Dirección -->
+                <div class="mx-auto w-fit">
+                <label for="acud_direccion" class="block">Dirección de Residencia: <span class="text-red-600">*</span></label>
+                <div class="m-5 w-200">
+                    <input id="acud_direccion" name="acud_direccion" type="text" placeholder="Carrera 19 A # 1-1 Puente Aranda" class="rounded-sm w-full" required>
+                    <small id="error-acud_direccion" class="text-red-500 text-sm hidden block mt-1">Error</small>
+                </div>
                 </div>
 
             </fieldset>
@@ -149,9 +166,7 @@ import Asidebar from "../../components/asidebar.astro";
         // // Convertir FormData a un objeto JSON
         for (const [key, value] of formData.entries()) {
             if (key === 'repitente') {
-                data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano
-            } else if (key === 'estrato') {
-                data[key] = parseInt(value); // Convertir 'estrato' a entero
+                data[key] = value === 'true'; // Manejar el radio button 'repitente' para que sea un booleano 
             } else if (value === '') { // Para campos de texto opcionales, enviar null en lugar de string vacío
                 data[key] = null; // Esto es útil si tu DB permite NULL para campos opcionales
                                   // Si tu DB espera string vacío para NOT NULL, cámbialo a data[key] = '';
@@ -162,7 +177,7 @@ import Asidebar from "../../components/asidebar.astro";
         console.log('Datos a enviar:', data); // Para depuración
 
         try {
-            const response = await fetch('http://localhost:3000/api/datos/acudiente', { // Asegúrate que esta URL sea la correcta
+            const response = await fetch('http://localhost:3000/api/datos/acudiente', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -187,4 +202,84 @@ import Asidebar from "../../components/asidebar.astro";
             console.error('Error de red o de solicitud:', error);
         }
     });
+
+    document.getElementById("registroAcudienteForm").addEventListener("submit", function(event) {
+    const esValido = validarFormulario();
+    if (!esValido) {
+      event.preventDefault();
+    }
+  });
+
+  function mostrarError(idCampo, mensaje) {
+    const errorElement = document.getElementById("error-" + idCampo);
+    if (errorElement) {
+      errorElement.textContent = mensaje;
+      errorElement.classList.remove("hidden");
+    }
+  }
+
+  function limpiarErrores() {
+    const errores = document.querySelectorAll("small[id^='error-']");
+    errores.forEach(el => {
+      el.textContent = "";
+      el.classList.add("hidden");
+    });
+  }
+
+  function validarFormulario() {
+    limpiarErrores();
+    let valido = true;
+
+    // Nombre
+    const nombres = document.getElementById("acud_nombres").value.trim();
+    if (!/^[a-zA-ZÁÉÍÓÚÑáéíóúñ\s]+$/.test(nombres)) {
+      mostrarError("acud_nombres", "El nombre solo debe contener letras.");
+      valido = false;
+    }
+
+    // Apellido
+    const apellidos = document.getElementById("acud_apellidos").value.trim();
+    if (!/^[a-zA-ZÁÉÍÓÚÑáéíóúñ\s]+$/.test(apellidos)) {
+      mostrarError("acud_apellidos", "El apellido solo debe contener letras.");
+      valido = false;
+    }
+
+    // Documento
+    const documento = document.getElementById("id_documento_acudiente").value.trim();
+    if (!/^\d{6,10}$/.test(documento)) {
+      mostrarError("id_documento_acudiente", "El documento debe tener entre 6 y 10 números.");
+      valido = false;
+    }
+
+    // Parentesco
+    const parentesco = document.getElementById("acud_parentesco").value;
+    if (parentesco === "0" || parentesco === "") {
+      mostrarError("acud_parentesco", "Debe seleccionar un parentesco.");
+      valido = false;
+    }
+
+    // Teléfono
+    const telefono = document.getElementById("acud_telefono").value.trim();
+    if (!/^\d{7,10}$/.test(telefono)) {
+      mostrarError("acud_telefono", "El teléfono debe tener entre 7 y 10 dígitos.");
+      valido = false;
+    }
+
+    // Correo
+    const correo = document.getElementById("acud_correo").value.trim();
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexCorreo.test(correo)) {
+      mostrarError("acud_correo", "Ingrese un correo electrónico válido.");
+      valido = false;
+    }
+
+    // Dirección
+    const direccion = document.getElementById("acud_direccion").value.trim();
+    if (direccion.length < 5) {
+      mostrarError("acud_direccion", "La dirección debe tener al menos 5 caracteres.");
+      valido = false;
+    }
+
+    return valido;
+  }
 </script>
