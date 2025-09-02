@@ -1,5 +1,7 @@
+// model/t_actividad.js
 import Database from "./database/conectionDB.js"
 import Crud from "./database/crudsql.js"
+import t_informe_calificaciones from "./t_informe_calificaciones.js"
 
 class t_actividad {
     constructor(){
@@ -8,18 +10,20 @@ class t_actividad {
     }
 
     /**
-     * Crear una nueva actividad
+     * 
      * @param {Object} actividadData - Datos de la actividad
-     * @param {string} actividadData.act_estado - Estado de la actividad
-     * @param {Date} actividadData.act_fecha_asignacion - Fecha de asignación
-     * @param {Date} actividadData.act_fecha_entrega - Fecha de entrega
+     * @param {string} actividadData.act_estado - Estado inicial de la actividad
+     * @param {Date}   [actividadData.act_fecha_asignacion] - Fecha de asignación (opcional)
+     * @param {Date}   [actividadData.act_fecha_entrega] - Fecha de entrega (opcional)
      * @param {string} actividadData.act_nombre - Nombre de la actividad
-     * @param {string} actividadData.act_descripcion - Descripción de la actividad
-     * @param {number} actividadData.act_id_recurso - ID del recurso asociado
+     * @param {string} [actividadData.act_descripcion] - Descripción (opcional)
+     * @param {number} [actividadData.act_id_recurso] - ID del recurso asociado (opcional)
      * @param {string} actividadData.act_categoria - Categoría de la actividad
-     * @param {string} actividadData.url_actividad - URL de la actividad
-     * @param {number} actividadData.id_rel_empleado_asignatura_curso - ID de la relación empleado-asignatura-curso
-     * @returns {Promise} Resultado de la inserción
+     * @param {string} [actividadData.url_actividad] - URL de la actividad (opcional)
+     * @param {number} actividadData.id_rel_empleado_asignatura_curso - Relación docente-asignatura-curso
+     * 
+     * @returns {Promise<{ok: boolean, id_actividad: number}>} Confirmación e id generado
+     * @throws {Error} Si faltan datos, si los ENUM no coinciden o si las fechas son inválidas
      */
     async crearActividad(actividadData) {
         try {
@@ -52,21 +56,55 @@ class t_actividad {
             if (actividadData.act_fecha_asignacion && actividadData.act_fecha_entrega) {
                 const fechaAsignacion = new Date(actividadData.act_fecha_asignacion);
                 const fechaEntrega = new Date(actividadData.act_fecha_entrega);
-                
                 if (fechaEntrega <= fechaAsignacion) {
                     throw new Error('La fecha de entrega debe ser posterior a la fecha de asignación');
                 }
             }
 
-            return await this.crud.insertOne(this.table, actividadData);
+            // 1) Insertar actividad
+            const insertRes = await this.crud.insertOne(this.table, actividadData);
+
+            // 2) Obtener id_actividad recién creado según lo que devuelva tu CRUD
+            let idActividad = insertRes?.insertId || insertRes?.id || actividadData?.id_actividad || null;
+            if (!idActividad) {
+                // Fallback usando tu mismo stack (this.crud.db)
+                await this.crud.db.connect();
+                const qLast = `
+                    SELECT id_actividad
+                    FROM ${this.table}
+                    WHERE act_nombre = '${actividadData.act_nombre}'
+                      AND id_rel_empleado_asignatura_curso = ${actividadData.id_rel_empleado_asignatura_curso}
+                    ORDER BY id_actividad DESC
+                    LIMIT 1
+                `;
+                await this.crud.db.consultar(qLast);
+                await this.crud.db.cerrar();
+                const row = (this.crud.db.getData() || [])[0];
+                if (!row?.id_actividad) {
+                    throw new Error('No se pudo obtener el ID de la actividad recién creada');
+                }
+                idActividad = row.id_actividad;
+            }
+
+            // 3) Generar informes por estudiante del curso (sin duplicar)
+            const informes = new t_informe_calificaciones();
+            await informes.crearInformesParaActividad(
+                idActividad,
+                actividadData.id_rel_empleado_asignatura_curso
+            );
+
+            // 4) Responder
+            return { ok: true, id_actividad: idActividad };
         } catch (error) {
+            try { await this.crud.db.cerrar(); } catch (_) {}
             throw new Error(`Error al crear actividad: ${error.message}`);
         }
     }
 
     /**
      * Obtener todas las actividades
-     * @returns {Promise} Lista de todas las actividades
+     * @returns {Promise<Array>} Lista de actividades
+     * @throws {Error} Si falla la consulta
      */
     async obtenerTodasActividades() {
         try {
@@ -79,7 +117,8 @@ class t_actividad {
     /**
      * Obtener actividad por ID
      * @param {number} idActividad - ID de la actividad
-     * @returns {Promise} Actividad específica
+     * @returns {Promise<Array>} Fila(s) de la actividad solicitada
+     * @throws {Error} Si falla la consulta
      */
     async obtenerActividadPorId(idActividad) {
         try {
@@ -91,8 +130,9 @@ class t_actividad {
 
     /**
      * Obtener actividades por estado
-     * @param {string} estado - Estado de la actividad
-     * @returns {Promise} Actividades con el estado especificado
+     * @param {string} estado - 'Asignada' | 'Entregada' | 'Calificada' | 'Fuera de Tiempo'
+     * @returns {Promise<Array>} Actividades con ese estado
+     * @throws {Error} Si el estado no es válido o falla la consulta
      */
     async obtenerActividadesPorEstado(estado) {
         try {
@@ -108,8 +148,9 @@ class t_actividad {
 
     /**
      * Obtener actividades por categoría
-     * @param {string} categoria - Categoría de la actividad
-     * @returns {Promise} Actividades de la categoría especificada
+     * @param {string} categoria - 'Taller' | 'Tarea' | 'Evaluacion' | 'Actividad en Grupo'
+     * @returns {Promise<Array>} Actividades de esa categoría
+     * @throws {Error} Si la categoría no es válida o falla la consulta
      */
     async obtenerActividadesPorCategoria(categoria) {
         try {
@@ -125,8 +166,8 @@ class t_actividad {
 
     /**
      * Obtener actividades por docente
-     * @param {number} idEmpleado - ID del empleado/docente
-     * @returns {Promise} Actividades asignadas por el docente
+     * @param {number} idEmpleado - Documento del docente (t_empleados.id_documento_empleado)
+     * @returns {Promise<Array>} Actividades asignadas por ese docente
      */
     async obtenerActividadesPorDocente(idEmpleado) {
         try {
@@ -149,8 +190,8 @@ class t_actividad {
 
     /**
      * Obtener actividades por asignatura
-     * @param {number} idAsignatura - ID de la asignatura
-     * @returns {Promise} Actividades de la asignatura especificada
+     * @param {number} idAsignatura - t_asignatura.id_asignatura
+     * @returns {Promise<Array>} Actividades de esa asignatura
      */
     async obtenerActividadesPorAsignatura(idAsignatura) {
         try {
@@ -173,8 +214,8 @@ class t_actividad {
 
     /**
      * Obtener actividades por curso
-     * @param {number} idCurso - ID del curso
-     * @returns {Promise} Actividades del curso especificado
+     * @param {number} idCurso - t_curso.id_curso
+     * @returns {Promise<Array>} Actividades del curso
      */
     async obtenerActividadesPorCurso(idCurso) {
         try {
@@ -196,9 +237,9 @@ class t_actividad {
     }
 
     /**
-     * Buscar actividades por nombre
-     * @param {string} nombre - Nombre parcial de la actividad
-     * @returns {Promise} Actividades que coinciden con el nombre
+     * Buscar actividades por nombre (LIKE)
+     * @param {string} nombre - Búsqueda parcial en act_nombre
+     * @returns {Promise<Array>} Actividades que coincidan
      */
     async buscarActividadesPorNombre(nombre) {
         try {
@@ -209,16 +250,15 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades por rango de fechas
-     * @param {Date} fechaInicio - Fecha de inicio
-     * @param {Date} fechaFin - Fecha de fin
-     * @returns {Promise} Actividades en el rango de fechas
+     * Obtener actividades por rango de fechas (act_fecha_asignacion)
+     * @param {Date} fechaInicio - Fecha de inicio (incluida)
+     * @param {Date} fechaFin - Fecha fin (incluida)
+     * @returns {Promise<Array>} Actividades en el rango
      */
     async obtenerActividadesPorRangoFechas(fechaInicio, fechaFin) {
         try {
             const fechaInicioStr = fechaInicio.toISOString().slice(0, 19).replace('T', ' ');
             const fechaFinStr = fechaFin.toISOString().slice(0, 19).replace('T', ' ');
-            
             return await this.crud.getByCondition(
                 this.table, 
                 `act_fecha_asignacion BETWEEN '${fechaInicioStr}' AND '${fechaFinStr}'`
@@ -229,8 +269,8 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades vencidas
-     * @returns {Promise} Actividades con fecha de entrega vencida
+     * Obtener actividades vencidas (act_fecha_entrega < ahora) con estado 'Asignada' o 'Entregada'
+     * @returns {Promise<Array>} Actividades vencidas
      */
     async obtenerActividadesVencidas() {
         try {
@@ -245,8 +285,8 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades pendientes de entrega
-     * @returns {Promise} Actividades asignadas pero no entregadas
+     * Obtener actividades pendientes (estado 'Asignada')
+     * @returns {Promise<Array>} Actividades asignadas sin entregar
      */
     async obtenerActividadesPendientes() {
         try {
@@ -258,13 +298,13 @@ class t_actividad {
 
     /**
      * Actualizar actividad
-     * @param {Object} datosActualizados - Datos a actualizar
-     * @param {number} idActividad - ID de la actividad a actualizar
-     * @returns {Promise} Resultado de la actualización
+     * Valida ENUMs, longitud y coherencia de fechas si se actualizan.
+     * @param {Object} datosActualizados - Campos a actualizar
+     * @param {number} idActividad - ID de la actividad
+     * @returns {Promise<any>} Resultado de updateOne de tu CRUD
      */
     async actualizarActividad(datosActualizados, idActividad) {
         try {
-            // Validar valores de ENUM si se están actualizando
             if (datosActualizados.act_estado) {
                 const estadosValidos = ['Asignada', 'Entregada', 'Calificada', 'Fuera de Tiempo'];
                 if (!estadosValidos.includes(datosActualizados.act_estado)) {
@@ -279,17 +319,14 @@ class t_actividad {
                 }
             }
 
-            // Validar longitud del nombre si se está actualizando
             if (datosActualizados.act_nombre && datosActualizados.act_nombre.length > 200) {
                 throw new Error('El nombre de la actividad no puede exceder 200 caracteres');
             }
 
-            // Validar fechas si se están actualizando
             if (datosActualizados.act_fecha_asignacion && datosActualizados.act_fecha_entrega) {
-                const fechaAsignacion = new Date(datosActualizados.act_fecha_asignacion);
-                const fechaEntrega = new Date(datosActualizados.act_fecha_entrega);
-                
-                if (fechaEntrega <= fechaAsignacion) {
+                const fa = new Date(datosActualizados.act_fecha_asignacion);
+                const fe = new Date(datosActualizados.act_fecha_entrega);
+                if (fe <= fa) {
                     throw new Error('La fecha de entrega debe ser posterior a la fecha de asignación');
                 }
             }
@@ -302,10 +339,11 @@ class t_actividad {
     }
 
     /**
-     * Cambiar estado de actividad
+     * Cambiar estado de una actividad
+     * Si pasa a 'Entregada', se marca act_fecha_entrega = NOW() en el servidor.
      * @param {number} idActividad - ID de la actividad
-     * @param {string} nuevoEstado - Nuevo estado de la actividad
-     * @returns {Promise} Resultado de la actualización
+     * @param {string} nuevoEstado - Nuevo estado (ENUM)
+     * @returns {Promise<any>} Resultado de updateOne
      */
     async cambiarEstadoActividad(idActividad, nuevoEstado) {
         try {
@@ -315,8 +353,6 @@ class t_actividad {
             }
 
             const datosActualizados = { act_estado: nuevoEstado };
-            
-            // Si se cambia a "Entregada", actualizar la fecha de entrega
             if (nuevoEstado === 'Entregada') {
                 datosActualizados.act_fecha_entrega = new Date().toISOString().slice(0, 19).replace('T', ' ');
             }
@@ -331,7 +367,7 @@ class t_actividad {
     /**
      * Eliminar actividad
      * @param {number} idActividad - ID de la actividad a eliminar
-     * @returns {Promise} Resultado de la eliminación
+     * @returns {Promise<any>} Resultado de deleteOne
      */
     async eliminarActividad(idActividad) {
         try {
@@ -343,8 +379,8 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades con información completa
-     * @returns {Promise} Actividades con información de docente, asignatura y curso
+     * Obtener actividades con información asociada (docente, asignatura, curso, recurso)
+     * @returns {Promise<Array>} Filas enriquecidas
      */
     async obtenerActividadesCompletas() {
         try {
@@ -377,7 +413,7 @@ class t_actividad {
 
     /**
      * Obtener estadísticas de actividades por estado
-     * @returns {Promise} Conteo de actividades por estado
+     * @returns {Promise<Array<{act_estado: string, cantidad: number}>>}
      */
     async obtenerEstadisticasPorEstado() {
         try {
@@ -399,7 +435,7 @@ class t_actividad {
 
     /**
      * Obtener estadísticas de actividades por categoría
-     * @returns {Promise} Conteo de actividades por categoría
+     * @returns {Promise<Array<{act_categoria: string, cantidad: number}>>}
      */
     async obtenerEstadisticasPorCategoria() {
         try {
@@ -420,9 +456,9 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades por docente con información completa
-     * @param {number} idEmpleado - ID del empleado/docente
-     * @returns {Promise} Actividades del docente con información completa
+     * Obtener actividades de un docente con info asociada (asignatura, curso, grado, recurso)
+     * @param {number} idEmpleado - Documento del docente
+     * @returns {Promise<Array>} Filas enriquecidas
      */
     async obtenerActividadesDocenteCompletas(idEmpleado) {
         try {
@@ -453,9 +489,9 @@ class t_actividad {
     }
 
     /**
-     * Obtener actividades recientes
-     * @param {number} limite - Número de actividades a obtener
-     * @returns {Promise} Actividades más recientes
+     * Obtener actividades más recientes (con nombre de docente y asignatura)
+     * @param {number} [limite=10] - Número de filas
+     * @returns {Promise<Array>} Filas recientes
      */
     async obtenerActividadesRecientes(limite = 10) {
         try {
