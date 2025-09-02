@@ -2,14 +2,25 @@ import express from 'express';
 import cors from 'cors';
 // import dotenv from 'dotenv';
 
+<<<<<<< HEAD
 // import TablasRouter from './routes/r_tablas.js';
 import exampleRouter from './routes/r_example.js';
 import matriculaRouter from './routes/r_matricula.js';
 import perfilRouter from "./routes/r_perfil.js"; 
+=======
+import TablasRouter from './routes/r_tablas.js';
+import matriculasRouter from "./routes/r_matricula.js";
+import TipoIdentificacionRouter from './routes/r_tipo_identificacion.js';
+
+import actividadesRouter from "./routes/r_actividades.js";
+import actividadDetalleRouter from "./routes/r_actividad_detalle.js";
+import crearActividadRouter from './routes/r_creacion_actividad.js';
+import categoriasRouter from './routes/r_categorias.js';
+>>>>>>> acudientes
 import rolesRouter from './routes/r_roles.js';
 import especialidadRouter from './routes/r_especialidad.js';
 import loginRouter from './routes/r_login.js';
-
+import acudienteRouter from './routes/r_acudientes.js';
 
 
 const app = express()
@@ -25,6 +36,8 @@ app.use("/api", perfilRouter);
 app.use("/api", rolesRouter);
 app.use("/api", especialidadRouter);
 app.use('/api', matriculaRouter);
+app.use("/api", acudienteRouter);
+
 
 
 

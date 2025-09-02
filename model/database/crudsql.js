@@ -43,9 +43,11 @@ class Crud{
             return this.db.getData();
         } catch (error) {
             await this.db.cerrar();
-            throw new Error(`Error en getAll: ${error.message}`);
+            throw new Error(`Error en getAll: ${error.message}`); 
         }
     }
+
+
 
     async getByCondition(table, condition){
         try {

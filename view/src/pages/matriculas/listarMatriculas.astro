@@ -85,24 +85,24 @@ try {
     };
 
     async function cargarMatriculas() {
-  try {
-    const res = await fetch("http://localhost:3000/api/datos/matricula");
-    const data = await res.json();
-    todasLasMatriculas = data;
-    window.__TODAS_MATRICULAS = data; // 🔥 Aquí
-    renderizarTabla();
-  } catch (error) {
-    contenedor.innerHTML = "<p class='text-red-500'>Error al cargar los datos.</p>";
-    console.error("Error:", error);
+    try {
+      const res = await fetch("http://localhost:3000/api/datos/matricula");
+      const data = await res.json();
+      todasLasMatriculas = data;
+      window.__TODAS_MATRICULAS = data; // 🔥 Aquí
+      renderizarTabla();
+    } catch (error) {
+      contenedor.innerHTML = "<p class='text-red-500'>Error al cargar los datos.</p>";
+      console.error("Error:", error);
+    }
   }
-}
 
 
     function renderizarTabla() {
       const filtro = buscarInput.value.toLowerCase();
       const filtrados = todasLasMatriculas.filter(m =>
-        `${m.primer_nombre_estudiante} ${m.primer_apellido_estudiante}`.toLowerCase().includes(filtro) ||
-        String(m.documento_estudiante).includes(filtro)
+        `${m.estu_nombre} ${m.estu_apellido}`.toLowerCase().includes(filtro) ||
+        String(m.id_documento).includes(filtro)
       );
 
       if (criterioOrden) {
@@ -126,9 +126,8 @@ try {
         <table class="min-w-full table-auto text-sm bg-[#0A0E22] text-white">
           <thead class="bg-gray-700 text-gray-100 uppercase text-xs">
             <tr class="border-b border-white/10">
-              <th class="px-4 py-2 text-left cursor-pointer" data-orden="id_matricula">ID</th>
+              <th class="px-4 py-2 text-left cursor-pointer" data-orden="id_documento">Documento</th>
               <th class="px-4 py-2 text-left cursor-pointer" data-orden="primer_nombre_estudiante">Estudiante</th>
-              <th class="px-4 py-2 text-left cursor-pointer" data-orden="documento_estudiante">Documento</th>
               <th class="px-4 py-2 text-left">Estado</th>
               <th class="px-4 py-2 text-left">Jornada</th>
             </tr>
@@ -136,15 +135,14 @@ try {
           <tbody>
             ${pagina.map(m => `
               <tr class="border-b border-white/10 hover:bg-white/5 cursor-pointer fila-matricula" data-doc="${m.documento_estudiante}">
-                <td class="px-4 py-2">${m.id_matricula}</td>
-                <td class="px-4 py-2">${m.primer_nombre_estudiante} ${m.primer_apellido_estudiante}</td>
-                <td class="px-4 py-2">${m.documento_estudiante}</td>
+                <td class="px-4 py-2">${m.id_documento}</td>
+                <td class="px-4 py-2">${m.estu_nombre} ${m.estu_apellido}</td>
                 <td class="px-4 py-2">
-                  <span class="px-2 py-1 rounded-full text-xs font-semibold ${getColorClase(m.estado_matricula)}">
-                    ${m.estado_matricula}
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold ${getColorClase(m.matr_estado)}">
+                    ${m.matr_estado}
                   </span>
                 </td>
-                <td class="px-4 py-2">${m.jornada}</td>
+                <td class="px-4 py-2">${m.matr_jornada}</td>
               </tr>
             `).join("")}
           </tbody>
