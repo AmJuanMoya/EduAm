@@ -1,6 +1,6 @@
 ---
+export const prerender = false;
 import General from "../layouts/general.astro"
-import Panelnav from "../components/navigation/panelnav.astro"
 import ButtonA from "../components/general/button_a.astro"
 import { fade } from 'astro:transitions';
 // import { slide } from "astro:transitions";
@@ -24,15 +24,17 @@ import { fade } from 'astro:transitions';
         
     </div>
     </section>
-        <div class="panel-block text-center">
-                <div>
+        <div class="panel-block text-center border border-amber-400">
+            <div></div>
+                <!-- <div class="">
                  <code class="dark:bg-blue-950/70 bg-blue-300/70 p-0.5 px-2 rounded-md w-fit  text-blue-500"> Paginas disponibles por el momento. </code>
-                </div>
-                <div>
+                </div> -->
+                <!-- <div class="border">
                  <code class="dark:bg-yellow-300/20 bg-yellow-300/20 p-0.1 px-2 rounded-sm italic  text-yellow-300 w-fit"> -- Trabajo en progreso -- </code>
-                </div>
-            <div class=" p-5 flex justify-center">
-                <ButtonA name="Registros" dir="/consultas"   />
+                </div> -->
+
+            <div class=" p-5 flex justify-center border">
+                <!-- <ButtonA name="Registros" dir="/consultas"   /> -->
                 <ButtonA name="Login" dir="../login/login"   />
                 <ButtonA name="Cursos" dir="/Cursos/cursos"   />
                 <ButtonA name="matriculas" dir="/matriculas/registroestudiante"   />
