@@ -1,10 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
-import exampleRouter from './routes/r_example.js';
 // import TablasRouter from './routes/r_tablas.js';
+import exampleRouter from './routes/r_example.js';
 import matriculaRouter from './routes/r_matricula.js';
+import perfilRouter from "./routes/r_perfil.js"; 
+import rolesRouter from './routes/r_roles.js';
+import especialidadRouter from './routes/r_especialidad.js';
+import loginRouter from './routes/r_login.js';
 
 
 
@@ -12,9 +16,15 @@ const app = express()
 app.use(cors());
 app.use("/api",express.json());
 
-app.use('/api/example', exampleRouter);
-app.use('/api', matriculaRouter);
+
+// rutas
 // app.use('/api', TablasRouter)
+app.use("/api", loginRouter);
+app.use('/api/example', exampleRouter);
+app.use("/api", perfilRouter);
+app.use("/api", rolesRouter);
+app.use("/api", especialidadRouter);
+app.use('/api', matriculaRouter);
 
 
 

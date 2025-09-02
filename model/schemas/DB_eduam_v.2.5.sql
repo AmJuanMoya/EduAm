@@ -1,3 +1,8 @@
+-- Creacion de la DB
+CREATE DATABASE eduam;
+-- Usar db
+USE eduam;
+
 CREATE TABLE `t_matricula` (
   `id_documento` int(10) NOT NULL,
   `matr_anio` datetime NOT NULL,
