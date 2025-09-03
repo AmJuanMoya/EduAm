@@ -3,16 +3,19 @@ export const prerender = false;
 import General from "../layouts/general.astro"
 import ButtonA from "../components/general/button_a.astro"
 import { fade } from 'astro:transitions';
-// import { slide } from "astro:transitions";
+import Navbar from "../components/general/navbar.astro"
+
 ---
 <!-- ESte Es el Home -->
 
 <General>
+    <Navbar></Navbar>
 <!-- <Panelnav name="consultas" direccion="/consultas"/> -->
 <img class="absolute size-300  -ml-50 -mt-50 -z-20 rotate-45 opacity-5 object-cover" src="/logoam.png" alt="Logo Eduam">
-    <div class="h-[95%] px-5 pt-5 ">
-    <section class=" h-80 p-3 mb-5 flex justify-center">
-    <div class="text-center ">
+    <div class="h-[95%] px-5 pt-5 flex flex-col ">
+    <section class="border w-full h-80 p-3 mb-5 flex justify-center">
+
+    <div class="text-center border ">
 
         <div class="flex justify-center">
             <svg class="size-20 text-gray-800 dark:text-blue-600 fill-blue-600 text-shadow-md drop-shadow-blue-600 drop-shadow-md" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -24,7 +27,7 @@ import { fade } from 'astro:transitions';
         
     </div>
     </section>
-        <div class="panel-block text-center border border-amber-400">
+        <div class="panel-block text-center ">
             <div></div>
                 <!-- <div class="">
                  <code class="dark:bg-blue-950/70 bg-blue-300/70 p-0.5 px-2 rounded-md w-fit  text-blue-500"> Paginas disponibles por el momento. </code>
@@ -33,11 +36,11 @@ import { fade } from 'astro:transitions';
                  <code class="dark:bg-yellow-300/20 bg-yellow-300/20 p-0.1 px-2 rounded-sm italic  text-yellow-300 w-fit"> -- Trabajo en progreso -- </code>
                 </div> -->
 
-            <div class=" p-5 flex justify-center border">
+            <div class=" p-5 flex justify-center ">
                 <!-- <ButtonA name="Registros" dir="/consultas"   /> -->
                 <ButtonA name="Login" dir="../login/login"   />
-                <ButtonA name="Cursos" dir="/Cursos/cursos"   />
-                <ButtonA name="matriculas" dir="/matriculas/registroestudiante"   />
+                <!-- <ButtonA name="Cursos" dir="/Cursos/cursos"   />
+                <ButtonA name="matriculas" dir="/matriculas/registroestudiante"   /> -->
             </div>
         </div>
     </div>
@@ -46,12 +49,3 @@ import { fade } from 'astro:transitions';
 </General> 
 
 
-
-<!-- <style>
-.panel{
-    /* background-color: #962c2c; */
-    width: 50%;
-    margin: 10% auto;
-}
-
-</style> -->

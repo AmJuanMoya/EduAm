@@ -2,13 +2,13 @@
 import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 export const prerender = false
-
+Astro.session?.destroy()
 let userdat = await Astro.session?.get("userdata");
 ---
 
 <General>
     <Panelnav/>
-    <h1> {userdat.name} -- {userdat.edad} </h1>
+    <!-- <h1> {userdat.name} -- {userdat.edad} </h1> -->
 
     <p>
         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Asperiores, unde vitae fugiat voluptate, repellendus, voluptates distinctio eaque natus autem tenetur alias odit! Eaque minima voluptatibus libero eveniet illum aperiam mollitia, magnam officia inventore, maxime delectus optio? Aut ipsa vitae eos commodi laudantium aliquam fuga. Dolorum aperiam optio consequuntur eaque, ipsum ducimus. Modi ullam deleniti pariatur mollitia nam? Eum illum quaerat excepturi quidem velit laboriosam corrupti minus adipisci rerum ipsum? Blanditiis corrupti, modi molestias quisquam eaque quidem esse quasi. Consequatur animi nostrum, alias praesentium cum aut iste. Corrupti, provident dolorum, nesciunt aspernatur reiciendis placeat, neque inventore vero quasi quis voluptatibus dolorem.
