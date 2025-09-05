@@ -2,86 +2,59 @@
 import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
-
-let acudientes = [];
-
-try {
-  const res = await fetch("http://localhost:3000/api/datos/acudientes");
-  acudientes = await res.json();
-} catch (error) {
-  console.error("Error al cargar los acudientes:", error);
-}
 ---
+
+<link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
 
 <General>
   <Panelnav />
-  <div class="flex min-h-screen bg-[#0A0E22] text-gray-100">
+  <div class="flex min-h-screen">
     <Asidebar />
 
     <div class="flex-1 p-6">
       <h1 class="text-3xl font-bold mb-6">Listado de Acudientes</h1>
 
-      <!-- Barra de búsqueda
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-        <input
-          id="buscar"
-          type="text"
-          placeholder="Buscar por nombre o documento"
-          class="px-3 py-2 rounded bg-gray-800 border border-gray-600 w-full sm:w-64 text-sm placeholder:text-gray-400"
-          />
-        <div class="text-sm">
-          <label for="cantidad" class="mr-2">Registros por página:</label>
-          <select
-            id="cantidad"
-            class="bg-gray-800 border border-gray-600 rounded px-4 py-2 text-base w-32"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-      </div> -->
-
       <!-- Tabla de acudientes -->
-      <div class="overflow-x-auto rounded-lg shadow-lg border border-gray-700">
-        <table id="tableAcudientes" class="min-w-full text-sm text-left border-collapse">
-          <thead class="bg-gray-800 text-gray-300">
+      <div class="dark:bg-slate-950/90 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <table id="tableAcudientes" class="w-full text-sm text-left text-gray-900 dark:text-gray-200">
+          <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-xs tracking-wider">
             <tr>
-              <th class="px-4 py-3 border-b border-gray-700">Documento</th>
-              <th class="px-4 py-3 border-b border-gray-700">Nombre</th>
-              <th class="px-4 py-3 border-b border-gray-700">Teléfono</th>
-              <th class="px-4 py-3 border-b border-gray-700">Correo</th>
-              <th class="px-4 py-3 border-b border-gray-700">Dirección</th>
-              <th class="px-4 py-3 border-b border-gray-700">Parentesco</th>
-              <th class="px-4 py-3 border-b border-gray-700 text-center">Acciones</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Documento</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Nombre</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Teléfono</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Correo</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Dirección</th>
+              <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Parentesco</th>
+              <th class="px-6 py-3 text-center text-gray-900 dark:text-gray-100">Acciones</th>
             </tr>
           </thead>
-           </thead>
-  <tbody id="tbodyAcudientes">
-    <!-- se rellenará desde JS -->
-  </tbody>
+          <tbody id="tbodyAcudientes" class="divide-y divide-gray-200 dark:divide-gray-700">
+            <!-- se rellena desde JS -->
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
   <!-- Modal -->
-  <div id="modalAcudiente" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
-    <h2 id="modalTitulo" class="text-xl font-bold mb-4">Detalle</h2>
-    <div id="modalContenido" class="space-y-2"></div>
-    <div class="flex justify-end gap-2 mt-4">
-      <button id="modalCloseBtn" class="px-3 py-1 bg-gray-700 rounded">Cerrar</button>
-      <button id="btnGuardar" class="px-3 py-1 bg-green-600 rounded hidden">Guardar</button>
+  <div id="modalAcudiente" class="hidden fixed inset-0 bg-black bg-opacity-60 items-center justify-center z-50">
+    <div class="bg-slate-900 text-gray-100 p-8 rounded-2xl shadow-2xl w-[500px] max-h-[90vh] overflow-y-auto">
+      <h2 id="modalTitulo" class="text-2xl font-bold mb-6 border-b border-slate-700 pb-2">Detalle del Acudiente</h2>
+
+      <div id="modalContenido" class="grid grid-cols-1 gap-4"></div>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button id="modalCloseBtn" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-gray-100 rounded-lg transition">Cerrar</button>
+        <button id="btnGuardar" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition hidden">Guardar</button>
+      </div>
     </div>
   </div>
-</div>
 </General>
 
 <script is:inline>
 (async function () {
-  // Elementos DOM
+  // DOM
   const table = document.getElementById("tableAcudientes");
   const tbody = document.getElementById("tbodyAcudientes");
   const modal = document.getElementById("modalAcudiente");
@@ -90,24 +63,45 @@ try {
   const modalCloseBtn = document.getElementById("modalCloseBtn");
   const btnGuardar = document.getElementById("btnGuardar");
 
+  let datatable = null;
+  let acudientes = [];
 
-  // 1) Cargar datos desde la API y renderizar filas
+  const DATATABLE_OPTIONS = {
+    searchable: true,
+    fixedHeight: true,
+    perPage: 5,
+    labels: {
+      placeholder: "Buscar...",
+      perPage: "Registros por página",
+      noRows: "No hay acudientes para mostrar",
+      info: "Mostrando {start} a {end} de {rows} registros",
+    },
+  };
+
+  // Cargar datos + (re)inicializar datatable
   async function cargarAcudientes() {
+    if (datatable && typeof datatable.destroy === "function") {
+      try { datatable.destroy(); } catch {}
+      datatable = null;
+    }
+
     try {
-      const res = await fetch("http://localhost:3000/api/datos/acudientes"); // usa ruta relativa si tu backend está montado en el mismo host
+      const res = await fetch("http://localhost:3000/api/datos/acudientes");
       if (!res.ok) throw new Error("HTTP " + res.status);
       acudientes = await res.json();
-      renderRows();
-      console.log("Acudientes cargados:", acudientes);
     } catch (err) {
       console.error("Error cargando acudientes:", err);
       tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-3 text-center text-gray-400">Error cargando acudientes</td></tr>`;
+      return;
     }
+
+    renderRows();
+    datatable = new simpleDatatables.DataTable("#tableAcudientes", DATATABLE_OPTIONS);
   }
 
-  // 2) Render filas en tbody (evita innerHTML con datos sin sanear: usamos textContent)
+  // Render filas
   function renderRows() {
-    tbody.innerHTML = ""; // limpio
+    tbody.innerHTML = "";
     if (!Array.isArray(acudientes) || acudientes.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-3 text-center text-gray-400">No hay acudientes registrados</td></tr>`;
       return;
@@ -116,11 +110,11 @@ try {
     const frag = document.createDocumentFragment();
     acudientes.forEach(a => {
       const tr = document.createElement("tr");
-      tr.className = "hover:bg-gray-700";
+      tr.className = "hover:bg-gray-100 dark:hover:bg-gray-700";
 
       const td = (txt, cls = "") => {
         const cell = document.createElement("td");
-        cell.className = `px-4 py-3 border-b border-gray-700 ${cls}`.trim();
+        cell.className = `px-4 py-3 border-b border-gray-200 dark:border-gray-700 ${cls} text-gray-550 dark:text-gray-400`.trim();
         cell.textContent = txt ?? "";
         return cell;
       };
@@ -134,7 +128,7 @@ try {
 
       // acciones
       const actionsTd = document.createElement("td");
-      actionsTd.className = "px-4 py-3 border-b border-gray-700 text-center space-x-2";
+      actionsTd.className = "px-4 py-3 border-b border-gray-200 dark:border-gray-700 text-center space-x-2";
 
       const btnFactory = (action, label, cls) => {
         const b = document.createElement("button");
@@ -157,8 +151,7 @@ try {
     tbody.appendChild(frag);
   }
 
-
-  // 3) Modal open/close y renderizado de contenido
+  // Modal
   function abrirModal(acudiente, modo = "ver") {
     if (!acudiente) return;
     modal.classList.remove("hidden");
@@ -167,64 +160,75 @@ try {
 
     if (modo === "ver") {
       modalContenido.innerHTML = `
-        <p><strong>Documento:</strong> ${String(acudiente.id_documento_acudiente)}</p>
-        <p><strong>Nombre:</strong> ${acudiente.acud_nombres ?? ""} ${acudiente.acud_apellidos ?? ""}</p>
-        <p><strong>Teléfono:</strong> ${acudiente.acud_telefono ?? ""}</p>
-        <p><strong>Correo:</strong> ${acudiente.acud_correo ?? ""}</p>
-        <p><strong>Dirección:</strong> ${acudiente.acud_direccion ?? ""}</p>
-        <p><strong>Parentesco:</strong> ${acudiente.acud_parentesco ?? ""}</p>
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Documento</p><p class="text-lg font-semibold text-gray-200">${acudiente.id_documento_acudiente}</p></div>
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Nombre</p><p class="text-lg font-semibold text-gray-200">${acudiente.acud_nombres ?? ""} ${acudiente.acud_apellidos ?? ""}</p></div>
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Teléfono</p><p class="text-lg font-semibold text-gray-200">${acudiente.acud_telefono ?? ""}</p></div>
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Correo</p><p class="text-lg font-semibold text-gray-200">${acudiente.acud_correo ?? ""}</p></div>
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Dirección</p><p class="text-lg font-semibold text-gray-200">${acudiente.acud_direccion ?? ""}</p></div>
+          <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-gray-400">Parentesco</p><p class="text-lg font-semibold text-gray-200">${acudiente.acud_parentesco ?? ""}</p></div>
+        </div>
       `;
       btnGuardar.classList.add("hidden");
     } else {
-      // modo editar -> inputs
       modalContenido.innerHTML = `
-        <label class="block">Nombre:
-          <input type="text" id="editNombres" value="${String(acudiente.acud_nombres ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
-        </label>
-        <label class="block">Apellidos:
-          <input type="text" id="editApellidos" value="${String(acudiente.acud_apellidos ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
-        </label>
-        <label class="block">Teléfono:
-          <input type="text" id="editTelefono" value="${String(acudiente.acud_telefono ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
-        </label>
-        <label class="block">Correo:
-          <input type="email" id="editCorreo" value="${String(acudiente.acud_correo ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
-        </label>
-        <label class="block">Dirección:
-          <input type="text" id="editDireccion" value="${String(acudiente.acud_direccion ?? "")}" class="w-full p-2 rounded bg-gray-800 border border-gray-600"/>
-        </label>
-        <label class="block">Parentesco:
-          <select id="editParentesco" class="w-full p-2 rounded bg-gray-800 border border-gray-600">
-            <option value="Padre"   ${acudiente.acud_parentesco === "Padre" ? "selected" : ""}>Padre</option>
-            <option value="Madre"   ${acudiente.acud_parentesco === "Madre" ? "selected" : ""}>Madre</option>
-            <option value="Abuelo"  ${acudiente.acud_parentesco === "Abuelo" ? "selected" : ""}>Abuelo</option>
-            <option value="Otro"    ${acudiente.acud_parentesco === "Otro" ? "selected" : ""}>Otro</option>
-          </select>
-        </label>
+        <div class="space-y-4">
+          <label class="block">
+            <span class="text-sm text-gray-300">Nombre</span>
+            <input type="text" id="editNombres" value="${acudiente.acud_nombres ?? ""}"
+              class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Apellidos</span>
+            <input type="text" id="editApellidos" value="${acudiente.acud_apellidos ?? ""}"
+              class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Teléfono</span>
+            <input type="text" id="editTelefono" value="${acudiente.acud_telefono ?? ""}"
+              class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Correo</span>
+            <input type="email" id="editCorreo" value="${acudiente.acud_correo ?? ""}"
+              class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Dirección</span>
+            <input type="text" id="editDireccion" value="${acudiente.acud_direccion ?? ""}"
+              class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-gray-300">Parentesco</span>
+            <select id="editParentesco" class="mt-1 w-full p-2 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40">
+              <option value="Padre" ${acudiente.acud_parentesco === "Padre" ? "selected" : ""}>Padre</option>
+              <option value="Madre" ${acudiente.acud_parentesco === "Madre" ? "selected" : ""}>Madre</option>
+              <option value="Abuelo" ${acudiente.acud_parentesco === "Abuelo" ? "selected" : ""}>Abuelo</option>
+              <option value="Otro" ${acudiente.acud_parentesco === "Otro" ? "selected" : ""}>Otro</option>
+            </select>
+          </label>
+        </div>
       `;
       btnGuardar.dataset.id = acudiente.id_documento_acudiente;
       btnGuardar.classList.remove("hidden");
     }
   }
 
-  function cerrarModal() {
-    modal.classList.add("hidden");
-  }
+  function cerrarModal() { modal.classList.add("hidden"); }
 
-  // 4) Event delegation para botones en la tabla
+  // Delegación eventos tabla
   table.addEventListener("click", (ev) => {
     const btn = ev.target.closest("button[data-action]");
     if (!btn) return;
     const id = btn.dataset.id;
     const action = btn.dataset.action;
     const acudiente = acudientes.find(a => String(a.id_documento_acudiente) === String(id));
-
     if (action === "ver") abrirModal(acudiente, "ver");
     else if (action === "editar") abrirModal(acudiente, "editar");
     else if (action === "eliminar") eliminarAcudiente(id);
   });
 
-  // 5) Guardar edición (PUT)
+  // Guardar edición
   btnGuardar.addEventListener("click", async () => {
     const id = btnGuardar.dataset.id;
     const payload = {
@@ -244,14 +248,17 @@ try {
         body: JSON.stringify(payload)
       });
       if (res.ok) {
-        // refresca localmente sin recargar si quieres:
-        // actualizar objeto en `acudientes` y volver a renderRows()
-        await cargarAcudientes(); // simple: recarga lista
+        const idx = acudientes.findIndex(x => String(x.id_documento_acudiente) === String(id));
+        if (idx !== -1) {
+          acudientes[idx] = { ...acudientes[idx], ...payload };
+          if (datatable && typeof datatable.destroy === "function") { datatable.destroy(); datatable = null; }
+          renderRows();
+          datatable = new simpleDatatables.DataTable("#tableAcudientes", DATATABLE_OPTIONS);
+        } else {
+          await cargarAcudientes();
+        }
         cerrarModal();
-        alert("Actualizado correctamente");
       } else {
-        const txt = await res.text().catch(()=>null);
-        console.error("Error updating:", res.status, txt);
         alert("Error al actualizar");
       }
     } catch (err) {
@@ -260,13 +267,16 @@ try {
     }
   });
 
-  // 6) Eliminar (DELETE)
+  // Eliminar
   async function eliminarAcudiente(id) {
     if (!confirm("¿Seguro que quieres eliminar este acudiente?")) return;
     try {
       const res = await fetch(`http://localhost:3000/api/datos/acudientes/${id}`, { method: "DELETE" });
       if (res.ok) {
-        await cargarAcudientes();
+        acudientes = acudientes.filter(a => String(a.id_documento_acudiente) !== String(id));
+        if (datatable && typeof datatable.destroy === "function") { datatable.destroy(); datatable = null; }
+        renderRows();
+        datatable = new simpleDatatables.DataTable("#tableAcudientes", DATATABLE_OPTIONS);
         alert("Acudiente eliminado");
       } else {
         alert("Error al eliminar");
@@ -277,12 +287,11 @@ try {
     }
   }
 
-  // cerrar modal handlers
+  // Cerrar modal
   modalCloseBtn.addEventListener("click", cerrarModal);
   modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); });
 
-
-  // 7) Inicializo todo
+  // Init
   await cargarAcudientes();
 })();
 </script>
