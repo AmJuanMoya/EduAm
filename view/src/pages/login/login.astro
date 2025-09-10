@@ -1,98 +1,44 @@
 ---
-//Notas agregar :
-//1.  Importar Estilos.
-//2.  Importar Componentes.
-//3. aplicar precarga de midelwares de autenticacion.
+import General from "../../layouts/general.astro";
+import Navbar from "../../components/general/navbar.astro";
+export const prerender = false
 ---
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login Eduam</title>
-
-<!-- ************************************************** -->
-    <!-- TAILWIND Y FLOWBITE DEBEN IR IMPORTADOS DESDE SU ARCHIVO DE ESTILOS CORRESPONDIENTES -->
-     <!-- los estilos de tailwind y flowbite deben ir en el archivo de estilos de tailwind y flowbite dado que para eso estan las plantillas y componentes!!! -->
-<!-- ************************************************** -->
-
-    <!-- CDN de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CDN de Flowbite CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
 
 
-
-
-
-<!-- ************************************************** -->
-    <!-- ESTOS ESTILOS SON NO DEBEN IR EN ESTE ARCHIVO -->
-<!-- ************************************************** -->
-   
-   <style>
-        /* Solo animaciones que no están disponibles en Tailwind */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-slide-in-up {
-            animation: slideInUp 0.6s ease-out;
-        }
-    </style>
-
-
-
-
-</head>
-<body class="min-h-screen w-screen relative bg-blue-200 font-sans overflow-hidden">
-    <!-- Contenedor del fondo con imagen y superposición de degradado -->
-    <div class="absolute inset-0 z-0">
-        <!-- Imagen de fondo con filtro azul -->
-        <img src="../../../imgs/estudiantes.jpg" alt="Fondo estudiantes" class="w-full h-full object-cover blur-3xl" />
-        <!-- Superposición con filtro azul para enfocar el contenido -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/80 via-blue-700/70 to-blue-800/60"></div>
-        <!-- Efecto de partículas flotantes -->
-
-    </div>
+<General>
+    <!-- <div class="-z-2 blur-2xl hue-rotate-60" >
+        <img src="../../../imgs/estudiantes.jpg" alt="Fondo estudiantes" class="w-full h-full object-cover  " />
+    </div> -->
+    
+    <Navbar></Navbar>
+    
+       
+       
 
     <!-- Contenido principal centrado en la pantalla -->
-    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
+    <div class="  relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
+        <img src="../../../imgs/estudiantes.jpg" alt="Fondo estudiantes" class="w-full h-[99%] object-cover absolute blur-xs  " />
+        <span class=" h-full w-full absolute bg-blue-950 mix-blend-multiply blur-xs "></span>
         <!-- Sección del escudo y la frase -->
         <div class="flex flex-col items-center mb-8 text-center animate-slide-in-up">
             <!-- Escudo con efecto flotante -->
             <div class="animate-float mb-4 ">
-                <img src="../../../imgs/escudo-alm.webp" alt="Escudo Colegio" class="w-32 md:w-40 drop-shadow-2xl rounded-full border-4 border-white/20" />
+                <img src="/logoam.png" alt="Escudo Colegio" class="w-32 md:w-40 drop-shadow-2xl rounded-full " />
             </div>
-            <div class="bg-blue-50 backdrop-blur-md border border-white/20 px-6 py-3  rounded-sm">
+            <!-- <div class="bg-blue-50 backdrop-blur-md border border-white/20 px-6 py-3  rounded-sm">
                 <p class=" text-lg md:text-xl font-bold tracking-wide text-blue-800">"UNA VIDA PARA LA EXCELENCIA"</p>
-            </div>
+            </div> -->
         </div>
 
         <!-- Contenedor del formulario de inicio de sesión -->
-        <div class="backdrop-blur-xl  bg-white border border-white shadow-2xl p-8 md:p-10 rounded-lg w-full max-w-sm md:max-w-md animate-slide-in-up" style="animation-delay: 0.2s;">
+        <div class="backdrop-blur-xl  bg-slate-800   shadow-2xl p-8 md:p-10 rounded-lg w-full max-w-sm md:max-w-md animate-slide-in-up" style="animation-delay: 0.2s;">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Bienvenido</h2>
-                <p class="text-gray-600">Ingresa tus credenciales para continuar</p>
+                <h2 class="text-3xl font-bold  mb-2">Bienvenido</h2>
+                <p class="">Ingresa tus credenciales para continuar</p>
             </div>
 
             <!-- Formulario de acceso -->
-            <form id="loginForm" class="space-y-6">
+            <form id="loginForm" class="space-y-6 ">
                 <!-- Campo de entrada para el usuario (correo) -->
                 <div class="relative group">
                     <input 
@@ -160,29 +106,7 @@
                 </div>
 
                 <!-- Botones sociales -->
-                <div class="grid grid-cols-2 gap-3">
-                    <!-- Botón de Google -->
-                    <!-- <button type="button" class="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105">
-                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        Google
-                    </button> -->
 
-                    <!-- Botón de Microsoft -->
-                    <!-- <button type="button" class="flex justify-center items-center px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105">
-                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                            <path fill="#f25022" d="M0 0h11v11H0z"/>
-                            <path fill="#7fba00" d="M12 0h11v11H12z"/>
-                            <path fill="#00a4ef" d="M0 12h11v11H0z"/>
-                            <path fill="#ffb900" d="M12 12h11v11H12z"/>
-                        </svg>
-                        Microsoft
-                    </button> -->
-                </div>
 
                 <!-- Enlace para volver al inicio -->
                 <div class="text-center mt-6">
@@ -210,13 +134,7 @@
     </div>
 
     <!-- Font Awesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- ************************************************** -->
-    <!-- ESTOS SCRIPTS SON NO DEBEN IR EN ESTE ARCHIVO -->
-    <!-- ************************************************** -->
-    <!-- CDN de Flowbite JS (debe ir al final del body para un mejor rendimiento) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 
     <script>
 // import { effect } from "astro:schema";
@@ -231,81 +149,8 @@
         const modalMessage = document.getElementById('modalMessage');
         const closeModalBtn = document.getElementById('closeModalBtn');
 
-        // --- Funciones de Modal ---
-        // function showModal(icon, title, message) {
-        //     modalIcon.textContent = icon;
-        //     modalTitle.textContent = title;
-        //     modalMessage.innerHTML = message;
-        //     statusModal.classList.remove('hidden');
-        //     statusModal.querySelector('div').classList.remove('scale-95');
-        //     statusModal.querySelector('div').classList.add('scale-100');
-        // }
 
-        // function hideModal() {
-        //     statusModal.querySelector('div').classList.remove('scale-100');
-        //     statusModal.querySelector('div').classList.add('scale-95');
-        //     setTimeout(() => {
-        //         statusModal.classList.add('hidden');
-        //     }, 300);
-        // }
-
-        // closeModalBtn.addEventListener('click', hideModal);
-        // statusModal.addEventListener('click', (event) => {
-        //     if (event.target === statusModal) {
-        //         hideModal();
-        //     }
-        // });
-
-        // --- Funciones de Validación y Errores en Campo ---
-        // function showError(fieldId, message) {
-        //     const errorElement = document.getElementById(`error-${fieldId}`);
-        //     if (errorElement) {
-        //         errorElement.textContent = message;
-        //         errorElement.classList.remove('hidden');
-        //         document.getElementById(fieldId).classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-        //     }
-        // }
-
-        // function hideError(fieldId) {
-        //     const errorElement = document.getElementById(`error-${fieldId}`);
-        //     if (errorElement) {
-        //         errorElement.classList.add('hidden');
-        //         errorElement.textContent = '';
-        //         document.getElementById(fieldId).classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-        //     }
-        // }
-
-        // function validateLoginForm() {
-        //     let isValid = true;
-
-        //     // Limpiar errores previos
-        //     hideError('correo_usuario');
-        //     hideError('contraseña_usuario');
-
-        //     const correo = correoInput.value.trim();
-        //     const password = passwordInput.value.trim();
-
-        //     // Validación de Correo
-        //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        //     if (correo === '') {
-        //         showError('correo_usuario', 'El correo electrónico es requerido.');
-        //         isValid = false;
-        //     } else if (!emailRegex.test(correo)) {
-        //         showError('correo_usuario', 'Ingrese un correo electrónico válido.');
-        //         isValid = false;
-        //     }
-
-        //     // Validación de Contraseña
-        //     if (password === '') {
-        //         showError('contraseña_usuario', 'La contraseña es requerida.');
-        //         isValid = false;
-        //     }
-
-        //     return isValid;
-        // }
-
-        // --- Event Listener para el envío del formulario ---
-        loginForm.addEventListener('submit', async (event) => {
+        loginForm?.addEventListener('submit', async (event) => {
             event.preventDefault();
             console.log('Formulario enviado');
             let loginData = {
@@ -324,6 +169,11 @@
             .then(response => response.json()) 
             .then(data => {
                 console.log('Respuesta del servidor:', data);
+
+                if(data.error){
+                    alert(data.error)
+                }
+                
                 if(data.rol === 3){
                     // Redirigir a la página de administrador
                     window.location.href = '/estudiantes/perfilestudiante';
@@ -333,89 +183,19 @@
                     window.location.href = '/docentes/perfildocente';
                 }
 
+
+
             })
             .catch(error => {
                 console.error('Error al enviar el formulario:', error);
+                alert("Error de conexion con el servidor")
             });
 
         })
 
 
-
-            // if (!validateLoginForm()) {
-            //     console.log('Validación de formulario fallida.');
-            //     return;
-            // }
-
-            
-
-            // Mostrar estado de carga
-            // const submitBtn = loginForm.querySelector('button[type="submit"]') as HTMLButtonElement;
-            // const originalText = submitBtn.innerHTML;
-            // submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Iniciando sesión...';
-            // submitBtn.disabled = true;
-
-            // const loginData = {
-            //     correo_usuario: correoInput.value.trim(),
-            //     contraseña_usuario: passwordInput.value.trim()
-            // };
-
-            // try {
-            //     const response = await fetch('http://localhost:3000/api/login', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify(loginData)
-            //     });
-
-            //     const result = await response.json();
-
-            //     if (response.ok) {
-                    // Login exitoso
-                //     const userRole = result.user.rol;
-                //     const userName = result.user.nombres;
-                //     const userLastName = result.user.apellidos;
-                //     const jwtToken = result.token;
-
-                //     // Almacenar el JWT y los datos del usuario en localStorage
-                //     localStorage.setItem('jwtToken', jwtToken); 
-                //     localStorage.setItem('userRole', userRole); 
-                //     localStorage.setItem('userName', `${userName} ${userLastName}`);
-                //     localStorage.setItem('userId', result.user.id);
-
-                //     showModal('✅', '¡Inicio de Sesión Exitoso!', `Bienvenido, <strong>${userName} ${userLastName}</strong>. Tu rol es: <strong>${userRole}</strong>.`);
-                //     loginForm.reset();
-
-                //     // Redirigir al usuario al perfil después de un breve retraso
-                //     setTimeout(() => {
-                //         window.location.href = '/usuario/perfilUsuario';
-                //     }, 1500);
-                    
-                // else {
-                //     // Login fallido
-                //     showModal('❌', 'Error de Inicio de Sesión', result.message || 'Ocurrió un error inesperado al intentar iniciar sesión.');
-                // }
-            // } catch (error) {
-            //     console.error('Error de red o de solicitud:', error);
-            //     showModal('⚠️', 'Error de Conexión', 'No se pudo conectar con el servidor. Por favor, intente de nuevo más tarde.');
-            // } finally {
-            //     // Restaurar botón
-            //     submitBtn.innerHTML = originalText;
-            //     submitBtn.disabled = false;
-            // }
-        // });
-
-        // Efectos de hover para los campos de entrada
-        // document.querySelectorAll('input[type="email"], input[type="password"]').forEach(input => {
-        //     input.addEventListener('focus', function() {
-        //         this.parentElement.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-20');
-        //     });
-            
-        //     input.addEventListener('blur', function() {
-        //         this.parentElement.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-20');
-        //     });
-        // });
     </script>
-</body>
-</html>
+
+
+
+</General>

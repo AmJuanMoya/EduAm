@@ -1,4 +1,4 @@
-import Database from "../model/database/conectionDB.js";
+import Database from "./database/conectionDB.js";
 
 
 class tablas{
