@@ -7,6 +7,7 @@ import Asidebar from "../../components/asidebar.astro";
 let roles = [];
 let especialidades = [];
 
+
 // fetch para roles
 try{
     roles = await fetch("http://localhost:3000/api/roles").then(res => {
@@ -25,7 +26,7 @@ try{
 console.log("Los roles de cristian son:", roles);
 
 
-
+// fetch para especialidades
 try{
     especialidades = await fetch("http://localhost:3000/api/especialidad").then(res => {
         if (res.ok) {
@@ -39,6 +40,9 @@ try{
 } catch (error) {
     console.error("Error al realizar la solicitud de especialidades:", error);
 }
+
+
+
 // try {
 //   // Fetch para tipos de identificación
 //   const resIdentificacion = await fetch("http://localhost:3000/api/datos/tipo_identificacion");
@@ -98,45 +102,45 @@ try{
                                 <label for="nombres_usuario" class="block">Nombres:</label>
                                 <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
                             </div>
-                            <input id="nombres_usuario" name="nombres_usuario" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100"  required>
+                            <input id="empl_nombre" name="empl_nombre" type="text" placeholder="Juan David" class="   m-5 rounded-sm w-100"  required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="apellidos_usuario" class="block">Apellidos:</label>
+                                <label for="empl_apellido" class="block">Apellidos:</label>
                                 <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
                             </div>
-                            <input id="apellidos_usuario" name="apellidos_usuario" type="text" placeholder="Pérez Rodríguez" class="m-5 rounded-sm w-100" required>
+                            <input id="empl_apellido" name="empl_apellido" type="text" placeholder="Pérez Rodríguez" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="correo_usuario" class="block">Correo Electrónico:</label>
+                                <label for="empl_correo" class="block">Correo Electrónico:</label>
                             </div>
-                            <input id="correo_usuario" name="correo_usuario" type="email" placeholder="usuario@example.com" class="m-5 rounded-sm w-100" required>
+                            <input id="empl_correo" name="empl_correo" type="email" placeholder="usuario@example.com" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="contraseña_usuario" class="block">Contraseña:</label>
+                                <label for="empl_contrasena" class="block">Contraseña:</label>
                             </div>
-                            <input id="contraseña_usuario" name="contraseña_usuario" type="password" placeholder="********" class="m-5 rounded-sm w-100" required>
+                            <input id="empl_contrasena" name="empl_contrasena" type="password" placeholder="********" class="m-5 rounded-sm w-100" required>
                         </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="telefono_usuario" class="block">Teléfono:</label>
+                                <label for="empl_celular" class="block">Teléfono:</label>
                             </div>
-                            <input id="telefono_usuario" name="telefono_usuario" type="text" placeholder="3001234567" class="m-5 rounded-sm w-100">
+                            <input id="empl_celular" name="empl_celular" type="text" placeholder="3001234567" class="m-5 rounded-sm w-100">
                         </div>
                         
                         <!-- Campo avatar_url_usuario OMITIDO por ahora -->
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="id_rol" class="block">Rol:</label>
+                                <label for="empl_rol " class="block">Rol:</label>
                             </div>
-                                <select name="" id="" class="m-5 rounded-sm w-100" required>
+                                <select name="empl_rol" id="empl_rol" class="m-5 rounded-sm w-100" required>
 <!-- ------------------------------------------------------- -->
                                     <option value="" disabled selected>Selecione un Rol</option> 
                                     {roles.map((rol) => (
@@ -155,9 +159,9 @@ try{
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="" class="block">Especialidad:</label>
+                                <label for="empl_especialidad " class="block">Especialidad:</label>
                             </div>
-                            <select name="" id="" class="m-5 rounded-sm w-100" required>
+                            <select name="empl_especialidad " id="empl_especialidad " class="m-5 rounded-sm w-100" required>
                                 <option value="">Selecione una Especialidad</option>
                                 {especialidades.map((especialidad) => (
                                     <option value={especialidad.id_especialidad}>{especialidad.esp_descripcion}</option>
@@ -166,11 +170,62 @@ try{
                             </select>
                         </div>
 
+                        <!-- Tipo de documento -->
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="empl_tipo_documento" class="block">Tipo de Documento:</label>
+                                <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
+                            </div>
+                            <select id="empl_tipo_documento" name="empl_tipo_documento" class="m-5 rounded-sm w-100" required>
+                                <option value="" disabled selected>Seleccione tipo</option>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="TI">Tarjeta de Identidad</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                                <option value="PA">Pasaporte</option>
+                            </select>
+                        </div>
 
+                        <!-- Género -->
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="empl_genero" class="block">Género:</label>
+                                <span class="text-red-600 text-xl ml-1 -mt-1.5">*</span>
+                            </div>
+                            <select id="empl_genero" name="empl_genero" class="m-5 rounded-sm w-100" required>
+                                <option value="" disabled selected>Seleccione género</option>
+                                <option value="MASCULINO">Masculino</option>
+                                <option value="FEMENINO">Femenino</option>
+                                <option value="OTRO">Otro</option>
+                            </select>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="empl_direccion" class="block">Dirección:</label>
+                            </div>
+                            <input id="empl_direccion" name="empl_direccion" type="text" placeholder="Cra 10 #1-23" class="m-5 rounded-sm w-100" required>
+                        </div>
+
+                        <!-- Persona de contacto -->
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="empl_persona_contacto" class="block">Persona de Contacto:</label>
+                            </div>
+                            <input id="empl_persona_contacto" name="empl_persona_contacto" type="text" placeholder="Nombre persona contacto" class="m-5 rounded-sm w-100" required>
+                        </div>
+
+                        <!-- Celular persona de contacto -->
+                        <div class="mx-auto w-fit">
+                            <div class="flex">
+                                <label for="empl_celular_persona_contacto" class="block">Celular Persona de Contacto:</label>
+                            </div>
+                            <input id="empl_celular_persona_contacto" name="empl_celular_persona_contacto" type="text" placeholder="3001234567" class="m-5 rounded-sm w-100" required>
+                        </div>
 
                         <div class="mx-auto w-fit">
                             <div class="flex">
-                                <label for="id_estado_usuario" class="block">Estado de Usuario:</label>
+                                <label for="empl_estado" class="block">Estado de Usuario:</label>
                             </div>
                                 <select name="empl_estado" id="empl_estado" class="m-5 rounded-sm w-100" required>
                                     <option value="Activo">Activo</option>
@@ -190,7 +245,7 @@ try{
 
                         <div class="mx-auto w-fit col-span-1 md:col-span-2">
                             <div class="flex">
-                                <label for="numero_documento" class="block">Número de Documento:</label>
+                                <label for="id_documento_empleado" class="block">Número de Documento:</label>
                             </div>
                             <div class="m-5 flex w-200">
 <!--                                 <select name="id_tipo_documento" id="id_tipo_documento" class="rounded-l-md" required>
@@ -199,7 +254,7 @@ try{
                                         <option value={d.id_identificacion}>{d.tipo_identificacion}</option>
                                     ))}
                                 </select> -->
-                                <input id="numero_documento" name="numero_documento" type="text" required placeholder="1000009" class="rounded-r-sm w-100">
+                                <input id="id_documento_empleado" name="id_documento_empleado" type="text" required placeholder="1000009" class="rounded-r-sm w-100">
                             </div>
                         </div>
                     </div>
@@ -265,27 +320,42 @@ try{
         }
     });
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Evitar el envío predeterminado del formulario
+// function formDataToJSON(formData) {
+//     const obj = {};
+//     formData.forEach((value, key) => {
+//         obj[key] = value;
+//     });
+//     return obj;
+// }
 
-        const formData = new FormData(form);
-        const data = {};
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Evitar el envío predeterminado del formulario
 
-        // Convertir FormData a un objeto JSON, adaptado a los campos de t_usuario
-        for (const [key, value] of formData.entries()) { 
-            if (key === 'id_rol' || key === 'id_estado_usuario' || key === 'id_tipo_documento') {
-                data[key] = parseInt(value); // Convertir IDs a entero
-            } else if (key === 'numero_documento') {
-                data[key] = value.trim(); // Asegurarse de que el número de documento sea una cadena sin espacios
-            } else if (key === 'telefono_usuario') { 
-                data[key] = value === '' ? null : value.trim(); // Campo opcional: null si está vacío
-            } else {
-                data[key] = value.trim(); // Para todos los demás campos, asignar el valor directamente y quitar espacios
-            }
-        }
+//         const formData = new FormData(form);
+//         const data = formDataToJSON(formData);
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+    // let errors = [];
+
+    // console.log("Datos a enviar:", data); 
+          
+ 
+
+
+        // Convertir FormData a un objeto JSON, adaptado a los campos de t_empleados
+//         for (const [key, value] of formData.entries()) { 
+//            
+//               if (key === 'numero_documento') {
+//                 data[key] = value.trim(); // Asegurarse de que el número de documento sea una cadena sin espacios
+//             } else if (key === 'empl_celular') { 
+//                 data[key] = value === '' ? null : value.trim(); // Campo opcional: null si está vacío
+//             } else {
+//                 data[key] = value.trim(); // Para todos los demás campos, asignar el valor directamente y quitar espacios
+//             }
+//         }
 
         try {
-            const response = await fetch('http://localhost:3000/api/registroUsuario', { 
+            const response = await fetch('http://localhost:3000/api/empleados', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -296,6 +366,7 @@ try{
             if (response.ok) {
                 const result = await response.json();
                 showModal('✅', '¡Registro Exitoso!', result.message);
+                console.log('Respuesta del servidor:', result);
                 form.reset(); // Limpiar el formulario después del éxito
             } else {
                 const errorData = await response.json();
@@ -309,12 +380,17 @@ try{
     });
     // INPUTS
 
-    let nombres = document.getElementById('nombres_usuario');
-    let apellidos = document.getElementById('apellidos_usuario');
-    let correo = document.getElementById('correo_usuario');
-    let contraseña = document.getElementById('contraseña_usuario');
-    let telefono = document.getElementById('telefono_usuario');
-    let numeroDocumento = document.getElementById('numero_documento');
+    let nombres = document.getElementById('empl_nombre');
+    let apellidos = document.getElementById('empl_apellido');
+    let correo = document.getElementById('empl_correo');
+    let contraseña = document.getElementById('empl_contrasena');
+    let telefono = document.getElementById('empl_celular');
+    let numeroDocumento = document.getElementById('id_documento_empleado');
+    let tipoDocumento = document.getElementById('empl_tipo_documento');
+    let genero = document.getElementById('empl_genero');
+    let direccion = document.getElementById('empl_direccion');
+    let personaContacto = document.getElementById('empl_persona_contacto');
+    let celularPersonaContacto = document.getElementById('empl_celular_persona_contacto');
 
 
     // Validación de campos
@@ -358,6 +434,29 @@ try{
             numeroDocumento.setCustomValidity('El número de documento debe tener 10 dígitos.');
         } else {
             numeroDocumento.setCustomValidity('');
+        }
+    });
+
+    // Validación de campos adicionales
+    direccion.addEventListener('input', () => {
+        if (!/^[a-zA-Z0-9\s#\-\.]+$/.test(direccion.value)) {
+            direccion.setCustomValidity('Solo se permiten letras, números y algunos símbolos (#, -, .)');
+        } else {
+            direccion.setCustomValidity('');
+        }
+    });
+    personaContacto.addEventListener('input', () => {
+        if (!/^[a-zA-Z\s]+$/.test(personaContacto.value)) {
+            personaContacto.setCustomValidity('Solo se permiten letras y espacios.');
+        } else {
+            personaContacto.setCustomValidity('');
+        }
+    });
+    celularPersonaContacto.addEventListener('input', () => {
+        if (!/^\d{10}$/.test(celularPersonaContacto.value)) {
+            celularPersonaContacto.setCustomValidity('El celular debe tener 10 dígitos.');
+        } else {
+            celularPersonaContacto.setCustomValidity('');
         }
     });
 </script>

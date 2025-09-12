@@ -12,6 +12,7 @@ import rolesRouter from './routes/r_roles.js';
 import especialidadRouter from './routes/r_especialidad.js';
 import loginRouter from './routes/r_login.js';
 import acudienteRouter from './routes/r_acudientes.js';
+import empleadosRouter from './routes/r_empleados.js';
 
 
 const app = express()
@@ -32,6 +33,7 @@ app.use("/api", rolesRouter);
 app.use("/api", especialidadRouter);
 app.use('/api', matriculaRouter);
 app.use("/api", acudienteRouter);
+app.use("/api", empleadosRouter);
 
 
 
