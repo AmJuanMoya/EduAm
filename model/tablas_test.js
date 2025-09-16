@@ -1,4 +1,4 @@
-import Database from "../model/database/conectionDB.js";
+import Database from "./database/conectionDB.js";
 
 
 class tablas{
@@ -6,8 +6,6 @@ class tablas{
     constructor(){
         this.db = new Database();
     }
-
-
 
    async getTablas(){
         await this.db.connect()

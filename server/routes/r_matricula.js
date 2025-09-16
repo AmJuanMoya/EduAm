@@ -1,51 +1,18 @@
-import { Router } from "express";
-import matricula from "../../model/t_matriculas.js";
-import Crud from "../../model/database/crudsql.js";
-
-const router = Router() 
+import express from 'express';
 
 
-router.get("/datos/matricula/:doc", async (req, res) => {
-    try {
-        const doc = req.params.doc;
-        console.log(`Se recibe informacion de matricula...  ${doc}`);
-        let m = new matricula
-        const datos = await m.getMatriculaByDoc(doc);
-        if(datos.length <= 0){
-            res.json({error: `No se encontraron matriculas con: ${doc}`})
-        }else{
-            res.json(datos);
-            console.log("Se envia " + doc);
-        }
-    } catch (err) {
-        console.error('Error al obtener los datos:', err);
-        res.status(500).json({ error: 'Error al obtener los datos' });
-    }
+
+let router = express.Router();
+
+router.post('/matricula/registro', (req, res) => {
+  const data = req.body;
+  console.log(data);
+  // Puedes agregar lógica para mostrar mensaje de éxito/error
+  res.json({ message: 'Han llegado los datos al servidor' });
 });
 
-  router.put("/datos/matricula/:id_matricula", async (req, res) => {
-   try {
-    const datos = req.body;
-    console.log(datos)
-    const id_matricula = req.params.id_matricula;
-  
-    const instancia = new matricula();
 
 
-  Object.keys(datos).forEach(campo => {
-    try {
-      instancia[campo] = datos[campo]; 
-    } catch (err) {
-      console.warn("No se pudo asignar el campo:", campo);
-    }
-  });
-    const result = await instancia.update_matricula();
-    res.status(200).json({ mensaje: "Matrícula actualizada correctamente", result });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Error al actualizar la matrícula", detalle: error.message });
-  }
-});
 
 router.delete("/datos/matricula/:doc", async (req, res) => {
     try {

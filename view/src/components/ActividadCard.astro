@@ -1,76 +1,291 @@
 ---
-const { actividad } = Astro.props;
 
+
+// Tipos base que usas hoy
+export interface ActividadDB {
+  id_actividad: number;
+  act_nombre: string;
+  act_descripcion?: string | null;
+  act_categoria: 'Taller' | 'Tarea' | 'Evaluacion' | 'Actividad en Grupo';
+  act_fecha_asignacion?: string | Date | null;
+  act_fecha_entrega?: string | Date | null;
+
+  nombre_asignatura?: string | null;
+
+  // Campos de informes (vista estudiante)
+  infoc_estado?: 'Aprobada' | 'Desaprobada' | 'Pendiente';
+  infoc_nota?: number | null;
+  infoc_fecha_entrega?: string | Date | null;
+  infoc_url_entrega?: string | null;
+  estado_mostrado?: 'Calificada' | 'Asignada' | 'Fuera de Tiempo' | 'Entregada';
+  infoc_observaciones_docente?: string | null;
+
+  // En listados completos (docente/admin)
+  nombre_docente?: string | null;
+
+  // Recurso (opcional)
+  nombre_recurso?: string | null;
+  tipo_recurso?: string | null;
+  desc_recurso?: string | null;
+
+  // compat antiguo
+  comentarios?: string[] | string;
+}
+
+// Props adicionales para dashboard
+interface Props {
+  actividad: ActividadDB;
+  modo?: 'docente' | 'estudiante'; // controla el pie de acciones
+  // toggles rápidos
+  mostrarRecurso?: boolean; // default true
+  mostrarDocente?: boolean; // default true
+  mostrarAcciones?: boolean; // default true
+}
+
+const { actividad, modo = 'estudiante', mostrarRecurso = true, mostrarDocente = true, mostrarAcciones = true } = Astro.props as Props;
+
+// util fechas
+const toDate = (v: string | Date | null | undefined) => (v ? new Date(v) : null);
+const fISO = (d: Date | null) => (d ? d.toISOString().split('T')[0] : '');
+const fLocal = (d: Date | null) => (d ? d.toLocaleDateString('es-CO') : '—');
+
+const fechaPub = toDate(actividad.act_fecha_asignacion ?? null);
+const fechaEnt = toDate(actividad.act_fecha_entrega ?? null);
+
+// Derivar un estado si no viene seteado
+const hoy = new Date();
+let estadoDerivado: 'Calificada' | 'Asignada' | 'Fuera de Tiempo' | 'Entregada' | null = null;
+if (!actividad.estado_mostrado) {
+  if (typeof actividad.infoc_nota === 'number') {
+    estadoDerivado = 'Calificada';
+  } else if (actividad.infoc_url_entrega) {
+    estadoDerivado = 'Entregada';
+  } else if (fechaEnt && hoy > fechaEnt) {
+    estadoDerivado = 'Fuera de Tiempo';
+  } else {
+    estadoDerivado = 'Asignada';
+  }
+}
+const estadoBadge = actividad.estado_mostrado ?? estadoDerivado;
+
+// Días restantes (o retraso)
+let diasRestantes: number | null = null;
+if (fechaEnt) {
+  const ms = fechaEnt.getTime() - hoy.getTime();
+  diasRestantes = Math.ceil(ms / (1000 * 60 * 60 * 24));
+}
+
+// Colores por asignatura
 const coloresPorAsignatura: Record<string, [string, string]> = {
-  Matemáticas: ["bg-blue-600", "bg-blue-500"],
-  Español: ["bg-red-600", "bg-red-500"],
-  Ciencias: ["bg-green-600", "bg-green-500"],
-  Historia: ["bg-yellow-600", "bg-yellow-500"],
-  Inglés: ["bg-indigo-600", "bg-indigo-500"],
-  Literatura: ["bg-purple-600", "bg-purple-500"],
-  Química: ["bg-teal-600", "bg-teal-500"],
-  Álgebra: ["bg-lime-700", "bg-lime-600"],
-  default: ["bg-slate-700", "bg-slate-600"]
+  Matemáticas: ['bg-blue-600', 'bg-blue-500'],
+  Lengua: ['bg-red-600', 'bg-red-500'],
+  Español: ['bg-red-600', 'bg-red-500'],
+  'Ciencias Naturales': ['bg-green-600', 'bg-green-500'],
+  Ciencias: ['bg-green-600', 'bg-green-500'],
+  Historia: ['bg-yellow-600', 'bg-yellow-500'],
+  Inglés: ['bg-indigo-600', 'bg-indigo-500'],
+  Literatura: ['bg-purple-600', 'bg-purple-500'],
+  Química: ['bg-teal-600', 'bg-teal-500'],
+  Álgebra: ['bg-lime-700', 'bg-lime-600'],
+  default: ['bg-slate-700', 'bg-slate-600'],
 };
 
-const [color, colorClaro] =
-  coloresPorAsignatura[actividad.nombre_asignatura] || coloresPorAsignatura.default;
+const asig = actividad.nombre_asignatura ?? 'default';
+const [color, colorClaro] = coloresPorAsignatura[asig] || coloresPorAsignatura.default;
 
-// Manejo robusto de comentarios
+// Estilos de chips
+const estadoClasses: Record<string, string> = {
+  Calificada: 'bg-emerald-300 text-emerald-900',
+  Asignada: 'bg-white text-black',
+  'Fuera de Tiempo': 'bg-rose-300 text-rose-900',
+  Entregada: 'bg-amber-200 text-amber-900',
+};
+const chipEstadoClass = estadoBadge ? estadoClasses[estadoBadge] ?? 'bg-white text-black' : 'bg-white text-black';
+
+const catClasses: Record<string, string> = {
+  Taller: 'bg-black/20 text-white',
+  Tarea: 'bg-black/20 text-white',
+  Evaluacion: 'bg-black/20 text-white',
+  'Actividad en Grupo': 'bg-black/20 text-white',
+};
+const chipCategoriaClass = catClasses[actividad.act_categoria] ?? 'bg-black/20 text-white';
+
+// Comentarios: prioriza observación del docente; si no, compat
 let comentarios: string[] = [];
-
-if (Array.isArray(actividad.comentarios)) {
+if (actividad.infoc_observaciones_docente && actividad.infoc_observaciones_docente.trim() !== '') {
+  comentarios = [actividad.infoc_observaciones_docente.trim()];
+} else if (Array.isArray(actividad.comentarios)) {
   comentarios = actividad.comentarios;
-} else if (typeof actividad.comentarios === "string") {
+} else if (typeof actividad.comentarios === 'string' && actividad.comentarios.trim() !== '') {
   try {
     const parsed = JSON.parse(actividad.comentarios);
-    if (Array.isArray(parsed)) {
-      comentarios = parsed;
-    } else {
-      comentarios = [actividad.comentarios]; // fallback a string plano
-    }
+    comentarios = Array.isArray(parsed) ? parsed : [actividad.comentarios];
   } catch {
-    comentarios = [actividad.comentarios]; // no era JSON válido, usar como string simple
+    comentarios = [actividad.comentarios];
   }
 }
 ---
 
+<!-- Card -->
 <div
-  class={`relative p-4 rounded-xl shadow ${color} text-white flex flex-col justify-between w-full min-h-[280px]`}
-  data-asignatura={actividad.nombre_asignatura}
-  data-fecha={new Date(actividad.fecha_entrega).toISOString().split("T")[0]}
+  class={`relative p-4 rounded-xl shadow ${color} text-white flex flex-col w-full min-h-[320px]`}
+  data-asignatura={actividad.nombre_asignatura ?? 'N/A'}
+  data-fecha={fISO(fechaEnt)}
+  data-actividad-id={String(actividad.id_actividad)}
+  aria-label={`Actividad ${actividad.act_nombre}`}
 >
-  <div>
-    <h3 class="text-lg font-semibold mb-10 text-center mt-8">{actividad.titulo_actividad}</h3>
-    <p class="text-sm opacity-90 mb-10 text-center">Asignatura: {actividad.nombre_asignatura}</p>
-    <p class="text-sm opacity-90 text-center">Entrega: {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
+  <div class="flex items-start justify-between">
+    <span class={`px-2 py-0.5 text-xs rounded ${chipCategoriaClass}`}>{actividad.act_categoria}</span>
+
+    <div class="flex items-center gap-2">
+      {typeof diasRestantes === 'number' && (
+        <span class={`px-2 py-0.5 text-[10px] rounded ${diasRestantes >= 0 ? 'bg-black/20' : 'bg-black/30'} text-white`} title="Días restantes">
+          {diasRestantes >= 0 ? `${diasRestantes} días` : `${Math.abs(diasRestantes)} días tarde`}
+        </span>
+      )}
+
+      {estadoBadge && (
+        <span class={`px-2 py-0.5 text-xs rounded ${chipEstadoClass}`}>{estadoBadge}</span>
+      )}
+    </div>
   </div>
 
-  <button
-    class="bg-white text-black mt-4 px-4 py-1 rounded ver-detalles"
-    data-id={actividad.id_actividad}
-  >
-    Ver detalles
-  </button>
+  <div class="mt-3 flex-1">
+    <h3 class="text-lg font-semibold mb-1 text-center leading-tight">{actividad.act_nombre}</h3>
+    <p class="text-sm opacity-90 mb-1 text-center">Asignatura: {actividad.nombre_asignatura ?? '—'}</p>
+    <p class="text-sm opacity-90 text-center">Entrega: {fLocal(fechaEnt)}</p>
+
+    {typeof actividad.infoc_nota === 'number' && (
+      <p class="text-sm text-center mt-1">
+        Nota: <span class="font-semibold">{actividad.infoc_nota.toFixed(1)}</span>
+        {actividad.infoc_estado ? ` (${actividad.infoc_estado})` : ''}
+      </p>
+    )}
+
+    {mostrarDocente && actividad.nombre_docente && (
+      <p class="text-xs opacity-90 text-center mt-1">Docente: {actividad.nombre_docente}</p>
+    )}
+  </div>
+
+  <!-- Pie de acciones -->
+  {mostrarAcciones && (
+    <div class="mt-3 flex flex-wrap items-center justify-center gap-2" data-slot="acciones">
+      <button class="bg-white text-black px-3 py-1 rounded ver-detalles" data-id={actividad.id_actividad} title="Ver detalles">Ver detalles</button>
+
+      {modo === 'estudiante' && !actividad.infoc_url_entrega && (
+        <button class="bg-green-400 text-black px-3 py-1 rounded accion-entregar" data-id={actividad.id_actividad} title="Entregar">Entregar</button>
+      )}
+
+      {modo === 'docente' && (
+        <>
+          <button class="bg-blue-400 text-black px-3 py-1 rounded accion-editar" data-id={actividad.id_actividad} title="Editar">Editar</button>
+          <button class="bg-red-400 text-black px-3 py-1 rounded accion-eliminar" data-id={actividad.id_actividad} title="Eliminar">Eliminar</button>
+          {(estadoBadge === 'Entregada' || typeof actividad.infoc_nota === 'number') && (
+            <button class="bg-emerald-300 text-black px-3 py-1 rounded accion-calificar" data-id={actividad.id_actividad} title="Calificar">Calificar</button>
+          )}
+        </>
+      )}
+    </div>
+  )}
 </div>
 
 <!-- Modal -->
 <div
   id={`modal-${actividad.id_actividad}`}
-  class="hidden fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 modal-backdrop"
+  class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm items-center justify-center z-50 modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`titulo-${actividad.id_actividad}`}
 >
   <div class={`modal-content ${colorClaro} w-full max-w-md p-6 rounded-xl text-black relative shadow-lg`}>
-    <h2 class="text-xl font-bold mb-4 text-center text-white">{actividad.titulo_actividad}</h2>
-    <p class="text-white"><strong>Asignatura:</strong> {actividad.nombre_asignatura}</p>
-    <p class="text-white"><strong>Fecha publicación:</strong> {new Date(actividad.fecha_publicacion).toLocaleDateString("es-CO")}</p>
-    <p class="text-white"><strong>Fecha entrega:</strong> {new Date(actividad.fecha_entrega).toLocaleDateString("es-CO")}</p>
-    <p class="text-white"><strong>Descripción:</strong> {actividad.descripcion_actividad}</p>
-    <p class="text-white"><strong>Docente:</strong> {actividad.docente || "No registrado"}</p>
-    <p class="text-white"><strong>Comentarios:</strong></p>
-    <ul class="list-disc list-inside mb-2">
-      {comentarios.length > 0
-        ? comentarios.map((c: string) => <li class="text-white">{c}</li>)
-        : <li class="text-white">Sin comentarios</li>}
-    </ul>
+    <button class="absolute top-3 right-3 text-white/80 hover:text-white cerrar-modal" aria-label="Cerrar">✕</button>
+    <h2 id={`titulo-${actividad.id_actividad}`} class="text-xl font-bold mb-4 text-center text-white">{actividad.act_nombre}</h2>
+
+    <div class="space-y-1">
+      <p class="text-white"><strong>Asignatura:</strong> {actividad.nombre_asignatura ?? '—'}</p>
+      <p class="text-white"><strong>Fecha publicación:</strong> {fLocal(fechaPub)}</p>
+      <p class="text-white"><strong>Fecha entrega:</strong> {fLocal(fechaEnt)}</p>
+      <p class="text-white"><strong>Categoría:</strong> {actividad.act_categoria}</p>
+      <p class="text-white"><strong>Descripción:</strong> {actividad.act_descripcion ?? '—'}</p>
+
+      {mostrarDocente && actividad.nombre_docente && (
+        <p class="text-white"><strong>Docente:</strong> {actividad.nombre_docente}</p>
+      )}
+
+      {mostrarRecurso && actividad.nombre_recurso && (
+        <p class="text-white">
+          <strong>Recurso:</strong> {actividad.nombre_recurso} {actividad.tipo_recurso ? `(${actividad.tipo_recurso})` : ''}
+          {actividad.desc_recurso ? ` — ${actividad.desc_recurso}` : ''}
+        </p>
+      )}
+
+      {actividad.infoc_url_entrega && (
+        <p class="text-white break-all"><strong>URL Entrega:</strong> {actividad.infoc_url_entrega}</p>
+      )}
+
+      {typeof actividad.infoc_nota === 'number' && (
+        <p class="text-white"><strong>Nota:</strong> {actividad.infoc_nota.toFixed(1)} {actividad.infoc_estado ? `(${actividad.infoc_estado})` : ''}</p>
+      )}
+
+      <p class="text-white"><strong>Comentarios:</strong></p>
+      <ul class="list-disc list-inside mb-2">
+        {comentarios.length > 0 ? comentarios.map((c) => <li class="text-white">{c}</li>) : <li class="text-white">Sin comentarios</li>}
+      </ul>
+    </div>
   </div>
 </div>
+
+<script type="module">
+  // Utilidad para emitir eventos hacia el padre (grid del dashboard)
+  const emit = (el, nombre, detalle) => {
+    const ev = new CustomEvent(nombre, { bubbles: true, detail: detalle });
+    el.dispatchEvent(ev);
+  };
+
+  // Scoping por card (soporta múltiples en la página)
+  const root = document.currentScript?.previousElementSibling?.previousElementSibling?.previousElementSibling;
+  // root -> <div class="relative ..."> (card)
+  if (root) {
+    const actividadId = root.getAttribute('data-actividad-id');
+    const modal = document.getElementById(`modal-${actividadId}`);
+    const btnVer = root.querySelector('.ver-detalles');
+
+    // Abrir modal
+    btnVer?.addEventListener('click', () => {
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      emit(root, 'actividad:ver', { id: Number(actividadId) });
+    });
+
+    // Cerrar modal en backdrop o botón cerrar
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal || (e.target instanceof Element && e.target.classList.contains('cerrar-modal'))) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+
+    // Escape para cerrar
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    });
+
+    // Acciones del pie (se emiten al padre)
+    root.querySelector('.accion-entregar')?.addEventListener('click', () => {
+      emit(root, 'actividad:entregar', { id: Number(actividadId) });
+    });
+    root.querySelector('.accion-editar')?.addEventListener('click', () => {
+      emit(root, 'actividad:editar', { id: Number(actividadId) });
+    });
+    root.querySelector('.accion-eliminar')?.addEventListener('click', () => {
+      emit(root, 'actividad:eliminar', { id: Number(actividadId) });
+    });
+    root.querySelector('.accion-calificar')?.addEventListener('click', () => {
+      emit(root, 'actividad:calificar', { id: Number(actividadId) });
+    });
+  }
+</script>

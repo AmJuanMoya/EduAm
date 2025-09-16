@@ -1,54 +1,79 @@
 ---
+export const prerender = false;
 import General from "../layouts/general.astro"
-import Panelnav from "../components/navigation/panelnav.astro"
 import ButtonA from "../components/general/button_a.astro"
 import { fade } from 'astro:transitions';
-// import { slide } from "astro:transitions";
+import Navbar from "../components/general/navbar.astro"
+
 ---
 <!-- ESte Es el Home -->
 
 <General>
+    <Navbar>
+        <!-- <ButtonA name="iniciar sesión" customclass="bg-sky-900/60" dir="../login/login"/> -->
+        <ButtonA dir="/login/login" name="Ingresar" customclass="px-10 py-3 rounded-4xl bg-indigo-900/90"  />
+        <ButtonA dir="/Acudientes/listarAcudientes" name="Acudientes" customclass="px-10 py-3 bg-sky-300/40" />
+    </Navbar>
 <!-- <Panelnav name="consultas" direccion="/consultas"/> -->
-<img class="absolute size-300  -ml-50 -mt-50 -z-20 rotate-45 opacity-5 object-cover" src="/logoam.png" alt="Logo Eduam">
-    <div class="h-[95%] px-5 pt-5 ">
-    <section class=" h-80 p-3 mb-5 flex justify-center">
-    <div class="text-center ">
+<img class="absolute size-300  -ml-50 -mt-50 -z-20 rotate-40 opacity-5 object-cover" src="/logoam.png" alt="Logo Eduam">
+    <section class="h-[95%] px-5 pt-5 flex flex-col ">
+        
+    <section class=" w-full h-30 p-3 mb-5 flex justify-center">
+    <div class="text-center  ">
 
         <div class="flex justify-center">
             <svg class="size-20 text-gray-800 dark:text-blue-600 fill-blue-600 text-shadow-md drop-shadow-blue-600 drop-shadow-md" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.6" d="M12 10.0419c-1.3902 0-1.3935-1.1249-4.20643-1.037-1.73056.05408-3.15551 2.2303-2.71168 5.3081C5.35949 16.2381 6.98619 21 8.99172 21c2.00548 0 2.07358-.8508 3.00828-.8508.9347 0 .8551.8508 3.0083.8508s3.6322-4.7619 3.9098-6.687c.4438-3.0778-.9811-5.25402-2.7117-5.3081-2.8129-.0879-2.8162 1.037-4.2064 1.037Zm2.3598-4.2126c-.8779.74829-1.8612.71957-2.7221.71957 0-.62576.0792-1.94012.8609-2.76911.7817-.82898 2.1271-.7664 2.6434-.7664 0 .59448.0956 2.06766-.7822 2.81594Z"/>
             </svg>
                </div>
-        <h1 class="text-5xl font-semibold"> Edu<span class="text-blue-600">Am</span>  </h1cl>
+        <h1 class="text-5xl font-semibold"> Edu<span class="text-blue-600">Am</span>  </h1>
 
         
     </div>
     </section>
-        <div class="panel-block text-center">
-                <div>
-                 <code class="dark:bg-blue-950/70 bg-blue-300/70 p-0.5 px-2 rounded-md w-fit  text-blue-500"> Paginas disponibles por el momento. </code>
-                </div>
-                <div>
-                 <code class="dark:bg-yellow-300/20 bg-yellow-300/20 p-0.1 px-2 rounded-sm italic  text-yellow-300 w-fit"> -- Trabajo en progreso -- </code>
-                </div>
-            <div class=" p-5 flex justify-center">
-                <ButtonA name="Registros" dir="/consultas" idbutton="btn1" tool={true} toolContent="Tooltip 1" />
-                <ButtonA name="Login" dir="/login" idbutton="btn2" tool={true} toolContent="Tooltip 2" />
-                <ButtonA name="Cursos" dir="/Cursos/cursos" idbutton="btn3" tool={true} toolContent="Tooltip 3" />
+
+    
+    <section class="my-3 p-2 flex justify-center gap-5">
+
+    </section>
+
+        <section class="  rounded-2xl panel-block px-5 py-3 flex justify-around gap-10 bg-linear-to-r from-blue-600/5 to-blue-900/30">
+         <div class=" flex flex-col justify-center   dark:text-blue-50"> 
+            <h2 class=" font-semibold text-5xl mb-5">Con Eduam</h2>
+            <p class="text-[1.3rem]  p-2"> <i class="opacity-70">"Enseña mas, Gestiona mejor."</i></p>
+            <p class="text-[1.3rem]  p-2"> <i class="opacity-70">"Bajarle presion al profesor, es darle mas atencion a sus estudiantes."</i></p>
+         </div>
+         <img class="size-80  mr-90" src="/logoam.png" alt="Logo Eduam">
+        </section>
+
+        <section class="dark:text-blue-200 mt-5  rounded-2xl panel-block px-5 py-15 flex justify-evenly flex-wrap  gap-10 ">
+
+
+            <div class="transition-colors   p-2 rounded-md w-75 bg-linear text-xl bg-linear-to-tl from-cyan-600/50 via-cyan-800/50 to-cyan-950/50 hover:from-cyan-600 hover:via-cyan-800">
+                <h3 class="font-bold">Actividades y Tareas</h3>
+                <p class="font-light text-lg">Gestion de tareas, calificarlas y consultarlas.</p>
             </div>
-        </div>
-    </div>
+
+            <div class="transition-colors  p-2 rounded-md w-75 bg-linear text-xl bg-linear-to-tl from-blue-600/50 via-blue-800/50 to-blue-950/50 hover:from-blue-600 hover:via-blue-800">
+                <h3 class="font-bold">Matriculas</h3>
+                <p class="font-light text-lg">Gestion de la informacion matricula del estudiante, seguimiento e  historial.</p>
+            </div>
+
+            <div class="transition-colors  p-2 rounded-md w-75 bg-linear text-xl bg-linear-to-tl from-violet-600/50 via-violet-800/50 to-violet-950/50 hover:from-violet-600 hover:via-violet-800">
+                <h3 class="font-bold">Informes Academicos</h3>
+                <p class="font-light text-lg">Consulte una variedad de informes prediseñados para evaluar las metricas de la institucion. o exporte los datos para sus necesidades.</p>
+            </div>
+
+            <div class="transition-colors  p-2 rounded-md w-75 bg-linear text-xl bg-linear-to-tl from-fuchsia-600/50 via-fuchsia-800/50 to-fuchsia-950/50 hover:from-fuchsia-600 hover:via-fuchsia-800">
+                <h3 class="font-bold">Accesibilidad Para padres.</h3>
+                <p class="font-light text-lg">Facilidad de consulta del estado academico del estudiante por parte del acudiente o padre de familia.</p>
+            </div>
+
+
+        </section>
+    
 
     
 </General> 
 
 
-
-<!-- <style>
-.panel{
-    /* background-color: #962c2c; */
-    width: 50%;
-    margin: 10% auto;
-}
-
-</style> -->

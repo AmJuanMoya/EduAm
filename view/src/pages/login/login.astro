@@ -1,0 +1,201 @@
+---
+import General from "../../layouts/general.astro";
+import Navbar from "../../components/general/navbar.astro";
+export const prerender = false
+---
+
+
+<General>
+    <!-- <div class="-z-2 blur-2xl hue-rotate-60" >
+        <img src="../../../imgs/estudiantes.jpg" alt="Fondo estudiantes" class="w-full h-full object-cover  " />
+    </div> -->
+    
+    <Navbar></Navbar>
+    
+       
+       
+
+    <!-- Contenido principal centrado en la pantalla -->
+    <div class="  relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8">
+        <img src="../../../imgs/estudiantes.jpg" alt="Fondo estudiantes" class="w-full h-[99%] object-cover absolute blur-xs  " />
+        <span class=" h-full w-full absolute bg-blue-950 mix-blend-multiply blur-xs "></span>
+        <!-- Sección del escudo y la frase -->
+        <div class="flex flex-col items-center mb-8 text-center animate-slide-in-up">
+            <!-- Escudo con efecto flotante -->
+            <div class="animate-float mb-4 ">
+                <img src="/logoam.png" alt="Escudo Colegio" class="w-32 md:w-40 drop-shadow-2xl rounded-full " />
+            </div>
+            <!-- <div class="bg-blue-50 backdrop-blur-md border border-white/20 px-6 py-3  rounded-sm">
+                <p class=" text-lg md:text-xl font-bold tracking-wide text-blue-800">"UNA VIDA PARA LA EXCELENCIA"</p>
+            </div> -->
+        </div>
+
+        <!-- Contenedor del formulario de inicio de sesión -->
+        <div class="backdrop-blur-xl  bg-slate-800   shadow-2xl p-8 md:p-10 rounded-lg w-full max-w-sm md:max-w-md animate-slide-in-up" style="animation-delay: 0.2s;">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold  mb-2">Bienvenido</h2>
+                <p class="">Ingresa tus credenciales para continuar</p>
+            </div>
+
+            <!-- Formulario de acceso -->
+            <form id="loginForm" class="space-y-6 ">
+                <!-- Campo de entrada para el usuario (correo) -->
+                <div class="relative group">
+                    <input 
+                        type="email" 
+                        id="correo_usuario" 
+                        name="correo_usuario" 
+                        class="peer block w-full appearance-none border-2 border-gray-200 bg-white/90 px-4 pb-3 pt-6 text-sm text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300 ease-in-out hover:bg-white focus:transform focus:-translate-y-0.5 focus:shadow-lg" 
+                        placeholder=" " 
+                        required 
+                    />
+                    <label 
+                        for="correo_usuario" 
+                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600 transition-all ease-in-out"
+                    >
+                        <i class="fas fa-envelope mr-2"></i>Correo Electrónico
+                    </label>
+                    <p id="error-correo_usuario" class="text-red-500 text-sm mt-1 hidden animate-pulse"></p>
+                </div>
+
+                <!-- Campo de entrada para la contraseña -->
+                <div class="relative group">
+                    <input 
+                        type="password" 
+                        id="contraseña_usuario" 
+                        name="contraseña_usuario" 
+                        class="peer block w-full appearance-none border-2 border-gray-200 bg-white/90 px-4 pb-3 pt-6 text-sm text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-300 ease-in-out hover:bg-white focus:transform focus:-translate-y-0.5 focus:shadow-lg" 
+                        placeholder=" " 
+                        required 
+                    />
+                    <label 
+                        for="contraseña_usuario" 
+                        class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-blue-600 transition-all ease-in-out"
+                    >
+                        <i class="fas fa-lock mr-2"></i>Contraseña
+                    </label>
+                    <p id="error-contraseña_usuario" class="text-red-500 text-sm mt-1 hidden animate-pulse"></p>
+                </div>
+
+                <!-- Enlace para recuperar contraseña -->
+                <div class="flex justify-end">
+                    <a href="contrasena" class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
+                <!-- Botón de acceso -->
+                <button 
+                    type="submit" 
+                    class="w-full bg-blue-500 text-white font-semibold rounded-xl text-sm px-6 py-4 text-center transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:bg-blue-800  active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                    <span class="flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Iniciar Sesión
+                    </span>
+                </button>
+
+                <!-- Separador -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <!-- <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">O continúa con</span>
+                    </div> -->
+                </div>
+
+                <!-- Botones sociales -->
+
+
+                <!-- Enlace para volver al inicio -->
+                <div class="text-center mt-6">
+                    <a href="/" class="text-sm text-gray-600 hover:text-blue-600 hover:underline transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-1"></i>
+                        Volver al inicio
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para mensajes de estado mejorado -->
+    <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full transform transition-all scale-95 duration-300 border border-gray-200">
+            <div class="text-center">
+                <div id="modalIcon" class="text-6xl mb-4"></div>
+                <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gray-900 dark:text-white"></h3>
+                <p id="modalMessage" class="text-gray-700 dark:text-gray-300 mb-6"></p>
+                <button id="closeModalBtn" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200 transform hover:scale-105">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome para iconos -->
+
+
+    <script>
+// import { effect } from "astro:schema";
+
+        const loginForm = document.getElementById('loginForm');
+        const correoInput = document.getElementById('correo_usuario');
+        const passwordInput = document.getElementById('contraseña_usuario');
+
+        const statusModal = document.getElementById('statusModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+
+        loginForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('Formulario enviado');
+            let loginData = {
+                correo_usuario: correoInput.value.trim(),
+                contraseña_usuario: passwordInput.value.trim()
+            };
+            console.log(loginData);
+
+            fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json()) 
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+
+                if(data.error){
+                    alert(data.error)
+                }
+                
+                if(data.rol === 3){
+                    // Redirigir a la página de administrador
+                    window.location.href = '/estudiantes/perfilestudiante';
+                }
+                if(data.rol === 2){
+                    // Redirigir a la página de administrador
+                    window.location.href = '/docentes/perfildocente';
+                }
+
+
+
+            })
+            .catch(error => {
+                console.error('Error al enviar el formulario:', error);
+                alert("Error de conexion con el servidor")
+            });
+
+        })
+
+
+    </script>
+
+
+
+</General>
