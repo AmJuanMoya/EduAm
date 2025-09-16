@@ -1,5 +1,5 @@
 import express from 'express';
-
+import t_matricula from "../../model/t_matricula.js"
 
 
 let router = express.Router();
@@ -19,7 +19,7 @@ router.delete("/datos/matricula/:doc", async (req, res) => {
         const doc = req.params.doc;
         console.log(`Solicitud para eliminar matrícula con documento: ${doc}`);
         
-        const crud = new matricula();
+        const crud = new t_matricula;
         const resultado = await crud.delete_matricula(doc);
 
         if (resultado.affectedRows === 0) {
@@ -36,8 +36,8 @@ router.delete("/datos/matricula/:doc", async (req, res) => {
 router.get("/datos/matricula", async(req, res )=>{
     try{
         console.log("Se traen matriculas...")
-        let m = new matricula
-        let datos = await m.getMatricula()
+        let m = new t_matricula()
+        let datos = await m.obtenerTodasMatriculas()
         if(datos.length <= 0){ 
             res.json({error: "No hay matriculas para mostrar"})
         }else{
@@ -45,7 +45,7 @@ router.get("/datos/matricula", async(req, res )=>{
             console.log("Se envia lista de matriculas")
         }
     }catch(err){
-        res.status(500).json({error: "error al traer los datos"})
+        res.status(500).json({error: "error al traer las matriculas"})
         console.log("error al enviar las matriculas, vease...: ", err)
     }
 })

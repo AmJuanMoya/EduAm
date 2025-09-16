@@ -9,18 +9,6 @@ const envPath = resolve(__dirname, '../../.env');
 
 dotenv.config({ path: envPath });
 
-
-
-// Verificación temporal de variables de entorno
-// console.log('Variables de entorno:', {
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     database: process.env.DB_NAME,
-//     port: process.env.DB_PORT
-// });
-
-// Cargar variables de entorno
-
 class Database {
     constructor() {
       this.connection = null;
@@ -35,7 +23,7 @@ class Database {
       this.db_user = process.env.DB_USER || 'root';
       this.db_name = process.env.DB_NAME || 'eduam';
       this.db_port = process.env.DB_PORT || 3306;
-    //   this.db_password = process.env.DB_PASSWORD 
+      this.db_password = process.env.DB_PASSWORD 
     }
 
     async connect() {
@@ -51,7 +39,7 @@ class Database {
                 user: this.db_user,
                 database:this.db_name,
                 port:  this.db_port ,
-                // password: this.db_password
+                password: this.db_password
                 // connectTimeout: 30000
             };
             

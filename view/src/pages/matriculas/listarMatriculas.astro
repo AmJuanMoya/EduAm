@@ -1,240 +1,167 @@
 ---
-// Parte de servidor de Astro
 import Panelnav from "../../components/navigation/panelnav.astro";
+import Navbar from "../../components/general/navbar.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import ModalMatricula from "../../components/modalMatricula/modal.astro";
 
-// Esto se ejecuta en el servidor al renderizar la página
-let todasLasMatriculas = [];
-
-try {
-  const response = await fetch("http://localhost:3000/api/datos/matricula");
-  todasLasMatriculas = await response.json();
-} catch (error) {
-  console.error("Error al obtener las matrículas:", error);
-}
 ---
 
+<!-- <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />  -->
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
 
 <General>
+<Navbar></Navbar>
+<Panelnav></Panelnav> 
+
+<div class="border m-5 p-3 h-screen">
+<h1 class="flex justify-center font-bold text-2xl">Matriculas</h1>
+
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+  <table id="data-table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">ID Documento</th>
+        <th scope="col" class="px-6 py-3">Nombre</th>
+        <th scope="col" class="px-6 py-3">Apellido</th>
+        <th scope="col" class="px-6 py-3">Año Matrícula</th>
+        <th scope="col" class="px-6 py-3">Grado</th>
+        <th scope="col" class="px-6 py-3">Repite</th>
+        <th scope="col" class="px-6 py-3">Traslado</th>
+        <th scope="col" class="px-6 py-3">Estado</th>
+        <th scope="col" class="px-6 py-3">Jornada</th>
+      </tr>
+    </thead>
+    <tbody id="tbodyMatriculas" class="divide-y divide-gray-200 dark:divide-gray-700">
+      <!-- se rellena desde JS -->
+    </tbody>
+  </table>
+</div>
+</div>
+
+<script type="module">
+(async function () {
+  // DOM
+  const table = document.getElementById("data-table");
+  const tbody = document.getElementById("tbodyMatriculas");
   
-  <Panelnav />
-  <div class="flex min-h-screen bg-[#0A0E22] text-gray-100">
+  let datatable = null;
+  let matriculas = [];
 
-    <Asidebar />
-  
-    <div class="flex-1 p-6">
-    
-      <h1 class="text-3xl font-bold mb-6">Listado de Matrículas</h1>
+  const DATATABLE_OPTIONS = {
+    searchable: true,
+    fixedHeight: true,
+    perPage: 10,
+    perPageSelect: [3, 5, 10, 15, 20],
+    labels: {
+      placeholder: "Buscar...",
+      perPage: "Registros por página",
+      noRows: "No hay matrículas para mostrar",
+      info: "Mostrando {start} a {end} de {rows} registros",
+    },
+  };
 
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-        <input
-          id="buscar"
-          type="text"
-          placeholder="Buscar por nombre o documento"
-          class="px-3 py-2 rounded bg-gray-800 border border-gray-600 w-full sm:w-64 text-sm placeholder:text-gray-400"
-        />
+  // Cargar datos + (re)inicializar datatable
+  async function cargarMatriculas() {
+    if (datatable && typeof datatable.destroy === "function") {
+      try { datatable.destroy(); } catch {}
+      datatable = null;
+    }
 
-        <div class="text-sm">
-          <label for="cantidad" class="mr-2">Registros por página:</label>
-          <select
-            id="cantidad"
-            class="bg-gray-800 border border-gray-600 rounded px-4 py-2 text-base w-32"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="contenedor" class="bg-[#0A0E22] shadow rounded-lg p-4 overflow-x-auto">
-        <p class="text-gray-400">Cargando matrículas...</p>
-      </div>
-    </div>
-  </div>
-
-  <ModalMatricula />
-
-  <script type="module">
-
-    const contenedor = document.getElementById("contenedor");
-    const buscarInput = document.getElementById("buscar");
-    const cantidadSelect = document.getElementById("cantidad");
-    
-
-    let todasLasMatriculas = [];
-    let registrosPorPagina = parseInt(cantidadSelect.value);
-    let paginaActual = 1;
-    let criterioOrden = "id_matricula";
-    let ordenAscendente = true;
-
-
-    const getColorClase = (estado) => {
-      switch (estado) {
-        case "Activa": return "bg-green-600 text-white";
-        case "Pendiente": return "bg-gray-500 text-white";
-        case "Cancela": return "bg-red-600 text-white";
-        case "Retirada": return "bg-yellow-400 text-black";
-        case "Condicional": return "bg-blue-600 text-white";
-        default: return "bg-gray-700 text-white";
-      }
-    };
-
-    async function cargarMatriculas() {
     try {
       const res = await fetch("http://localhost:3000/api/datos/matricula");
-      const data = await res.json();
-      todasLasMatriculas = data;
-      window.__TODAS_MATRICULAS = data; // 🔥 Aquí
-      renderizarTabla();
-    } catch (error) {
-      contenedor.innerHTML = "<p class='text-red-500'>Error al cargar los datos.</p>";
-      console.error("Error:", error);
-    }
-  }
-
-
-    function renderizarTabla() {
-      const filtro = buscarInput.value.toLowerCase();
-      const filtrados = todasLasMatriculas.filter(m =>
-        `${m.estu_nombre} ${m.estu_apellido}`.toLowerCase().includes(filtro) ||
-        String(m.id_documento).includes(filtro)
-      );
-
-      if (criterioOrden) {
-        filtrados.sort((a, b) => {
-          const valorA = a[criterioOrden];
-          const valorB = b[criterioOrden];
-          return ordenAscendente ? (valorA > valorB ? 1 : -1) : (valorA < valorB ? 1 : -1);
-        });
-      }
-
-      const inicio = (paginaActual - 1) * registrosPorPagina;
-      const fin = inicio + registrosPorPagina;
-      const pagina = filtrados.slice(inicio, fin);
-
-      if (pagina.length === 0) {
-        contenedor.innerHTML = "<p class='text-gray-400'>No hay resultados.</p>";
-        return;
-      }
-
-      let tablaHTML = `
-        <table class="min-w-full table-auto text-sm bg-[#0A0E22] text-white">
-          <thead class="bg-gray-700 text-gray-100 uppercase text-xs">
-            <tr class="border-b border-white/10">
-              <th class="px-4 py-2 text-left cursor-pointer" data-orden="id_documento">Documento</th>
-              <th class="px-4 py-2 text-left cursor-pointer" data-orden="primer_nombre_estudiante">Estudiante</th>
-              <th class="px-4 py-2 text-left">Estado</th>
-              <th class="px-4 py-2 text-left">Jornada</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${pagina.map(m => `
-              <tr class="border-b border-white/10 hover:bg-white/5 cursor-pointer fila-matricula" data-doc="${m.documento_estudiante}">
-                <td class="px-4 py-2">${m.id_documento}</td>
-                <td class="px-4 py-2">${m.estu_nombre} ${m.estu_apellido}</td>
-                <td class="px-4 py-2">
-                  <span class="px-2 py-1 rounded-full text-xs font-semibold ${getColorClase(m.matr_estado)}">
-                    ${m.matr_estado}
-                  </span>
-                </td>
-                <td class="px-4 py-2">${m.matr_jornada}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-        <p class="mt-4 text-sm text-gray-400">Mostrando ${pagina.length} de ${filtrados.length} resultados.</p>
-      `;
-
-      contenedor.innerHTML = tablaHTML;
-
-      const paginacion = document.createElement("div");
-      paginacion.className = "flex items-center justify-center gap-2 mt-4";
-
-      const totalPaginas = Math.ceil(filtrados.length / registrosPorPagina);
-
-      if (totalPaginas > 1) {
-        const crearBoton = (texto, pagina, deshabilitado = false) => {
-          const btn = document.createElement("button");
-          btn.textContent = texto;
-          btn.className = `px-3 py-1 rounded ${paginaActual === pagina ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-100 hover:bg-gray-600'} ${deshabilitado ? 'opacity-50 cursor-not-allowed' : ''}`;
-          if (!deshabilitado) {
-            btn.addEventListener("click", () => {
-              paginaActual = pagina;
-              renderizarTabla();
-            });
-          }
-          return btn;
-        };
-
-        paginacion.appendChild(crearBoton("Anterior", paginaActual - 1, paginaActual === 1));
-
-        for (let i = 1; i <= totalPaginas; i++) {
-          paginacion.appendChild(crearBoton(i, i));
-        }
-
-        paginacion.appendChild(crearBoton("Siguiente", paginaActual + 1, paginaActual === totalPaginas));
-      }
-
-      contenedor.appendChild(paginacion);
-
-
-      document.querySelectorAll("th[data-orden]").forEach(th => {
-        th.addEventListener("click", () => {
-          const campo = th.dataset.orden;
-          if (criterioOrden === campo) {
-            ordenAscendente = !ordenAscendente;
-          } else {
-            criterioOrden = campo;
-            ordenAscendente = true;
-          }
-          renderizarTabla();
-        });
-      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      matriculas = await res.json();
+      console.log("Datos cargados:", matriculas);
+    } catch (err) {
+      console.error("Error cargando matrículas:", err);
+      tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-3 text-center text-gray-400">Error cargando matrículas</td></tr>`;
+      return;
     }
 
-  
-  document.addEventListener("click", (e) => {
-  const fila = e.target.closest(".fila-matricula");
-  if (fila) {
-    const documento = fila.dataset.doc;
-    const matricula = todasLasMatriculas.find(m => String(m.documento_estudiante) === documento);
-    if (!matricula) return;
-
-    // Mostrar el modal y pasarle los datos
-    window.mostrarModalMatricula(matricula);
+    renderRows();
+    datatable = new simpleDatatables.DataTable("#data-table", DATATABLE_OPTIONS);
   }
-});
 
+  // Render filas
+  function renderRows() {
+    tbody.innerHTML = "";
+    if (!Array.isArray(matriculas) || matriculas.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="px-4 py-3 text-center text-gray-400">No hay matrículas registradas</td></tr>`;
+      return;
+    }
 
-// Cerrar el modal al hacer clic en la X
-document.addEventListener("DOMContentLoaded", () => {
-  const cerrar = document.getElementById("cerrarModalBtn");
-  if (cerrar) {
-    cerrar.addEventListener("click", () => {
-      const modal = document.getElementById("modalMatricula");
-      modal.classList.add("hidden");
+    const frag = document.createDocumentFragment();
+    matriculas.forEach(m => {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-gray-100 dark:hover:bg-gray-700";
+
+      const td = (txt, cls = "") => {
+        const cell = document.createElement("td");
+        cell.className = `px-4 py-3 border-b border-gray-200 dark:border-gray-700 ${cls} text-gray-550 dark:text-gray-400`.trim();
+        cell.textContent = txt ?? "";
+        return cell;
+      };
+
+      tr.appendChild(td(m.id_documento));
+      tr.appendChild(td(m.estu_nombre));
+      tr.appendChild(td(m.estu_apellido));
+      tr.appendChild(td(new Date(m.matr_anio).toLocaleDateString()));
+      tr.appendChild(td(m.nombre_grado));
+      
+      // Repite
+      const repiteTd = document.createElement("td");
+      repiteTd.className = "px-4 py-3 border-b border-gray-200 dark:border-gray-700";
+      const repiteSpan = document.createElement("span");
+      repiteSpan.className = `text-xs font-medium px-2.5 py-0.5 rounded ${
+        m.matr_repite === 1 
+          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' 
+          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+      }`;
+      repiteSpan.textContent = m.matr_repite === 1 ? 'Sí' : 'No';
+      repiteTd.appendChild(repiteSpan);
+      tr.appendChild(repiteTd);
+
+      // Traslado
+      const trasladoTd = document.createElement("td");
+      trasladoTd.className = "px-4 py-3 border-b border-gray-200 dark:border-gray-700";
+      const trasladoSpan = document.createElement("span");
+      trasladoSpan.className = `text-xs font-medium px-2.5 py-0.5 rounded ${
+        m.matr_traslado === 1 
+          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
+          : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+      }`;
+      trasladoSpan.textContent = m.matr_traslado === 1 ? 'Sí' : 'No';
+      trasladoTd.appendChild(trasladoSpan);
+      tr.appendChild(trasladoTd);
+
+      // Estado
+      const estadoTd = document.createElement("td");
+      estadoTd.className = "px-4 py-3 border-b border-gray-200 dark:border-gray-700";
+      const estadoSpan = document.createElement("span");
+      estadoSpan.className = `text-xs font-medium px-2.5 py-0.5 rounded ${
+        m.matr_estado === 'Activa' 
+          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+          : m.matr_estado === 'Condicionada'
+          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+          : m.matr_estado === 'Cancelada'
+          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+          : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+      }`;
+      estadoSpan.textContent = m.matr_estado;
+      estadoTd.appendChild(estadoSpan);
+      tr.appendChild(estadoTd);
+
+      tr.appendChild(td(m.matr_jornada));
+
+      frag.appendChild(tr);
     });
+
+    tbody.appendChild(frag);
   }
-});
 
-
-    buscarInput.addEventListener("input", () => {
-      paginaActual = 1;
-      renderizarTabla();
-    });
-
-    cantidadSelect.addEventListener("change", () => {
-      registrosPorPagina = parseInt(cantidadSelect.value);
-      paginaActual = 1;
-      renderizarTabla();
-    });
-
-    cargarMatriculas();
-    window.__TODAS_MATRICULAS = todasLasMatriculas; 
-  </script>
+  // Init
+  await cargarMatriculas();
+})();
+</script>
 </General>

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Acudiente from "../../model/t_acudientes.js";
+import t_acudientes from "../../model/t_acudientes.js";
 import Crud from "../../model/database/crudsql.js";
 
 const router = Router() 
@@ -38,9 +38,10 @@ router.post("/datos/acudiente", async (req, res) => {
 
 router.get("/datos/acudientes", async (req, res) => {
   try {
-    const acudientes = await new Acudiente().getAcudientes();
+    const acudientes =  new t_acudientes
+    let result = await acudientes.obtenerTodosAcudientes()
     // console.log("Acudientes recibidos:", acudientes);
-    res.json(acudientes);
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al obtener acudientes" });

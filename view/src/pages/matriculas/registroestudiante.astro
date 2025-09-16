@@ -3,206 +3,244 @@ import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 ---
 
-
 <General>
-<section class="border flex ">
+<section class="min-h-screen flex flex-col lg:flex-row">
   <Asidebar/>
 
-  <div class="border border-blue-500 w-full m-5 rounded-lg shadow-lg  p-8">
-    <p class="text-2xl font-bold text-blue-700 mb-6">Registro de Matricula para el estudiante</p>
-    <form id="registroForm" class="space-y-6">
-      <fieldset class="border bg-blue-700/10">
-        <legend>
-          <h2 class="font-bold text-blue-600 text-lg mb-2">Datos del Estudiante</h2>
-        </legend>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4  m-2">
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Documento:</label>
-            <input type="number" name="id_docuestudiante" required placeholder="Número de documento" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Nombre:</label>
-            <input type="text" name="estu_nombre" required placeholder="Nombres completos" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Apellido:</label>
-            <input type="text" name="estu_apellido" required placeholder="Apellidos completos" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Edad:</label>
-            <input type="number" name="estu_edad" required placeholder="Edad" min="1" max="120" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Género:</label>
-            <select name="estu_genero" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione género</option>
-              <option value="MASCULINO">Masculino</option>
-              <option value="FEMENINO">Femenino</option>
-              <option value="OTRO">Otro</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Tipo de documento:</label>
-            <select name="estu_tipo_documento" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione tipo</option>
-              <option value="CC">CC</option>
-              <option value="TI">TI</option>
-              <option value="CE">CE</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Estado:</label>
-            <select name="estu_estado" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione estado</option>
-              <option value="Activo">Activo</option>
-              <option value="Bloqueado">Bloqueado</option>
-              <option value="Pendiente">Pendiente</option>
-              <option value="Inactivo">Inactivo</option>
-              <option value="Condicionado">Condicionado</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Observaciones del estudiantes:</label>
-            <textarea name="estu_observaciones" placeholder="Observaciones" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-inherit"></textarea>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Correo:</label>
-            <input type="email" name="est_correo" placeholder="ejemplo@correo.com" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Contraseña:</label>
-            <input type="password" name="est_contrasena" required placeholder="Mínimo 6 caracteres" minlength="6" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Rol:</label>
-            <input type="number" name="estu_rol" required placeholder="ID del rol" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Acudiente:</label>
-            <input type="number" name="estu_acudiente" placeholder="ID del acudiente" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
+  <div class="flex-1 p-4 lg:p-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-blue-200 dark:border-gray-600 overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 px-6 py-8 text-white">
+          <h1 class="text-2xl lg:text-3xl font-bold mb-2">Registro de Estudiante</h1>
+          <p class="text-blue-100 dark:text-blue-200">Complete la información del estudiante</p>
         </div>
-      </fieldset>
-      <fieldset class="border bg-blue-700/10">
-        <legend>
-          <h2 class="font-bold text-blue-600 text-lg mt-8 mb-2">Datos de Matrícula</h2>
-        </legend>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-2">
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Año de matrícula:</label>
-            <input type="date" name="matr_anio" required placeholder="Fecha de matrícula" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Grado:</label>
-            <input type="number" name="matr_grado" required placeholder="ID del grado" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">¿Repite?</label>
-            <select name="matr_repite" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-              <option value="">Seleccione</option>
-              <option value="true">Sí</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">¿Traslado?</label>
-            <select name="matr_traslado" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-              <option value="">Seleccione</option>
-              <option value="true">Sí</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Estado matrícula:</label>
-            <select name="matr_estado" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-              <option value="">Seleccione estado</option>
-              <option value="Activa">Activa</option>
-              <option value="Condicionada">Condicionada</option>
-              <option value="Cancelada">Cancelada</option>
-              <option value="Pendiente">Pendiente</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Observaciones matrícula:</label>
-            <textarea name="matr_observaciones" placeholder="Observaciones" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-inherit "></textarea>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Jornada:</label>
-            <select name="matr_jornada" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione jornada</option>
-              <option value="Jornada Tarde">Jornada Tarde</option>
-              <option value="Jornada Mañana">Jornada Mañana</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Curso:</label>
-            <input type="number" name="matr_curso"  placeholder="ID del curso" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-        </div>
-      </fieldset>
-      <fieldset class="border bg-blue-700/10">
-        <legend>
-          <h2 class="font-bold text-blue-600 text-lg mt-8 mb-2">Datos del Acudiente</h2>
-        </legend>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-2">
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Documento del acudiente:</label>
-            <input type="number" name="id_documento_acudiente" required placeholder="Número de documento" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Nombres:</label>
-            <input type="text" name="acud_nombres" required placeholder="Nombres completos" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Apellidos:</label>
-            <input type="text" name="acud_apellidos" required placeholder="Apellidos completos" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Parentesco:</label>
-            <select name="acud_parentesco" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione parentesco</option>
-              <option value="Padre">Padre</option>
-              <option value="Madre">Madre</option>
-              <option value="Abuelo">Abuelo</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Teléfono:</label>
-            <input type="number" name="acud_telefono" required placeholder="Teléfono" min="1000000" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Correo:</label>
-            <input type="email" name="acud_correo" required placeholder="ejemplo@correo.com" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Dirección:</label>
-            <input type="text" name="acud_direccion" required placeholder="Dirección" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Tipo de documento:</label>
-            <select name="acud_tipo_documento" required class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50">
-              <option value="">Seleccione tipo</option>
-              <option value="CC">CC</option>
-              <option value="TI">TI</option>
-              <option value="CE">CE</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-blue-700 font-medium mb-1">Rol:</label>
-            <input type="number" name="acud_rol" required placeholder="ID del rol" min="1" class="w-full px-3 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-50" />
-          </div>
-        </div>
-      </fieldset>
-      <div id="formErrors" class="text-red-500 font-semibold mt-2"></div>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-2 rounded shadow mt-6 transition">Registrar</button>
-    </form>
+
+        <!-- Form -->
+        <form id="registroForm" class="p-6 lg:p-8">
+          <fieldset class="border-0">
+            <legend class="sr-only">Datos del Estudiante</legend>
+            
+            <!-- Grid responsivo mejorado -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+              <!-- Documento -->
+              <div class="sm:col-span-2 lg:col-span-1">
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Documento <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="number" 
+                  name="id_docuestudiante" 
+                  required 
+                  placeholder="Número de documento" 
+                  min="1" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Nombre -->
+              <div class="sm:col-span-2 lg:col-span-1">
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Nombre <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="estu_nombre" 
+                  required 
+                  placeholder="Nombres completos" 
+                  pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Apellido -->
+              <div class="sm:col-span-2 lg:col-span-1">
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Apellido <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  name="estu_apellido" 
+                  required 
+                  placeholder="Apellidos completos" 
+                  pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Edad -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Edad <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="number" 
+                  name="estu_edad" 
+                  required 
+                  placeholder="Edad" 
+                  min="1" 
+                  max="120" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Género -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Género <span class="text-red-500">*</span>
+                </label>
+                <select 
+                  name="estu_genero" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <option value="">Seleccione género</option>
+                  <option value="MASCULINO">Masculino</option>
+                  <option value="FEMENINO">Femenino</option>
+                  <option value="OTRO">Otro</option>
+                </select>
+              </div>
+
+              <!-- Tipo de documento -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Tipo de documento <span class="text-red-500">*</span>
+                </label>
+                <select 
+                  name="estu_tipo_documento" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <option value="">Seleccione tipo</option>
+                  <option value="CC">CC</option>
+                  <option value="TI">TI</option>
+                  <option value="CE">CE</option>
+                </select>
+              </div>
+
+              <!-- Estado -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Estado <span class="text-red-500">*</span>
+                </label>
+                <select 
+                  name="estu_estado" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <option value="">Seleccione estado</option>
+                  <option value="Activo">Activo</option>
+                  <option value="Bloqueado">Bloqueado</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="Inactivo">Inactivo</option>
+                  <option value="Condicionado">Condicionado</option>
+                </select>
+              </div>
+
+              <!-- Correo -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Correo electrónico
+                </label>
+                <input 
+                  type="email" 
+                  name="est_correo" 
+                  placeholder="ejemplo@correo.com" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Contraseña -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Contraseña <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="password" 
+                  name="est_contrasena" 
+                  required 
+                  placeholder="Mínimo 6 caracteres" 
+                  minlength="6" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Rol -->
+              <!-- <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Rol <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="number" 
+                  name="estu_rol" 
+                  required 
+                  placeholder="ID del rol" 
+                  min="1" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div> -->
+
+              <!-- Acudiente -->
+              <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Acudiente
+                </label>
+                <input 
+                  type="number" 
+                  name="estu_acudiente" 
+                  placeholder="ID del acudiente" 
+                  min="1" 
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600" 
+                />
+              </div>
+
+              <!-- Observaciones -->
+              <div class="sm:col-span-2 lg:col-span-3">
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2 text-sm">
+                  Observaciones del estudiante
+                </label>
+                <textarea 
+                  name="estu_observaciones" 
+                  placeholder="Observaciones adicionales..." 
+                  rows="3"
+                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 resize-none"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Mensajes de error -->
+            <div id="formErrors" class="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 font-medium hidden"></div>
+
+            <!-- Botones -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+              <button 
+                type="submit" 
+                class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-700 dark:to-blue-800 dark:hover:from-blue-800 dark:hover:to-blue-900 text-white font-bold px-8 py-4 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+              >
+                <span class="flex items-center justify-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  Registrar Estudiante
+                </span>
+              </button>
+              
+              <button 
+                type="button" 
+                onclick="window.history.back()" 
+                class="flex-1 bg-gray-500 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700 text-white font-bold px-8 py-4 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+              >
+                Cancelar
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
 
 <script>
-// import { date } from "astro:schema";
-
   document.getElementById('registroForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const form = e.target;
@@ -231,105 +269,106 @@ import Asidebar from "../../components/asidebar.astro";
     if (!data.estu_estado) {
       errors.push("Seleccione estado.");
     }
-    // if (data.est_correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.est_correo)) {
-    //   errors.push("Correo electrónico inválido.");
-    // }
+    if (data.est_correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.est_correo)) {
+      errors.push("Correo electrónico inválido.");
+    }
     if (!data.est_contrasena || data.est_contrasena.length < 6) {
       errors.push("Contraseña mínimo 6 caracteres.");
     }
-    if (!data.estu_rol || isNaN(data.estu_rol) || Number(data.estu_rol) < 1) {
-      errors.push("Rol válido requerido.");
-    }
+    // if (!data.estu_rol || isNaN(data.estu_rol) || Number(data.estu_rol) < 1) {
+    //   errors.push("Rol válido requerido.");
+    // }
     if (data.estu_acudiente && (isNaN(data.estu_acudiente) || Number(data.estu_acudiente) < 1)) {
       errors.push("Acudiente debe ser numérico.");
-    }
-    if (!data.matr_anio) {
-      errors.push("Fecha de matrícula requerida.");
-    }
-    if (!data.matr_grado || isNaN(data.matr_grado) || Number(data.matr_grado) < 1) {
-      errors.push("Grado válido requerido.");
-    }
-    if (!data.matr_repite) {
-      errors.push("Seleccione si repite.");
-    }
-    if (!data.matr_traslado) {
-      errors.push("Seleccione si es traslado.");
-    }
-    if (!data.matr_estado) {
-      errors.push("Seleccione estado de matrícula.");
-    }
-    if (!data.matr_jornada) {
-      errors.push("Seleccione jornada.");
-    }
-    // if (!data.matr_curso || isNaN(data.matr_curso) || Number(data.matr_curso) < 1) {
-    //   errors.push("Curso válido requerido.");
-    // }
-
-    // Validaciones acudiente
-    if (!data.id_documento_acudiente || isNaN(data.id_documento_acudiente) || Number(data.id_documento_acudiente) < 1) {
-      errors.push("Documento del acudiente válido requerido.");
-    }
-    if (!data.acud_nombres || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$/.test(data.acud_nombres)) {
-      errors.push("Nombres del acudiente requeridos (solo letras, mínimo 2 caracteres).");
-    }
-    if (!data.acud_apellidos || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,}$/.test(data.acud_apellidos)) {
-      errors.push("Apellidos del acudiente requeridos (solo letras, mínimo 2 caracteres).");
-    }
-    if (!data.acud_parentesco) {
-      errors.push("Seleccione parentesco del acudiente.");
-    }
-    if (!data.acud_telefono || isNaN(data.acud_telefono) || String(data.acud_telefono).length < 9) {
-      errors.push("Teléfono del acudiente válido requerido (mínimo 9 dígitos).");
-    }
-    if (!data.acud_correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.acud_correo)) {
-      errors.push("Correo electrónico del acudiente inválido.");
-    }
-    if (!data.acud_direccion || data.acud_direccion.length < 3) {
-      errors.push("Dirección del acudiente requerida.");
-    }
-    if (!data.acud_tipo_documento) {
-      errors.push("Seleccione tipo de documento del acudiente.");
-    }
-    if (!data.acud_rol || isNaN(data.acud_rol) || Number(data.acud_rol) < 1) {
-      errors.push("Rol del acudiente válido requerido.");
     }
 
     // Para mostrar errores en el registro
     const errorDiv = document.getElementById('formErrors');
     if (errors.length > 0) {
       errorDiv.innerHTML = errors.join("<br>");
+      errorDiv.classList.remove('hidden');
+      errorDiv.scrollIntoView({ behavior: 'smooth' });
       return;
     } else {
-      errorDiv.innerHTML = "";
+      errorDiv.classList.add('hidden');
     }
 
-    // Aquí debes colocar el endpoint cuando lo tengas
-    try{
-    const response = await fetch('http://localhost:3000/api/matricula/registro', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-
-    }) 
-    
-    if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
-        }
-          const dat = await response.json();
-        
-        // Tratar la respuesta
-               console.log('Respuesta del servidor:', dat);
-        
-        if (data.success) {
-            console.log(dat.message);
-        } else {
-            console.error(dat.error);
-        }
-    
-      // Puedes agregar lógica para mostrar mensaje de éxito/error
+    // Envío de datos
+    try {
+      const response = await fetch('http://localhost:3000/api/estudiantes/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
       
-    }catch(error){
-        console.error('Error en la solicitud de Am:', error);
+      const result = await response.json();
+      console.log('Respuesta del servidor:', result);
+      
+      if (response.ok) {
+        // Mostrar mensaje de éxito
+        alert('Estudiante registrado exitosamente');
+        // form.reset();
+        errorDiv.classList.add('hidden');
+      } else {
+        // Manejar errores del servidor (400, 500, etc.)
+        console.error('Error del servidor:', result);
+        
+        // Mostrar el mensaje de error del servidor
+        let errorMessage = 'Error al registrar el estudiante';
+        
+        if (result.error) {
+          errorMessage = result.error;
+        } else if (result.message) {
+          errorMessage = result.message;
+        } else {
+          // Mensajes específicos según el código de estado
+          switch (response.status) {
+            case 400:
+              errorMessage = 'Datos inválidos. Verifique la información ingresada.';
+              break;
+            case 401:
+              errorMessage = 'No autorizado. Inicie sesión nuevamente.';
+              break;
+            case 403:
+              errorMessage = 'No tiene permisos para realizar esta acción.';
+              break;
+            case 404:
+              errorMessage = 'Servicio no encontrado.';
+              break;
+            case 409:
+              errorMessage = 'El estudiante ya existe en el sistema.';
+              break;
+            case 422:
+              errorMessage = 'Datos de entrada inválidos.';
+              break;
+            case 500:
+              errorMessage = 'Error interno del servidor. Intente más tarde.';
+              break;
+            default:
+              errorMessage = `Error del servidor (${response.status}). Intente nuevamente.`;
+          }
+        }
+        
+        errorDiv.innerHTML = errorMessage;
+        errorDiv.classList.remove('hidden');
+        errorDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+    } catch(error) {
+      console.error('Error en la solicitud:', error);
+      
+      // Manejar errores de conexión
+      let errorMessage = 'Error de conexión. Verifique su internet e intente nuevamente.';
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        errorMessage = 'No se pudo conectar con el servidor. Verifique que el servidor esté funcionando.';
+      } else if (error.name === 'SyntaxError') {
+        errorMessage = 'Error al procesar la respuesta del servidor.';
+      }
+      
+      errorDiv.innerHTML = errorMessage;
+      errorDiv.classList.remove('hidden');
+      errorDiv.scrollIntoView({ behavior: 'smooth' });
     }
   });
 </script>

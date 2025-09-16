@@ -46,8 +46,25 @@ class t_matricula {
      */
     async obtenerTodasMatriculas() {
         try {
-            return await this.crud.getAll(this.table);
+            await this.crud.db.connect();
+            const query = `
+                SELECT m.*, 
+                       e.estu_nombre, e.estu_apellido, e.estu_edad, e.estu_genero, e.estu_tipo_documento, e.estu_estado,
+                       g.grad_nombre as nombre_grado,
+                       c.curso_jornada as jornada_curso,
+                       emp.empl_nombre as docente_nombre, emp.empl_apellido as docente_apellido
+                FROM ${this.table} m
+                INNER JOIN t_estudiantes e ON m.id_documento = e.id_docuestudiante
+                INNER JOIN t_grado g ON m.matr_grado = g.id_grado
+                LEFT JOIN t_curso c ON m.matr_curso = c.id_curso
+                LEFT JOIN t_empleados emp ON c.curso_docente_director = emp.id_documento_empleado
+                ORDER BY m.matr_anio DESC, e.estu_nombre ASC
+            `;
+            await this.crud.db.consultar(query);
+            await this.crud.db.cerrar();
+            return this.crud.db.getData();
         } catch (error) {
+            await this.crud.db.cerrar();
             throw new Error(`Error al obtener matrículas: ${error.message}`);
         }
     }

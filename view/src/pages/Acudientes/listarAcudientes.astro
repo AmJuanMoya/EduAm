@@ -4,7 +4,7 @@ import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 ---
 
-<link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet" /> 
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
 
 <General>
@@ -18,7 +18,7 @@ import Asidebar from "../../components/asidebar.astro";
       <!-- Tabla de acudientes -->
       <div class="dark:bg-slate-950/90 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
         <table id="tableAcudientes" class="w-full text-sm text-left text-gray-900 dark:text-gray-200">
-          <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-xs tracking-wider">
+          <thead class=" dark:bg-gray-800 text-gray-700 dark:text-gray-300 uppercase text-xs tracking-wider">
             <tr>
               <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Documento</th>
               <th class="px-6 py-3 text-gray-900 dark:text-gray-100">Nombre</th>
@@ -29,7 +29,7 @@ import Asidebar from "../../components/asidebar.astro";
               <th class="px-6 py-3 text-center text-gray-900 dark:text-gray-100">Acciones</th>
             </tr>
           </thead>
-          <tbody id="tbodyAcudientes" class="divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody id="tbodyAcudientes" class="divide-y  divide-gray-200 dark:divide-gray-700">
             <!-- se rellena desde JS -->
           </tbody>
         </table>
@@ -52,7 +52,8 @@ import Asidebar from "../../components/asidebar.astro";
   </div>
 </General>
 
-<script is:inline>
+<script is:inline type="module">
+
 (async function () {
   // DOM
   const table = document.getElementById("tableAcudientes");
