@@ -1,28 +1,107 @@
 ---
-import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
-
-let user = {};
-const userId = 1;
-const userType = "estudiante";
-
-async function getUser() {
-  const res = await fetch(`http://127.0.0.1:3000/api/perfil/${userId}/${userType}`);
-  user = await res.json();
-}
-await getUser();
 ---
 
 <General>
-    <div class="flex min-h-screen bg-[#0A0E22] text-gray-100">
-    <Asidebar />
-
-    <div class="perfil">
-        <br>
-        <img src="https://via.placeholder.com/100" alt="Foto de perfil">
-        <h2>{user.nombre} {user.apellido}</h2>
-        <p>@{user.correo}</p>
-        <p>Rol: {user.rol}</p>
+  <header class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-lg border-b border-gray-700">
+    <div class="flex items-center space-x-4">
+      <a href="#" class="text-xl font-bold tracking-wider">Edu Am</a>
     </div>
+    
+    <div class="flex items-center space-x-6">
+      <div class="flex items-center space-x-3 cursor-pointer p-2 rounded-full transition-colors duration-300 hover:bg-slate-800">
+        <img 
+          src="https://randomuser.me/api/portraits/men/75.jpg" 
+          alt="Perfil de Juan Pérez" 
+          class="w-10 h-10 rounded-full border-2 border-blue-500"
+        />
+        <div class="flex flex-col text-right hidden md:block">
+          <span class="text-sm font-semibold">Juan Pérez</span>
+          <span class="text-xs text-gray-400">Administrador</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <!-- <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+          Mi Perfil
+        </a> -->
+        <a href="#" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+          Cerrar Sesión
+        </a>
+      </div>
+    </div>
+  </header>
+  
+  <div class="flex min-h-screen">
+    <Asidebar />
+    <div class="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
+      <h1 class="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        Perfil de Usuario
+      </h1>
+
+      <div class="bg-slate-900 rounded-3xl shadow-2xl p-8 max-w-4xl mx-auto border border-gray-700 text-gray-200 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Sección de Información Personal y de Contacto -->
+        <div class="space-y-6">
+          <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2">Información de Contacto</h2>
+          
+          <div class="flex items-start space-x-4">
+            <div class="p-3 rounded-full bg-slate-700 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-400">Dirección</p>
+              <p class="text-base">Calle 123 #45-67, Bogotá, Colombia</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-4">
+            <div class="p-3 rounded-full bg-slate-700 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zm-5-8h-2.5V7h-3v5H9l3 3 3-3z"/></svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-400">Teléfono</p>
+              <p class="text-base">+57 310 123 4567</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start space-x-4">
+            <div class="p-3 rounded-full bg-slate-700 text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zM12 7c-.55 0-1 .45-1 1s.45 1 1 1s1-.45 1-1s-.45-1-1-1zm0 2c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1z"/></svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-400">Correo Electrónico</p>
+              <p class="text-base">juan.perez@ejemplo.com</p>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Sección de Estadísticas o Actividad -->
+        <div class="space-y-6">
+          <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2">Resumen de Actividad</h2>
+          
+          <!-- Tarjetas de estadísticas -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center text-center">
+              <span class="text-3xl font-bold text-blue-400">12</span>
+              <p class="text-sm text-gray-400 mt-1">Proyectos Activos</p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center text-center">
+              <span class="text-3xl font-bold text-green-400">89%</span>
+              <p class="text-sm text-gray-400 mt-1">Tareas Completadas</p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center text-center">
+              <span class="text-3xl font-bold text-yellow-400">3</span>
+              <p class="text-sm text-gray-400 mt-1">Colaboradores</p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl shadow-md flex flex-col items-center justify-center text-center">
+              <span class="text-3xl font-bold text-purple-400">2023</span>
+              <p class="text-sm text-gray-400 mt-1">Miembro desde</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </General>
