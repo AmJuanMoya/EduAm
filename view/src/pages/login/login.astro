@@ -120,7 +120,7 @@ export const prerender = false
     </div>
 
     <!-- Modal para mensajes de estado mejorado -->
-    <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm items-center justify-center hidden z-50">
         <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full transform transition-all scale-95 duration-300 border border-gray-200">
             <div class="text-center">
                 <div id="modalIcon" class="text-6xl mb-4"></div>
@@ -140,8 +140,8 @@ export const prerender = false
 // import { effect } from "astro:schema";
 
         const loginForm = document.getElementById('loginForm');
-        const correoInput = document.getElementById('correo_usuario');
-        const passwordInput = document.getElementById('contraseña_usuario');
+        const correoInput = document.getElementById('correo_usuario') as HTMLInputElement;
+        const passwordInput = document.getElementById('contraseña_usuario') as HTMLInputElement;
 
         const statusModal = document.getElementById('statusModal');
         const modalIcon = document.getElementById('modalIcon');
@@ -154,8 +154,8 @@ export const prerender = false
             event.preventDefault();
             console.log('Formulario enviado');
             let loginData = {
-                correo_usuario: correoInput.value.trim(),
-                contraseña_usuario: passwordInput.value.trim()
+                correo_usuario: correoInput?.value.trim() || '',
+                contraseña_usuario: passwordInput?.value.trim() || ''
             };
             console.log(loginData);
 
@@ -174,15 +174,16 @@ export const prerender = false
                     alert(data.error)
                 }
                 
-                if(data.rol === 3){
+                if(data.rol === 1){
                     // Redirigir a la página de administrador
+                    window.location.href = '/admin/adminpanel';
+                } else if(data.rol === 3){
+                    // Redirigir a la página de estudiantes
                     window.location.href = '/estudiantes/perfilestudiante';
-                }
-                if(data.rol === 2){
-                    // Redirigir a la página de administrador
+                } else if(data.rol === 2){
+                    // Redirigir a la página de docentes
                     window.location.href = '/docentes/perfildocente';
                 }
-
 
 
             })
