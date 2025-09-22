@@ -134,6 +134,7 @@ export const prerender = false
     </div>
 
     <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 
     <script>
@@ -174,14 +175,19 @@ export const prerender = false
                     alert(data.error)
                 }
                 
-                if(data.rol === 1){
-                    // Redirigir a la página de administrador
+                // Almacenar el token en localStorage
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user_id', data.user.id); // Guardar el ID del usuario
+                    localStorage.setItem('user_rol', data.rol); // Guardar el rol del usuario
+                }
+
+                // Redireccionar según el rol (el token ya estará guardado)
+                if (data.rol === 1) {
                     window.location.href = '/admin/adminpanel';
-                } else if(data.rol === 3){
-                    // Redirigir a la página de estudiantes
+                } else if (data.rol === 3) {
                     window.location.href = '/estudiantes/perfilestudiante';
-                } else if(data.rol === 2){
-                    // Redirigir a la página de docentes
+                } else if (data.rol === 2) {
                     window.location.href = '/docentes/perfildocente';
                 }
 

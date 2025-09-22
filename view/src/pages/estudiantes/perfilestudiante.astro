@@ -1,15 +1,80 @@
 ---
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
+import Navbar from "../../components/general/navbar.astro";
 ---
 
-
-
-<General>
-    <section>
+<General title="Perfil de Estudiante">
+    <Navbar></Navbar>
+    <section class="flex">
         <Asidebar />
-        <h1 class="text-3xl font-bold underline">
-            Perfil Estudiante
-        </h1>
+        <main class="flex-1 p-8 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+            <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 md:p-8">
+                <h1 class="text-4xl font-extrabold text-center mb-10 text-blue-700 dark:text-blue-400">Perfil del Estudiante</h1>
+
+                <div id="student-profile-content">
+                    <p class="text-center text-lg text-gray-600 dark:text-gray-300">Cargando información del estudiante...</p>
+                </div>
+            </div>
+        </main>
     </section>
 </General>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const studentId = localStorage.getItem('user_id');
+        const token = localStorage.getItem('token'); // Obtener el token del localStorage
+        const studentProfileContent = document.getElementById('student-profile-content');
+
+        if (!studentId || !token) { // Validar también la existencia del token
+            if (studentProfileContent) {
+                studentProfileContent.innerHTML = '<p class="text-center text-red-500 text-lg">No autorizado: ID de estudiante o token no encontrados en la sesión.</p>';
+            }
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/estudiantes/${studentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Enviar el token en el encabezado
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                if (studentProfileContent) {
+                    studentProfileContent.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-md shadow-sm">
+                                <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-300">Datos Personales</h2>
+                                <p><strong>Documento:</strong> ${data[0].id_docuestudiante}</p>
+                                <p><strong>Nombre:</strong> ${data[0].estu_nombre}</p>
+                                <p><strong>Apellido:</strong> ${data[0].estu_apellido}</p>
+                                <p><strong>Edad:</strong> ${data[0].estu_edad}</p>
+                                <p><strong>Género:</strong> ${data[0].estu_genero}</p>
+                                <p><strong>Tipo de Documento:</strong> ${data[0].estu_tipo_documento}</p>
+                                <p><strong>Estado:</strong> ${data[0].estu_estado}</p>
+                                <p><strong>Correo:</strong> ${data[0].est_correo}</p>
+                            </div>
+                            <div class="bg-green-50 dark:bg-gray-700 p-4 rounded-md shadow-sm">
+                                <h2 class="text-2xl font-semibold mb-4 text-green-600 dark:text-green-300">Información Académica</h2>
+                                <p><strong>Rol:</strong> ${data[0].estu_rol}</p>
+                                <!-- Aquí se pueden añadir más campos relacionados con tareas, calificaciones, etc. -->
+                                <p class="mt-4 text-gray-700 dark:text-gray-300">Aún no hay tareas o calificaciones disponibles.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                if (studentProfileContent) {
+                    studentProfileContent.innerHTML = `<p class="text-center text-red-500 text-lg">Error al cargar el perfil: ${data.error || 'Desconocido'}</p>`;
+                }
+            }
+        } catch (error) {
+            console.error('Error al obtener el perfil del estudiante:', error);
+            if (studentProfileContent) {
+                studentProfileContent.innerHTML = '<p class="text-center text-red-500 text-lg">Error de conexión con el servidor.</p>';
+            }
+        }
+    });
+</script>

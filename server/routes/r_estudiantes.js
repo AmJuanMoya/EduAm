@@ -1,12 +1,33 @@
 import express  from "express"
 import t_estudiantes from "../../model/t_estudiantes.js"
 import t_acudientes from "../../model/t_acudientes.js";
+import authMiddleware from "../middlwre/authMiddleware.js";
 
 const router = express.Router();
 const EST = new t_estudiantes()
 const ACU = new t_acudientes()
 
 
+router.get("/estudiantes/:id", async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const estudiante = await EST.obtenerEstudiantePorId(id);
+        if(estudiante <= 0 ){
+            return res.status(404).json({error: "No se encontro ningun estudiante"})
+        }
+
+        if (!estudiante) {
+            return res.status(404).json({ error: "Estudiante no encontrado" });
+        }
+
+        res.status(200).json(estudiante);
+
+    } catch (error) {
+        console.error("Error al obtener estudiante por ID:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
 
 router.post("/estudiantes/registro", async (req, res) => {
 
