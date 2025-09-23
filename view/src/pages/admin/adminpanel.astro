@@ -23,7 +23,9 @@ import Cardfun from "../../components/admin/cardfun.astro";
                 
                 <div id="graphic-content" class="border rounded-4xl border-purple-950/70 bg-purple-950/20 m-1 w-[99%] h-150 mx-auto "> 
                     <h2 class=" w-full p-1 ml-3"> <code>Resumen Estadistico</code> </h2>
-                    <div class="border h-[90%]"></div>
+                    <div class="border h-[90%]">
+                        <div id="matriculas-por-estado-chart" class="h-full w-full"></div>
+                    </div>
                     
                     
                     
@@ -31,7 +33,14 @@ import Cardfun from "../../components/admin/cardfun.astro";
 
                 <div class="border rounded-4xl border-green-950/70 bg-green-950/20 m-1 mt-5 w-[99%] h-70 mx-auto"> 
                     <h2 class=" w-full p-1 ml-3"> <code>informacion adicional</code> </h2>
-
+                    <div class="flex flex-wrap justify-around p-4">
+                        <div id="estudiantes-por-genero-chart" class="w-1/2 h-48"></div>
+                        <div id="estudiantes-por-tipo-documento-chart" class="w-1/2 h-48"></div>
+                    </div>
+                    <div class="flex justify-center gap-4 mt-4">
+                        <button id="update-charts-button" class="px-4 py-2 bg-blue-600 text-white rounded-md">Actualizar Gráficos</button>
+                        <button id="export-data-button" class="px-4 py-2 bg-green-600 text-white rounded-md">Exportar Datos</button>
+                    </div>
                 </div>
 
             </section>
@@ -41,4 +50,13 @@ import Cardfun from "../../components/admin/cardfun.astro";
         </div>
 
     </div>
+
+    <script>
+        import { initializeCharts } from '../../lib/charts.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Flowbite y ApexCharts cargados y listos para usar.');
+            initializeCharts(); // Llamamos a la función de inicialización de los gráficos
+        });
+    </script>
 </General>

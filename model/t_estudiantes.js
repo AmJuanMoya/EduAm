@@ -158,6 +158,51 @@ class t_estudiantes {
             throw new Error(`Error al obtener estudiante por correo: ${error.message}`);
         }
     }
+        /**
+     * Contar estudiantes por género
+     * @returns {Promise} Conteo de estudiantes por género
+     */
+        async contarEstudiantesPorGenero() {
+            try {
+                await this.crud.db.connect();
+                const query = `
+                    SELECT estu_genero, COUNT(*) as cantidad
+                    FROM ${this.table}
+                    GROUP BY estu_genero
+                `;
+                await this.crud.db.consultar(query);
+                await this.crud.db.cerrar();
+                return this.crud.db.getData();
+            } catch (error) {
+                await this.crud.db.cerrar();
+                throw new Error(`Error al contar estudiantes por género: ${error.message}`);
+            }
+        }
+    
+        /**
+         * Contar estudiantes por tipo de documento
+         * @returns {Promise} Conteo de estudiantes por tipo de documento
+         */
+        async contarEstudiantesPorTipoDocumento() {
+            try {
+                await this.crud.db.connect();
+                const query = `
+                    SELECT estu_tipo_documento, COUNT(*) as cantidad
+                    FROM ${this.table}
+                    GROUP BY estu_tipo_documento
+                `;
+                await this.crud.db.consultar(query);
+                await this.crud.db.cerrar();
+                return this.crud.db.getData();
+            } catch (error) {
+                await this.crud.db.cerrar();
+                throw new Error(`Error al contar estudiantes por tipo de documento: ${error.message}`);
+            }
+        }
+
+
+
+
 }
 
 export default t_estudiantes;

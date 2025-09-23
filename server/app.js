@@ -11,6 +11,7 @@ import loginRouter from './routes/r_login.js';
 import acudienteRouter from './routes/r_acudientes.js';
 import empleadosRouter from './routes/r_empleados.js';
 import r_estudiantes from "./routes/r_estudiantes.js"
+import r_stats from "./routes/r_stats.js"
 
 
 const app = express()
@@ -32,6 +33,7 @@ app.use('/api', matriculaRouter);
 app.use("/api", acudienteRouter);
 app.use("/api", empleadosRouter);
 app.use("/api", r_estudiantes);
+app.use("/api/stats", r_stats);
 
 
 

@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "nanostores": "^1.0.1",
     "simple-datatables": "^10.0.0",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "apexcharts": "^3.45.0"
   }
 }
