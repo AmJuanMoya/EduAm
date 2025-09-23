@@ -177,11 +177,13 @@ export const prerender = false
                 
                 // Almacenar el token en localStorage
                 if (data.token) {
+
+                
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('user_id', data.user.id); // Guardar el ID del usuario
+                    localStorage.setItem('user_id', data.user_id); // Guardar el ID del usuario
                     localStorage.setItem('user_rol', data.rol); // Guardar el rol del usuario
                 }
-
+                console.log("desde el servidor viene...",data)
                 // Redireccionar según el rol (el token ya estará guardado)
                 if (data.rol === 1) {
                     window.location.href = '/admin/adminpanel';
@@ -190,7 +192,7 @@ export const prerender = false
                 } else if (data.rol === 2) {
                     window.location.href = '/docentes/perfildocente';
                 }
-
+                // alert("on validation :3")
 
             })
             .catch(error => {
