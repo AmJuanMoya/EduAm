@@ -188,7 +188,7 @@ export const prerender = false
                 if (data.rol === 1) {
                     window.location.href = '/admin/adminpanel';
                 } else if (data.rol === 3) {
-                    window.location.href = '/estudiantes/perfilestudiante';
+                    window.location.href = `/estudiantes/${data.user_id}`;
                 } else if (data.rol === 2) {
                     window.location.href = '/docentes/perfildocente';
                 }

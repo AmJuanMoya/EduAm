@@ -65,16 +65,39 @@ class t_estudiantes {
      * @param {string} texto - Texto a buscar
      * @returns {Promise} Estudiantes que coinciden
      */
-    async buscarEstudiantesPorNombreApellido(texto) {
-        try {
-            return await this.crud.getByCondition(
-                this.table,
-                `estu_nombre LIKE '%${texto}%' OR estu_apellido LIKE '%${texto}%'`
-            );
-        } catch (error) {
-            throw new Error(`Error al buscar estudiantes: ${error.message}`);
-        }
-    }
+        async obtenerEstudiantePorId(idEstudiante) {
+                try {
+                    const query = `
+                        SELECT 
+                            e.*, 
+                            r.rol_descripcion,
+                            a.acud_nombres,
+                            a.acud_apellidos,
+                            a.acud_parentesco,
+                            a.acud_telefono,
+                            a.acud_correo,
+                            a.acud_direccion,
+                            a.acud_tipo_documento
+                        FROM 
+                            ${this.table} e
+                        LEFT JOIN 
+                            t_rol r ON e.estu_rol = r.id_rol
+                        LEFT JOIN 
+                            t_acudientes a ON e.estu_acudiente = a.id_documento_acudiente
+                        WHERE 
+                            e.id_docuestudiante = ${idEstudiante}
+                    `;
+                    
+                    await this.crud.db.connect();
+                    await this.crud.db.consultar(query);
+                    const result = this.crud.db.getData();
+                    await this.crud.db.cerrar();
+                    return result;
+                    
+                } catch (error) {
+                    throw new Error(`Error al obtener estudiante por ID con detalles: ${error.message}`);
+                }
+            }
 
     /**
      * Actualizar estudiante

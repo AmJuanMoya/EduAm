@@ -1,6 +1,6 @@
 ---
 
-let {direccion="../", name=""} = Astro.props 
+let { name=""} = Astro.props 
 
 ---
 
@@ -11,7 +11,7 @@ let {direccion="../", name=""} = Astro.props
 
     <div class="  size-10 border p-2 m-5  rounded-md border-blue-600 hover:scale-110 transition-all">
 
-    <a class="" href={direccion} >    
+    <a class="" onclick="history.back()" >    
         <span class=" ">
         <span class="dark:bg-blue-950">
           <svg class="  w-[100%] h-[100%] text-blue-800 dark:text-blue-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

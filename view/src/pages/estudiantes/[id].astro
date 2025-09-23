@@ -3,16 +3,18 @@ export const prerender = false;
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import Navbar from "../../components/general/navbar.astro";
+import Panelnav from "../../components/navigation/panelnav.astro";
 
 let  id_e  = Astro.params.id ; // Necesitamos el ID del estudiante de la URL
 ---
 
 <General title="Perfil de Estudiante">
     <Navbar></Navbar>
+    <Panelnav></Panelnav>
     <section class="flex">
         <Asidebar />
         <main class="flex-1 p-10 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen ">
-            <div class="max-w-6xl mx-auto bg-white  dark:bg-gray-800 shadow-xl rounded-xl p-8 md:p-12 ">
+            <div class=" mx-auto bg-white  dark:bg-gray-800 shadow-xl rounded-xl p-8 md:p-12 ">
                 <h1 class="text-5xl font-extrabold text-center mb-12 text-blue-800 dark:text-blue-400">Perfil del Estudiante</h1>
 
                 <div id="student-profile-content">
@@ -23,7 +25,7 @@ let  id_e  = Astro.params.id ; // Necesitamos el ID del estudiante de la URL
     </section>
 </General>
 
-<script defer define:vars={{id_e}}>
+<script  define:vars={{id_e}}>
 
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -53,19 +55,52 @@ let  id_e  = Astro.params.id ; // Necesitamos el ID del estudiante de la URL
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <div class="bg-blue-50 dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <h2 class="text-3xl font-bold mb-5 text-blue-700 dark:text-blue-300 border-b pb-3 border-blue-200 dark:border-gray-600">Datos Personales</h2>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Documento:</strong> ${studentData.id_docuestudiante}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Nombre:</strong> ${studentData.estu_nombre}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Apellido:</strong> ${studentData.estu_apellido}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Edad:</strong> ${studentData.estu_edad}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Género:</strong> ${studentData.estu_genero}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Tipo de Documento:</strong> ${studentData.estu_tipo_documento}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Estado:</strong> ${studentData.estu_estado}</p>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Correo:</strong> ${studentData.est_correo}</p>
+                                <div class="space-y-4">
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Documento:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.id_docuestudiante}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Nombre:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_nombre}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Apellido:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_apellido}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Edad:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_edad}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Género:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_genero}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Tipo de Documento:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_tipo_documento}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Estado:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_estado}</span>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-blue-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-blue-800 dark:text-blue-200 text-lg">Correo:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.est_correo}</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="bg-green-50 dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <h2 class="text-3xl font-bold mb-5 text-green-700 dark:text-green-300 border-b pb-3 border-green-200 dark:border-gray-600">Información Académica</h2>
-                                <p class="mb-2 text-lg"><strong class="font-semibold">Rol:</strong> ${studentData.estu_rol}</p>
-                                <p class="mt-4 text-gray-700 dark:text-gray-300 text-lg">Aún no hay tareas o calificaciones disponibles.</p>
+                                <div class="space-y-4">
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-green-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <span class="font-semibold text-green-800 dark:text-green-200 text-lg">Rol:</span>
+                                        <span class="text-gray-800 dark:text-gray-100 text-xl">${studentData.estu_rol==3?"Estudiante":studentData.estu_rol}</span>
+                                    </div>
+                                    <div class="p-3 bg-green-100 dark:bg-gray-600 rounded-md shadow-sm">
+                                        <p class="text-gray-700 dark:text-gray-300 text-lg">Aún no hay tareas o calificaciones disponibles.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
