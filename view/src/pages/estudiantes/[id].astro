@@ -1,0 +1,85 @@
+---
+export const prerender = false;
+import General from "../../layouts/general.astro";
+import Asidebar from "../../components/asidebar.astro";
+import Navbar from "../../components/general/navbar.astro";
+
+let  id_e  = Astro.params.id ; // Necesitamos el ID del estudiante de la URL
+---
+
+<General title="Perfil de Estudiante">
+    <Navbar></Navbar>
+    <section class="flex">
+        <Asidebar />
+        <main class="flex-1 p-10 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen ">
+            <div class="max-w-6xl mx-auto bg-white  dark:bg-gray-800 shadow-xl rounded-xl p-8 md:p-12 ">
+                <h1 class="text-5xl font-extrabold text-center mb-12 text-blue-800 dark:text-blue-400">Perfil del Estudiante</h1>
+
+                <div id="student-profile-content">
+                    <p class="text-center text-xl text-gray-600 dark:text-gray-300">Cargando información del estudiante...</p>
+                </div>
+            </div>
+        </main>
+    </section>
+</General>
+
+<script defer define:vars={{id_e}}>
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const studentId = id_e; // ID del estudiante de la URL, accesible aquí
+        const token = localStorage.getItem('token'); // Obtener el token del localStorage
+        const studentProfileContent = document.getElementById('student-profile-content');
+
+        if (!studentId || !token) {
+            if (studentProfileContent) {
+                studentProfileContent.innerHTML = '<p class="text-center text-red-500 text-xl font-medium">No autorizado: ID de estudiante o token no encontrados en la sesión.</p>';
+            }
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/estudiantes/${studentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                if (studentProfileContent) {
+                    const studentData = data[0];
+                    studentProfileContent.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="bg-blue-50 dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <h2 class="text-3xl font-bold mb-5 text-blue-700 dark:text-blue-300 border-b pb-3 border-blue-200 dark:border-gray-600">Datos Personales</h2>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Documento:</strong> ${studentData.id_docuestudiante}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Nombre:</strong> ${studentData.estu_nombre}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Apellido:</strong> ${studentData.estu_apellido}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Edad:</strong> ${studentData.estu_edad}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Género:</strong> ${studentData.estu_genero}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Tipo de Documento:</strong> ${studentData.estu_tipo_documento}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Estado:</strong> ${studentData.estu_estado}</p>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Correo:</strong> ${studentData.est_correo}</p>
+                            </div>
+                            <div class="bg-green-50 dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <h2 class="text-3xl font-bold mb-5 text-green-700 dark:text-green-300 border-b pb-3 border-green-200 dark:border-gray-600">Información Académica</h2>
+                                <p class="mb-2 text-lg"><strong class="font-semibold">Rol:</strong> ${studentData.estu_rol}</p>
+                                <p class="mt-4 text-gray-700 dark:text-gray-300 text-lg">Aún no hay tareas o calificaciones disponibles.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                if (studentProfileContent) {
+                    studentProfileContent.innerHTML = `<p class="text-center text-red-500 text-xl font-medium">Error al cargar el perfil: ${data.error || 'Desconocido'}</p>`;
+                }
+            }
+        } catch (error) {
+            console.error('Error al obtener el perfil del estudiante:', error);
+            if (studentProfileContent) {
+                studentProfileContent.innerHTML = '<p class="text-center text-red-500 text-xl font-medium">Error de conexión con el servidor.</p>';
+            }
+        }
+    });
+</script>
