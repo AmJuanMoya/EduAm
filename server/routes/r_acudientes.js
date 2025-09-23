@@ -16,9 +16,10 @@ router.post("/datos/acudiente", async (req, res) => {
 
     try {
         console.log("📥 Datos recibidos de acudiente:", data);
-
+      let ACU = new t_acudientes()
+      const result = ACU.crearAcudiente(data)
         // 👇 llamada a tu método simplificado
-        const result = await new Acudiente().createAcudiente(data);
+        // const result = await new Acudiente().createAcudiente(data);
 
         res.status(201).json({
             message: "😀 Acudiente registrado exitosamente ✅",
@@ -69,7 +70,10 @@ router.put("/datos/acudientes/:id", async (req, res) => {
     const data = { ...req.body, id_documento_acudiente: id };
     console.log("ID:", id);
     console.log("Body recibido:", req.body);
-    await new Acudiente().updateAcudiente(data);
+    let ACU = new t_acudientes()
+    ACU.actualizarAcudiente(data)
+    // await new Acudiente().updateAcudiente(data);
+
     res.json({ message: "Acudiente actualizado correctamente" });
   } catch (error) {
     console.error("Error al actualizar acudiente:", error);

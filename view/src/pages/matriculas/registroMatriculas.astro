@@ -2,12 +2,17 @@
 import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
+ import MenuMatricula from "./c_menumatricula.astro"
+ import Navbar from "../../components/general/navbar.astro";
+
+
+ 
 ---
 
 <General>
- 
+  <Navbar></Navbar>
   <Panelnav />
-
+  <MenuMatricula/>
 <main class="   flex">
     <Asidebar/>
     <div class=" w-full mx-5 ">

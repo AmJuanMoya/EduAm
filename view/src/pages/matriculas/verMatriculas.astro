@@ -3,11 +3,15 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import ModalMatricula from "../../components/modalMatricula/detalleMatricula.astro";
+import Navbar from "../../components/general/navbar.astro";
+import MenuMatricula from  "./c_menumatricula.astro"
 ---
 
 <General>
+<Navbar></Navbar>
+<MenuMatricula></MenuMatricula>
   <Panelnav />
-  <div class="flex min-h-screen bg-gray-50 dark:bg-[#0A0E22] text-gray-900 dark:text-gray-100">
+  <div class="flex min-h-screen  dark:bg-[#0A0E22] text-gray-900 dark:text-gray-100">
     <Asidebar />
 
     

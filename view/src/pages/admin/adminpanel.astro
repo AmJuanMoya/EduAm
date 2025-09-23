@@ -3,12 +3,14 @@ import Panelnav from "../../components/navigation/panelnav.astro";
 import General from "../../layouts/general.astro";
 import Asidebar from "../../components/asidebar.astro";
 import Cardfun from "../../components/admin/cardfun.astro";
+import Navbar from "../../components/general/navbar.astro";
 
 
 // let {usuarioName = "UsuarioAdmin"} = Astro.props
 ---
 
 <General>
+    <Navbar></Navbar>
 <Panelnav/>
 
 <div class=" text-center text-4xl py-5 bg-slate-700/40 mx-3 rounded-md mb-10">
@@ -16,14 +18,14 @@ import Cardfun from "../../components/admin/cardfun.astro";
     <!-- <h2>Bienvenido <span class="text-blue-500"> {usuarioName} </span></h2> -->
 </div>
 
-    <div class="flex mx-2">
+    <div class="flex mx-2 min-h-screen ">
         <Asidebar/>
-        <div class="w-full h-screen border   rounded-md bg-slate-950/40  ">
-            <section class=""> 
+        <div class="w-full flex-grow  rounded-md bg-slate-950/40 p-4">
+            <section class="h-full"> 
                 
-                <div id="graphic-content" class="border rounded-4xl border-purple-950/70 bg-purple-950/20 m-1 w-[99%] h-150 mx-auto "> 
+                <div id="graphic-content" class=" rounded-4xl border-purple-950/70 bg-purple-950/20 m-1 w-[99%] min-h-[400px] h-auto mx-auto "> 
                     <h2 class=" w-full p-1 ml-3"> <code>Resumen Estadistico</code> </h2>
-                    <div class="border h-[90%]">
+                    <div class=" h-[90%] min-h-[350px]">
                         <div id="matriculas-por-estado-chart" class="h-full w-full"></div>
                     </div>
                     
@@ -31,15 +33,15 @@ import Cardfun from "../../components/admin/cardfun.astro";
                     
                 </div>
 
-                <div class="border rounded-4xl border-green-950/70 bg-green-950/20 m-1 mt-5 w-[99%] h-70 mx-auto"> 
+                <div class=" rounded-4xl border-green-950/70 bg-green-950/20 m-1 mt-5 w-[99%] min-h-[250px] h-auto mx-auto"> 
                     <h2 class=" w-full p-1 ml-3"> <code>informacion adicional</code> </h2>
-                    <div class="flex flex-wrap justify-around p-4">
-                        <div id="estudiantes-por-genero-chart" class="w-1/2 h-48"></div>
-                        <div id="estudiantes-por-tipo-documento-chart" class="w-1/2 h-48"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                        <div id="estudiantes-por-genero-chart" class="w-full h-48"></div>
+                        <div id="estudiantes-por-tipo-documento-chart" class="w-full h-48"></div>
                     </div>
                     <div class="flex justify-center gap-4 mt-4">
                         <button id="update-charts-button" class="px-4 py-2 bg-blue-600 text-white rounded-md">Actualizar Gráficos</button>
-                        <button id="export-data-button" class="px-4 py-2 bg-green-600 text-white rounded-md">Exportar Datos</button>
+                        <!-- <button id="export-data-button" class="px-4 py-2 bg-green-600 text-white rounded-md">Exportar Datos</button> -->
                     </div>
                 </div>
 

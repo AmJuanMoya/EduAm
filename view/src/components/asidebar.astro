@@ -8,8 +8,10 @@ import ButtonA from "./general/button_a.astro";
 
 ---
 
-<div class="lg:w-1/5 bg-slate-800/90 mx-4 w-80 text-white p-4 space-y-4 shadow-lg h-screen fixed lg:relative z-20 hidden lg:flex flex-col" id="sidebar">
-  <div class="text-2xl font-bold text-center border-b border-gray-700 pb-4">
+<div class="w-80 p-4 space-y-4 shadow-lg z-20 dark:bg-slate-800/90 bg-slate-400 flex-col flex-shrink-0
+            fixed top-0 left-0 h-screen hidden
+            lg:w-1/5 lg:flex lg:static" id="sidebar">
+  <div class="text-2xl font-bold text-center border-b text-blue-900 dark:text-blue-500 border-gray-700 pb-4">
     Eduam
   </div>
   <nav class="flex-1 space-y-2 " id="nav-menu-options">
@@ -52,8 +54,8 @@ import ButtonA from "./general/button_a.astro";
         { name: "Matrículas", href: "/matriculas/registroMatriculas" },
         { name: "Actividades", href: "/Actividades/crearActividad" },
         { name: "Cursos", href: "/Cursos/cursos" },
-        { name: "Consultas", href: "/consultas" },
-        { name: "Registrar Usuario", href: "/usuario/registroUsuario" },
+        // { name: "Consultas", href: "/consultas" },
+        { name: "Usuarios", href: "/usuario/registroUsuario" },
       ],
       3: [
         { name: "Mi Perfil", href: `/estudiantes/${user_id}` },
@@ -68,7 +70,7 @@ import ButtonA from "./general/button_a.astro";
         { name: "Mis Actividades", href: "/Actividades/crearActividad" },
       ],
       4: [
-        { name: "Mi Perfil", href: "/Acudientes/listarAcudientes" },
+        // { name: "Mi Perfil", href: "/Acudientes/listarAcudientes" },
         { name: "Mis Estudiantes", href: "/estudiantes/misEstudiantes" },
       ],
       Guest: [] // Rol por defecto sin opciones
@@ -92,9 +94,9 @@ import ButtonA from "./general/button_a.astro";
         const link = document.createElement("a");
         link.href = option.href;
         link.className =
-          "flex items-center space-x-3 p-2 border border-blue-800/50 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200";
+          "flex items-center space-x-3 p-2 border border-blue-800/50 rounded-lg text-gray-300 dark:hover:bg-gray-700 hover:bg-gray-300  hover:text-blue-300 transition-colors duration-200";
         link.innerHTML = `
-          <span>${option.name}</span>
+          <span class=" text-blue-950 dark:text-blue-300">${option.name}</span>
         `;
         navMenuOptions.appendChild(link);
       });
@@ -107,23 +109,27 @@ import ButtonA from "./general/button_a.astro";
       renderMenu("Guest");
     }
     
+    const desktopSidebarToggle = document.getElementById("desktop-sidebar-toggle");
+
     if (hamburgerButton && sidebar) {
       hamburgerButton.addEventListener("click", () => {
-        sidebar.classList.toggle("hidden");
-        sidebar.classList.toggle("flex");
-      });
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth >= 1024) {
-          sidebar.classList.add("hidden");
-          sidebar.classList.remove("flex");
+        // Toggle para móvil
+        if (window.innerWidth < 1024) {
+          sidebar.classList.toggle("hidden");
+          sidebar.classList.toggle("flex");
         }
       });
-
-      if (window.innerWidth >= 1024) {
-        sidebar.classList.add("hidden");
-        sidebar.classList.remove("flex");
-      }
     }
+
+    if (desktopSidebarToggle && sidebar) {
+      desktopSidebarToggle.addEventListener("click", () => {
+        // Toggle para desktop
+        if (window.innerWidth >= 1024) {
+          sidebar.classList.toggle("hidden");
+          sidebar.classList.toggle("flex");
+        }
+      });
+    }
+
   });
 </script>
